@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@opdstar/nhi-mcp — Taiwan NHI MCP Server · Powered by OPDSTAR</title>
+<meta name="description" content="Taiwan's first public Model Context Protocol (MCP) server for National Health Insurance data. Lets Claude Desktop, Cursor, ChatGPT Desktop query 234 rejection codes, 1,497 procedure codes, audit indicators, and 8,232 wiki chunks. Free, MIT-licensed, by OPDSTAR.">
+<meta name="keywords" content="MCP server, Taiwan NHI, National Health Insurance, 健保, 核刪, healthcare AI, Claude Desktop, Cursor, Model Context Protocol, OPDSTAR, 台灣健保, medical AI, anthropic">
+
+<!-- hreflang for language alternatives -->
+<link rel="alternate" hreflang="en" href="https://tatsuju.github.io/opdstar-nhi-mcp/">
+<link rel="alternate" hreflang="zh-TW" href="https://tatsuju.github.io/opdstar-nhi-mcp/zh/">
+<link rel="alternate" hreflang="x-default" href="https://tatsuju.github.io/opdstar-nhi-mcp/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta property="og:title" content="@opdstar/nhi-mcp — Taiwan NHI MCP Server">
+<meta property="og:description" content="Taiwan's first public Model Context Protocol server for NHI data. Query rejection codes, procedure codes, audit indicators, and wiki from any MCP-compatible AI assistant.">
+<meta property="og:url" content="https://tatsuju.github.io/opdstar-nhi-mcp/">
+<meta property="og:site_name" content="OPDSTAR NHI MCP">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="@opdstar/nhi-mcp — Taiwan's first public NHI MCP server">
+<meta name="twitter:description" content="Query Taiwan NHI rejection codes, procedures, indicators, wiki directly from Claude Desktop / Cursor / ChatGPT Desktop. Free, MIT, by OPDSTAR.">
+
+<link rel="canonical" href="https://tatsuju.github.io/opdstar-nhi-mcp/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+
+<!-- Schema.org: SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "@opdstar/nhi-mcp",
+  "alternateName": "OPDSTAR NHI MCP Server",
+  "applicationCategory": "DeveloperApplication",
+  "applicationSubCategory": "Healthcare API",
+  "operatingSystem": "Cross-platform (Node.js 18+)",
+  "description": "Taiwan's first public Model Context Protocol server for National Health Insurance data. Enables AI assistants like Claude Desktop, Cursor, and ChatGPT Desktop to query 234 NHI rejection codes, 1,497 procedure codes across 20 specialties, audit indicators, and 8,232 chunks of semantic-searchable wiki content.",
+  "url": "https://tatsuju.github.io/opdstar-nhi-mcp/",
+  "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
+  "softwareVersion": "0.1.0",
+  "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.1.0",
+  "inLanguage": "en",
+  "author": {
+    "@type": "Organization",
+    "name": "OPDSTAR",
+    "url": "https://opdstar.com",
+    "logo": "https://opdstar.com/favicon.ico",
+    "email": "support@opdstar.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OPDSTAR",
+    "url": "https://opdstar.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock"
+  },
+  "license": "https://opensource.org/licenses/MIT",
+  "codeRepository": "https://github.com/tatsuju/opdstar-nhi-mcp",
+  "programmingLanguage": "TypeScript",
+  "runtimePlatform": "Node.js",
+  "featureList": [
+    "lookup_rejection_code — 234 Taiwan NHI rejection codes with severity and category",
+    "get_procedures_for_icd — 1,497 procedure codes mapped to ICD-10 across 20 specialties",
+    "get_indicator — NHI audit indicators (008, 014, 027, P043) with thresholds",
+    "search_nhi_wiki — Semantic and full-text search over 8,232 official NHI wiki chunks"
+  ],
+  "keywords": "Taiwan NHI, Model Context Protocol, MCP server, healthcare API, Claude Desktop, rejection codes, 健保, 核刪, medical AI"
+}
+</script>
+
+<!-- Schema.org: FAQPage -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "en",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Model Context Protocol (MCP)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "MCP is an open standard released by Anthropic in November 2024 that lets AI assistants call external tools through a standardized protocol. Write a server once, and any MCP-compatible client (Claude Desktop, Cursor, ChatGPT Desktop) can use it without custom integration."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Taiwan's National Health Insurance (NHI)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Taiwan's National Health Insurance (全民健康保險) is a single-payer universal healthcare system covering 99.9% of Taiwan's population since 1995. It maintains extensive audit rules — doctors who submit non-compliant claims face rejection and lose income. This MCP server exposes the rules and codes doctors need to navigate those rules."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Who should install @opdstar/nhi-mcp?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Taiwanese doctors using AI assistants for chart work, HIS and clinic software vendors integrating AI features, and researchers studying Taiwan's healthcare data."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an OPDSTAR account or API key?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The MCP is fully public and free under MIT license. No account, no API key, no registration required. Rate limiting is based on IP only."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my patient data sent anywhere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The tools are pure lookups over public NHI data. Only the code or diagnosis name you ask about is transmitted — never patient names, IDs, or clinical notes. The proxy does not log query content."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this an official NHI product?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It is independently developed by the OPDSTAR team. Data is sourced from publicly available 健保署 publications. Not affiliated with or endorsed by Taiwan's National Health Insurance Administration."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use this commercially?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. MIT license permits unrestricted commercial use. You may embed @opdstar/nhi-mcp in paid products without royalties. We only ask that 'powered_by' attribution remains in tool responses."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How often is the data updated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Monthly. The OPDSTAR team syncs structured tables and wiki chunks when 健保署 publishes new rules or amendments."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org: Organization (OPDSTAR) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "OPDSTAR",
+  "url": "https://opdstar.com",
+  "logo": "https://opdstar.com/favicon.ico",
+  "email": "support@opdstar.com",
+  "sameAs": [
+    "https://github.com/tatsuju/opdstar-nhi-mcp",
+    "https://www.npmjs.com/package/@opdstar/nhi-mcp"
+  ],
+  "description": "OPDSTAR develops AI-powered chart translation and NHI audit-risk prevention tools for Taiwanese outpatient doctors. The @opdstar/nhi-mcp package is the open-source data layer of the OPDSTAR platform."
+}
+</script>
+
+<style>
+  :root {
+    --teal: #0d9488;
+    --teal-dark: #0f766e;
+    --slate: #334155;
+    --slate-light: #64748b;
+    --bg: #fafafa;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  .lang-switch {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: .25rem;
+    font-size: .8125rem;
+    background: white;
+    border-radius: 9999px;
+    padding: .25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+  }
+  .lang-switch a {
+    padding: .25rem .75rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    color: var(--slate-light);
+    transition: all .15s;
+  }
+  .lang-switch a.active {
+    background: var(--teal);
+    color: white;
+    font-weight: 600;
+  }
+  .lang-switch a:not(.active):hover {
+    background: #f1f5f9;
+    color: var(--slate);
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    line-height: 1.6;
+    color: var(--slate);
+    background: var(--bg);
+  }
+  header {
+    padding: 4rem 1.5rem 3rem;
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 100%);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--teal);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: 2.25rem;
+    margin: 0.5rem 0;
+    color: #0f172a;
+    font-weight: 800;
+  }
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--slate-light);
+    margin: 0 0 1.5rem;
+  }
+  .subtitle-zh {
+    font-size: 1rem;
+    color: var(--slate-light);
+    margin: 0 0 2rem;
+  }
+  pre.install {
+    background: #0f172a;
+    color: #f1f5f9;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 1rem;
+    margin: 1rem 0;
+    letter-spacing: 0.02em;
+  }
+  .cta {
+    display: inline-flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .cta a {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: transform 0.1s;
+  }
+  .cta a:hover { transform: translateY(-1px); }
+  .cta a.primary {
+    background: var(--teal);
+    color: white;
+  }
+  .cta a.primary:hover { background: var(--teal-dark); }
+  .cta a.secondary {
+    border: 1px solid var(--border);
+    color: var(--slate);
+    background: white;
+  }
+  main {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+  section { margin-bottom: 3rem; }
+  h2 {
+    font-size: 1.5rem;
+    color: #0f172a;
+    border-bottom: 2px solid var(--teal);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+    display: inline-block;
+  }
+  h3 {
+    font-size: 1.125rem;
+    color: #0f172a;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .tool-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+  }
+  .tool-card code {
+    color: var(--teal-dark);
+    font-weight: 600;
+    font-size: 0.875rem;
+    background: #f0fdfa;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+  }
+  .tool-card p {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    color: var(--slate-light);
+  }
+  details {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  details[open] summary { margin-bottom: 0.75rem; }
+  details p { margin: 0; color: var(--slate-light); font-size: 0.9375rem; }
+  footer {
+    padding: 2.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--slate-light);
+    background: white;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+    color: var(--slate-light);
+  }
+  .stats strong { color: var(--teal-dark); font-size: 1.5rem; display: block; }
+  @media (max-width: 640px) {
+    h1 { font-size: 1.75rem; }
+    .subtitle { font-size: 1rem; }
+    pre.install { font-size: 0.875rem; }
+    .lang-switch { top: .5rem; right: .5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lang-switch" role="navigation" aria-label="Language selector">
+    <a href="./" class="active" hreflang="en">EN</a>
+    <a href="./zh/" hreflang="zh-TW">繁中</a>
+  </div>
+  <span class="badge">Taiwan's first public NHI MCP</span>
+  <h1>@opdstar/nhi-mcp</h1>
+  <p class="subtitle">Model Context Protocol server for Taiwan's National Health Insurance data</p>
+  <p class="subtitle-zh">台灣第一個公開的健保 MCP Server · MIT 授權 · 永久免費</p>
+
+  <pre class="install">npx @opdstar/nhi-mcp</pre>
+
+  <div class="cta">
+    <a href="https://github.com/tatsuju/opdstar-nhi-mcp" class="primary">GitHub Repo</a>
+    <a href="https://www.npmjs.com/package/@opdstar/nhi-mcp" class="secondary">npm Package</a>
+    <a href="https://opdstar.com" class="secondary">Main Product</a>
+  </div>
+
+  <div class="stats">
+    <span><strong>234</strong> NHI rejection codes</span>
+    <span><strong>1,497</strong> procedures × 20 specialties</span>
+    <span><strong>8,232</strong> wiki chunks</span>
+    <span><strong>4</strong> read-only tools</span>
+  </div>
+</header>
+
+<main>
+
+<section>
+<h2>What is this?</h2>
+<p>
+  <strong>@opdstar/nhi-mcp</strong> lets any AI assistant compatible with
+  <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a>
+  — Claude Desktop, Cursor, ChatGPT Desktop, Continue, Zed, and more — directly query
+  Taiwan's National Health Insurance (NHI) data curated and maintained by the
+  <a href="https://opdstar.com" target="_blank" rel="noopener">OPDSTAR</a> team.
+</p>
+<p>
+  Built on top of six months of structured-data curation from 健保署 publications,
+  this package exposes four carefully-scoped read-only tools that let doctors and developers
+  integrate real NHI lookup into their AI workflows with one command.
+</p>
+</section>
+
+<section>
+<h2>Four tools</h2>
+<div class="tools-grid">
+  <div class="tool-card">
+    <code>lookup_rejection_code</code>
+    <p>Look up a 5-character NHI rejection code (e.g. 0317A, 0338A). Returns severity, category, and the official Chinese description.</p>
+  </div>
+  <div class="tool-card">
+    <code>get_procedures_for_icd</code>
+    <p>Given an ICD-10 code and specialty, return NHI procedure codes applicable — with points, audit notes, SOAP requirements.</p>
+  </div>
+  <div class="tool-card">
+    <code>get_indicator</code>
+    <p>NHI audit indicators (008, 014, 027, P043) — thresholds, applicable drugs/diagnoses, compliance meaning.</p>
+  </div>
+  <div class="tool-card">
+    <code>search_nhi_wiki</code>
+    <p>Semantic + full-text search across 9 categories of official 健保署 wiki content (8,232 chunks).</p>
+  </div>
+</div>
+</section>
+
+<section>
+<h2>Quickstart for Claude Desktop</h2>
+<p>Add to <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> (Mac) or <code>%APPDATA%\Claude\claude_desktop_config.json</code> (Windows):</p>
+<pre style="background:#0f172a;color:#f1f5f9;padding:1rem 1.25rem;border-radius:.5rem;overflow-x:auto;font-size:.9375rem;">
+{
+  "mcpServers": {
+    "opdstar-nhi": {
+      "command": "npx",
+      "args": ["-y", "@opdstar/nhi-mcp"]
+    }
+  }
+}</pre>
+<p>Restart Claude Desktop. You should see 4 new tools.</p>
+</section>
+
+<section>
+<h2>FAQ</h2>
+
+<details>
+<summary>What is Model Context Protocol (MCP)?</summary>
+<p>MCP is an open standard released by Anthropic in November 2024 that lets AI assistants call external tools through a standardized protocol. Think of it as "USB-C for AI agents" — write a server once, and any MCP-compatible client can talk to it.</p>
+</details>
+
+<details>
+<summary>Who should install this?</summary>
+<p>Taiwanese doctors using AI assistants for chart work, HIS and clinic software vendors integrating AI features, and researchers studying Taiwan's healthcare data.</p>
+</details>
+
+<details>
+<summary>Do I need an OPDSTAR account or API key?</summary>
+<p>No. Fully public and free under MIT license. No account, no API key, no registration. Rate limiting is based on IP only.</p>
+</details>
+
+<details>
+<summary>Is my patient data sent anywhere?</summary>
+<p>No. The tools are pure lookups over public NHI data. Only the code or diagnosis name you ask about is transmitted — never patient names, IDs, or clinical notes. The proxy does not log query content.</p>
+</details>
+
+<details>
+<summary>Is this an official NHI product?</summary>
+<p>No. Independently developed by the OPDSTAR team. Data is sourced from publicly available 健保署 publications. Not affiliated with or endorsed by Taiwan's NHI Administration.</p>
+</details>
+
+<details>
+<summary>Can I use this commercially?</summary>
+<p>Yes. MIT license permits unrestricted commercial use. You may embed @opdstar/nhi-mcp in paid products without royalties. We only ask that the powered_by attribution remains in tool responses.</p>
+</details>
+
+<details>
+<summary>How often is the data updated?</summary>
+<p>Monthly. The OPDSTAR team syncs structured tables and wiki chunks when 健保署 publishes new rules.</p>
+</details>
+
+</section>
+
+<section>
+<h2>Trusted data sources</h2>
+<ul>
+  <li><a href="https://www.nhi.gov.tw/" target="_blank" rel="noopener">健保署全球資訊網</a> — primary website</li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-4142-4a9a4-2636-1.html" target="_blank" rel="noopener">專業審查注意事項 v114.12.01</a></li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-4141-4a9a3-2636-1.html" target="_blank" rel="noopener">不予支付理由代碼 v115.01.05</a></li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">藥品給付規定</a></li>
+</ul>
+</section>
+
+<section>
+<h2>Contributing</h2>
+<p>
+  This is an open-source MIT-licensed project. PRs, bug reports, and new tool proposals are welcome!
+</p>
+<ul>
+  <li><a href="https://github.com/tatsuju/opdstar-nhi-mcp/issues/new/choose">File an issue</a> — bug, new tool proposal, or feature request</li>
+  <li><a href="https://github.com/tatsuju/opdstar-nhi-mcp/discussions">Discussions</a> — open-ended questions, show-and-tell</li>
+  <li><a href="https://github.com/tatsuju/opdstar-nhi-mcp/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a> — contribution guidelines</li>
+</ul>
+</section>
+
+<section>
+<h2>Related</h2>
+<ul>
+  <li><a href="https://opdstar.com" target="_blank" rel="noopener">OPDSTAR</a> — the main chart-translation SaaS this MCP links back to</li>
+  <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a> — the open standard this server implements</li>
+  <li><a href="https://github.com/punkpeye/awesome-mcp-servers" target="_blank" rel="noopener">awesome-mcp-servers</a> — curated list of MCP servers (we submitted PR #5177)</li>
+</ul>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    <strong>@opdstar/nhi-mcp</strong> · MIT License · Built by the
+    <a href="https://opdstar.com">OPDSTAR</a> team · Taipei, Taiwan
+  </p>
+  <p style="margin-top:.5rem;font-size:.8125rem;">
+    Reference tool only — not a medical device, not a diagnostic aid.
+    Final clinical judgment remains with the treating physician.
+  </p>
+  <p style="margin-top:1rem;">
+    <a href="./zh/">繁體中文版</a> · <a href="https://github.com/tatsuju/opdstar-nhi-mcp">Source</a> · <a href="mailto:support@opdstar.com">Contact</a>
+  </p>
+</footer>
+
+</body>
+</html>

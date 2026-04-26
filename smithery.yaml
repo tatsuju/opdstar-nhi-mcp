@@ -1,0 +1,31 @@
+name: opdstar-nhi
+displayName: OPDSTAR · Taiwan NHI
+description: Taiwan's first public Model Context Protocol server for National Health Insurance data — rejection codes, ICD-10→procedure mappings, audit indicators, and semantic wiki search. Powered by OPDSTAR.
+repository: https://github.com/tatsuju/opdstar-nhi-mcp
+homepage: https://opdstar.com
+author: OPDSTAR Team
+license: MIT
+tags:
+  - healthcare
+  - taiwan
+  - nhi
+  - medical
+  - reference
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      OPDSTAR_API_BASE:
+        type: string
+        title: API Base URL
+        description: Override the default opdstar.com endpoint (for staging or self-host). Leave empty for production.
+        default: https://opdstar.com/api/mcp
+    required: []
+  commandFunction: |-
+    (config) => ({
+      command: 'npx',
+      args: ['-y', '@opdstar/nhi-mcp'],
+      env: config.OPDSTAR_API_BASE ? { OPDSTAR_API_BASE: config.OPDSTAR_API_BASE } : {},
+    })

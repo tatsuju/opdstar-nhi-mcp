@@ -1,0 +1,9 @@
+{
+  "_comment": "Save as .cursor/mcp.json in your project root, or ~/.cursor/mcp.json globally. Powered by OPDSTAR (https://opdstar.com).",
+  "mcpServers": {
+    "opdstar-nhi": {
+      "command": "npx",
+      "args": ["-y", "@opdstar/nhi-mcp"]
+    }
+  }
+}

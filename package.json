@@ -1,0 +1,61 @@
+{
+  "name": "@opdstar/nhi-mcp",
+  "version": "0.4.0",
+  "description": "Taiwan National Health Insurance (NHI) data for AI agents via Model Context Protocol — rejection codes, ICD-10→procedure mappings, audit indicators, and semantic wiki search. Powered by OPDSTAR (https://opdstar.com).",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "anthropic",
+    "claude",
+    "taiwan",
+    "nhi",
+    "national-health-insurance",
+    "healthcare",
+    "medical",
+    "opdstar",
+    "台灣健保",
+    "健保",
+    "核刪"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "bin": {
+    "opdstar-nhi-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tatsuju/opdstar-nhi-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tatsuju/opdstar-nhi-mcp/issues"
+  },
+  "homepage": "https://opdstar.com",
+  "author": "OPDSTAR Team <support@opdstar.com> (https://opdstar.com)",
+  "license": "MIT"
+}

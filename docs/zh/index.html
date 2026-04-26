@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@opdstar/nhi-mcp — 台灣健保 MCP Server · Powered by OPDSTAR</title>
+<meta name="description" content="台灣第一個公開的健保 MCP Server。讓 Claude Desktop、Cursor、ChatGPT Desktop 等 AI 助理直接查詢 234 個核刪代碼、1,497 個處置碼、健保指標、8,232 條健保署 Wiki。MIT 授權，永久免費，由 OPDSTAR 團隊開源維護。">
+<meta name="keywords" content="健保 MCP, 台灣健保, 健保核刪, 核刪代碼, 健保處置碼, OPDSTAR, 病歷翻譯, Claude Desktop, Cursor, Model Context Protocol, 健保申報, 全民健康保險, AI 醫療工具, 醫療 AI, 健保署">
+
+<!-- hreflang for language alternatives -->
+<link rel="alternate" hreflang="en" href="https://tatsuju.github.io/opdstar-nhi-mcp/">
+<link rel="alternate" hreflang="zh-TW" href="https://tatsuju.github.io/opdstar-nhi-mcp/zh/">
+<link rel="alternate" hreflang="x-default" href="https://tatsuju.github.io/opdstar-nhi-mcp/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:title" content="@opdstar/nhi-mcp — 台灣第一個公開的健保 MCP Server">
+<meta property="og:description" content="讓 Claude Desktop、Cursor 等 AI 助理直接查詢台灣健保核刪代碼、處置碼、指標、Wiki。免費、MIT 授權，OPDSTAR 團隊開源維護。">
+<meta property="og:url" content="https://tatsuju.github.io/opdstar-nhi-mcp/zh/">
+<meta property="og:site_name" content="OPDSTAR NHI MCP">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="台灣第一個公開的健保 MCP Server">
+<meta name="twitter:description" content="讓 AI 助理直接查健保核刪代碼、處置碼、指標、Wiki。免費，MIT 授權。by OPDSTAR 團隊。">
+
+<link rel="canonical" href="https://tatsuju.github.io/opdstar-nhi-mcp/zh/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+
+<!-- Schema.org: SoftwareApplication（中文版） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "@opdstar/nhi-mcp",
+  "alternateName": "OPDSTAR 台灣健保 MCP Server",
+  "applicationCategory": "DeveloperApplication",
+  "applicationSubCategory": "Healthcare API",
+  "operatingSystem": "跨平台（Node.js 18+）",
+  "description": "台灣第一個公開的 Model Context Protocol server，專為查詢全民健康保險資料而設計。讓 Claude Desktop、Cursor、ChatGPT Desktop 等 AI 助理直接查詢 234 個核刪代碼、20 大專科 1,497 個處置碼、健保審查指標、以及 8,232 個可語意搜尋的健保署官方 Wiki 片段。",
+  "url": "https://tatsuju.github.io/opdstar-nhi-mcp/zh/",
+  "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
+  "softwareVersion": "0.1.0",
+  "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.1.0",
+  "inLanguage": "zh-TW",
+  "author": {
+    "@type": "Organization",
+    "name": "OPDSTAR",
+    "url": "https://opdstar.com",
+    "logo": "https://opdstar.com/favicon.ico",
+    "email": "support@opdstar.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "OPDSTAR 團隊",
+    "url": "https://opdstar.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "TWD",
+    "availability": "https://schema.org/InStock"
+  },
+  "license": "https://opensource.org/licenses/MIT",
+  "codeRepository": "https://github.com/tatsuju/opdstar-nhi-mcp",
+  "programmingLanguage": "TypeScript",
+  "runtimePlatform": "Node.js",
+  "featureList": [
+    "lookup_rejection_code — 查詢 234 個台灣健保核刪代碼的嚴重度與類別",
+    "get_procedures_for_icd — 查詢 ICD-10 對應的處置碼（1,497 筆 × 20 專科）",
+    "get_indicator — 查詢健保審查指標（008/014/027/P043）的閾值與條件",
+    "search_nhi_wiki — 語意搜尋 8,232 條健保署官方 Wiki 片段（9 大分類）"
+  ],
+  "keywords": "台灣健保, 健保 MCP, 核刪代碼, 處置碼, Claude Desktop, 病歷翻譯, 健保申報, 醫療 AI"
+}
+</script>
+
+<!-- Schema.org: FAQPage（中文版） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "zh-TW",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "什麼是 Model Context Protocol（MCP）？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "MCP 是 Anthropic 於 2024 年 11 月發佈的開放標準，讓 AI 助理能透過統一協定呼叫外部工具。類比：MCP 就像「AI agent 界的 USB-C」— 一端寫好 server，任何 MCP 相容 client（Claude Desktop、Cursor、ChatGPT Desktop）都能使用，無需客製整合。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我是醫師不懂技術，這個對我有什麼用？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "你只要在 Claude Desktop 設定檔貼一段 10 行 JSON、重啟 App，就多了四個健保查詢工具。之後在 Claude 用自然語言問「0317A 核刪代碼什麼意思？」或「L30.9 皮膚科能申報哪些處置？」AI 會自動呼叫 tool 並回真實健保資料，你完全不需要懂程式。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "健保 MCP 跟直接到健保署網站查有什麼差別？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "差在整合性：健保署官網要手動點頁面、翻 PDF，這個 MCP 讓你在 AI 助理不離開當前工作流就能查資料。查單一代碼、跨文件綜合查詢、嵌入 HIS 系統都更方便。不是取代健保署，是把健保署的資料包裝成 AI 能直接使用的結構化格式。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "需要 OPDSTAR 帳號或 API key 嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不用。完全公開免費，MIT 授權。不需要註冊、不需要 API key。proxy 層 (opdstar.com) 的 rate limit 是按 IP 計算，不追蹤身份。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "這是健保署官方工具嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "不是。OPDSTAR 團隊獨立開發，所有資料整理自健保署公開資源。不是健保署官方合作單位，也沒有官方認證。最權威的資料仍以健保署官方公告為準。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我的病患資料會被上傳嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "完全不會。這四個 tool 只查公開健保代碼、處置、Wiki，不傳送任何病患名字、病歷號、臨床內容。當你問 AI「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "資料多久更新一次？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "每月同步健保署最新公告。重要更新會發 GitHub Release + CHANGELOG 公告。可到 repo 右上 Watch → All Activity 訂閱變更。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "我的診所或醫院可以拿去商業使用嗎？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "可以。MIT 授權不限商業用途。你可以把 @opdstar/nhi-mcp 嵌進 HIS 系統、整合到付費醫療 AI 產品、內部員工訓練使用。唯一請求：保留 powered_by 的 OPDSTAR 標示（工具回應內建，不應被移除）。"
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Schema.org: Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "OPDSTAR 團隊",
+  "alternateName": "OPDSTAR",
+  "url": "https://opdstar.com",
+  "logo": "https://opdstar.com/favicon.ico",
+  "email": "support@opdstar.com",
+  "sameAs": [
+    "https://github.com/tatsuju/opdstar-nhi-mcp",
+    "https://www.npmjs.com/package/@opdstar/nhi-mcp"
+  ],
+  "description": "OPDSTAR 專為台灣門診醫師設計病歷英文翻譯與健保核刪防護系統。@opdstar/nhi-mcp 是 OPDSTAR 平台的開源資料層，將六個月累積整理的健保資料回饋給醫界與開發社群。",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Taiwan"
+  }
+}
+</script>
+
+<style>
+  :root {
+    --teal: #0d9488;
+    --teal-dark: #0f766e;
+    --slate: #334155;
+    --slate-light: #64748b;
+    --bg: #fafafa;
+    --border: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    line-height: 1.7;
+    color: var(--slate);
+    background: var(--bg);
+  }
+  .lang-switch {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    display: flex;
+    gap: .25rem;
+    font-size: .8125rem;
+    background: white;
+    border-radius: 9999px;
+    padding: .25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+  }
+  .lang-switch a {
+    padding: .25rem .75rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    color: var(--slate-light);
+    transition: all .15s;
+  }
+  .lang-switch a.active {
+    background: var(--teal);
+    color: white;
+    font-weight: 600;
+  }
+  .lang-switch a:not(.active):hover {
+    background: #f1f5f9;
+    color: var(--slate);
+  }
+  header {
+    padding: 4rem 1.5rem 3rem;
+    background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 100%);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--teal);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: 2.25rem;
+    margin: 0.5rem 0;
+    color: #0f172a;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--slate);
+    margin: 0 0 0.5rem;
+  }
+  .subtitle-en {
+    font-size: 1rem;
+    color: var(--slate-light);
+    margin: 0 0 2rem;
+  }
+  pre.install {
+    background: #0f172a;
+    color: #f1f5f9;
+    padding: 1rem 1.25rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 1rem;
+    margin: 1rem 0;
+    letter-spacing: 0.02em;
+  }
+  .cta {
+    display: inline-flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  .cta a {
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    transition: transform 0.1s;
+  }
+  .cta a:hover { transform: translateY(-1px); }
+  .cta a.primary {
+    background: var(--teal);
+    color: white;
+  }
+  .cta a.primary:hover { background: var(--teal-dark); }
+  .cta a.secondary {
+    border: 1px solid var(--border);
+    color: var(--slate);
+    background: white;
+  }
+  main {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+  }
+  section { margin-bottom: 3rem; }
+  h2 {
+    font-size: 1.5rem;
+    color: #0f172a;
+    border-bottom: 2px solid var(--teal);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+    display: inline-block;
+  }
+  h3 {
+    font-size: 1.125rem;
+    color: #0f172a;
+    margin: 1.5rem 0 0.5rem;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .tool-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+  }
+  .tool-card code {
+    color: var(--teal-dark);
+    font-weight: 600;
+    font-size: 0.875rem;
+    background: #f0fdfa;
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+  }
+  .tool-card .zh {
+    display: block;
+    font-size: 0.9375rem;
+    color: var(--slate);
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+  .tool-card p {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    color: var(--slate-light);
+  }
+  details {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  details[open] summary { margin-bottom: 0.75rem; }
+  details p { margin: 0 0 .5rem 0; color: var(--slate); font-size: 0.9375rem; line-height: 1.7; }
+  details p:last-child { margin-bottom: 0; }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9375rem;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  .compare-table th, .compare-table td {
+    padding: 0.625rem 0.875rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table th {
+    background: #f8fafc;
+    font-weight: 600;
+    color: var(--slate);
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  footer {
+    padding: 2.5rem 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--slate-light);
+    background: white;
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+    color: var(--slate-light);
+  }
+  .stats strong { color: var(--teal-dark); font-size: 1.5rem; display: block; }
+  .scenario {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .scenario blockquote {
+    border-left: 3px solid var(--teal);
+    margin: 0.75rem 0;
+    padding: .5rem 0 .5rem 1rem;
+    color: var(--slate);
+    background: #f0fdfa;
+    border-radius: 0 0.25rem 0.25rem 0;
+  }
+  .scenario blockquote.q { border-left-color: #94a3b8; background: #f8fafc; }
+  .scenario-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--teal-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  @media (max-width: 640px) {
+    h1 { font-size: 1.75rem; }
+    .subtitle { font-size: 1rem; }
+    pre.install { font-size: 0.875rem; }
+    .lang-switch { top: .5rem; right: .5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lang-switch" role="navigation" aria-label="Language selector">
+    <a href="../" hreflang="en">EN</a>
+    <a href="./" class="active" hreflang="zh-TW">繁中</a>
+  </div>
+  <span class="badge">台灣第一個公開的健保 MCP</span>
+  <h1>@opdstar/nhi-mcp</h1>
+  <p class="subtitle">讓 AI 助理直接查詢台灣健保資料的 Model Context Protocol server</p>
+  <p class="subtitle-en">Taiwan's first public MCP server for National Health Insurance data · MIT 授權 · 永久免費</p>
+
+  <pre class="install">npx @opdstar/nhi-mcp</pre>
+
+  <div class="cta">
+    <a href="https://github.com/tatsuju/opdstar-nhi-mcp" class="primary">GitHub</a>
+    <a href="https://www.npmjs.com/package/@opdstar/nhi-mcp" class="secondary">npm</a>
+    <a href="https://opdstar.com" class="secondary">OPDSTAR 主站</a>
+  </div>
+
+  <div class="stats">
+    <span><strong>234</strong> 核刪代碼</span>
+    <span><strong>1,497</strong> 處置碼 × 20 專科</span>
+    <span><strong>8,232</strong> Wiki 片段</span>
+    <span><strong>4</strong> 個查詢工具</span>
+  </div>
+</header>
+
+<main>
+
+<section>
+<h2>這是什麼？</h2>
+<p>
+  <strong>@opdstar/nhi-mcp</strong> 讓任何支援
+  <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a>
+  的 AI 助理（Claude Desktop、Cursor、ChatGPT Desktop、Continue、Zed 等）
+  能直接查詢台灣健保資料 — 由
+  <a href="https://opdstar.com" target="_blank" rel="noopener">OPDSTAR 團隊</a>
+  整理與維護。
+</p>
+<p>
+  這是累積六個月結構化整理健保署官方資料後的成果，封裝成四個精心設計的**唯讀查詢工具**，
+  讓台灣醫師與 HIS 廠商能一行指令就把健保資料整合進 AI 工作流。
+</p>
+</section>
+
+<section>
+<h2>適合誰用？</h2>
+<ul>
+  <li>🩺 <strong>台灣醫師</strong> — 在 Claude Desktop / Cursor 邊寫病歷邊用 AI 查核刪風險、處置碼、健保指標</li>
+  <li>🏥 <strong>HIS / 診所系統廠商</strong> — 把健保資料整合進你的 AI 醫療工具，免爬蟲、免買斷</li>
+  <li>📊 <strong>醫療 / 健保資料研究者</strong> — 結構化資料可直接餵 AI 推理，取代手動翻健保署 PDF</li>
+  <li>⚕️ <strong>醫學教育</strong> — 教學用例、學生查詢、住院醫師培訓輔助</li>
+</ul>
+</section>
+
+<section>
+<h2>實際情境</h2>
+
+<div class="scenario">
+  <div class="scenario-label">🩺 情境 1 — 開診間核刪預判</div>
+  <blockquote class="q">你在 Claude Desktop 邊打病歷邊問：<br>
+  「我今天給 L30.9 慢性濕疹病人開了 prednisolone 30mg QD 5 天，會不會被核刪？」</blockquote>
+  <blockquote>Claude 自動呼叫 <code>lookup_rejection_code</code> + <code>get_indicator</code>：<br>
+  「依健保審查 008 指標，口服類固醇 + 濕疹類診斷若 PE 描述不足，會觸發核刪代碼 0320A（處方超過審查標準用量）。建議：PE 補充病灶面積 ≥ 30% 全身，或加入更嚴重的 ICD-10 佐證。」</blockquote>
+</div>
+
+<div class="scenario">
+  <div class="scenario-label">🔍 情境 2 — 處置碼速查</div>
+  <blockquote class="q">「中耳炎 H66.9 耳鼻喉科能申報哪些處置？」</blockquote>
+  <blockquote>Claude 呼叫 <code>get_procedures_for_icd</code>：<br>
+  「27002C 耳鏡檢查（25 點）、27018C 耳膜穿刺（120 點）、36005C 鼓室通氣管置入（記錄雙側或單側）…」<br>
+  完整清單 1,497 筆處置 × 20 專科。</blockquote>
+</div>
+
+<div class="scenario">
+  <div class="scenario-label">📚 情境 3 — Wiki 條文查詢</div>
+  <blockquote class="q">「健保『慢性病連續處方箋』的規定原文？」</blockquote>
+  <blockquote>Claude 呼叫 <code>search_nhi_wiki</code>：<br>
+  「慢性病連續處方箋每次調劑之藥品使用期間，最長以 3 個月為限。病情穩定且符合慢性病定義者方可開立…」<br>
+  附上健保署原文 URL。</blockquote>
+</div>
+</section>
+
+<section>
+<h2>四個查詢工具</h2>
+<div class="tools-grid">
+  <div class="tool-card">
+    <code>lookup_rejection_code</code>
+    <span class="zh">健保核刪代碼查詢</span>
+    <p>輸入 5 碼（如 0317A、0338A），回傳嚴重度、類別、官方說明。</p>
+  </div>
+  <div class="tool-card">
+    <code>get_procedures_for_icd</code>
+    <span class="zh">ICD-10 對應處置碼</span>
+    <p>給 ICD-10 + 專科，列出該科適用處置、點數、審查注意事項、SOAP 要求。</p>
+  </div>
+  <div class="tool-card">
+    <code>get_indicator</code>
+    <span class="zh">健保審查指標</span>
+    <p>查 008 / 014 / 027 / P043 等指標的閾值、適用藥物、適用診斷。</p>
+  </div>
+  <div class="tool-card">
+    <code>search_nhi_wiki</code>
+    <span class="zh">健保署 Wiki 語意搜</span>
+    <p>語意 + 全文搜尋 9 大分類的官方 Wiki 內容（8,232 chunks）。</p>
+  </div>
+</div>
+</section>
+
+<section>
+<h2>Claude Desktop 快速上手</h2>
+<p>找這個檔案：</p>
+<ul>
+  <li>Mac：<code>~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+  <li>Windows：<code>%APPDATA%\Claude\claude_desktop_config.json</code></li>
+  <li>Linux：<code>~/.config/Claude/claude_desktop_config.json</code></li>
+</ul>
+<p>加入以下設定：</p>
+<pre style="background:#0f172a;color:#f1f5f9;padding:1rem 1.25rem;border-radius:.5rem;overflow-x:auto;font-size:.9375rem;">
+{
+  "mcpServers": {
+    "opdstar-nhi": {
+      "command": "npx",
+      "args": ["-y", "@opdstar/nhi-mcp"]
+    }
+  }
+}</pre>
+<p>重啟 Claude Desktop，左下角 ⚙ → Developer 確認 <code>opdstar-nhi</code> 狀態 running，就能開始問問題了。沒裝 Node.js 的話到 <a href="https://nodejs.org" target="_blank" rel="noopener">nodejs.org</a> 裝 LTS 版即可。</p>
+</section>
+
+<section>
+<h2>MCP 和 OPDSTAR 主站差別？</h2>
+<table class="compare-table">
+  <thead>
+    <tr>
+      <th>功能</th>
+      <th>@opdstar/nhi-mcp（免費）</th>
+      <th>OPDSTAR 主站（付費）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>查核刪代碼 / 處置 / Wiki</td><td>✅</td><td>✅</td></tr>
+    <tr><td>AI 自動寫英文 SOAP 病歷</td><td>❌</td><td>✅</td></tr>
+    <tr><td>核刪風險即時偵測（5 engines）</td><td>❌</td><td>✅</td></tr>
+    <tr><td>AI 優化病歷內容符合處置</td><td>❌</td><td>✅</td></tr>
+    <tr><td>安全寫作句型自動套用</td><td>❌</td><td>✅</td></tr>
+    <tr><td>個人用藥偏好記憶</td><td>❌</td><td>✅</td></tr>
+    <tr><td>跨裝置同步</td><td>❌</td><td>✅</td></tr>
+  </tbody>
+</table>
+<p>MCP 是<strong>查詢層</strong>，OPDSTAR 主站是<strong>完整工作流</strong>。兩者互補不衝突 — MCP 幫你問問題；OPDSTAR 主站幫你寫病歷。</p>
+</section>
+
+<section>
+<h2>常見問題</h2>
+
+<details>
+<summary>什麼是 Model Context Protocol (MCP)？</summary>
+<p>MCP 是 Anthropic 於 2024 年 11 月發佈的開放標準，讓 AI 助理能透過統一協定呼叫外部工具。類比：MCP 就像「AI agent 界的 USB-C」— 一端寫好 server，任何 MCP 相容 client（Claude Desktop、Cursor、ChatGPT Desktop）都能使用，無需客製整合。</p>
+</details>
+
+<details>
+<summary>我是醫師不懂技術，這個對我有什麼用？</summary>
+<p>你只要在 Claude Desktop 設定檔貼一段 10 行 JSON、重啟 App，就多了四個健保查詢工具。之後在 Claude 用自然語言問「0317A 核刪代碼什麼意思？」或「L30.9 皮膚科能申報哪些處置？」AI 會自動呼叫 tool 並回真實健保資料。<strong>你完全不需要懂程式</strong>。</p>
+</details>
+
+<details>
+<summary>健保 MCP 跟直接到健保署網站查有什麼差別？</summary>
+<p>差在整合性。健保署官網要手動點頁面、翻 PDF、切多個 tab 比對。這個 MCP 讓你在 AI 助理不離開當前工作流就能查資料，結構化的 JSON 回應也能被 AI 繼續推理（例如「這三個代碼的關係？」）。</p>
+<p><strong>不是取代健保署</strong>，是把健保署的資料包裝成 AI 能直接使用的結構化格式。</p>
+</details>
+
+<details>
+<summary>需要 OPDSTAR 帳號或 API key 嗎？</summary>
+<p>不用。完全公開免費，MIT 授權。不需要註冊、不需要 API key。proxy 層 (opdstar.com) 的 rate limit 是按 IP 計算，不追蹤身份。</p>
+</details>
+
+<details>
+<summary>這是健保署官方工具嗎？</summary>
+<p>不是。OPDSTAR 團隊獨立開發，所有資料整理自健保署公開資源。不是健保署官方合作單位，也沒有官方認證。最權威的資料仍以健保署官方公告為準。</p>
+</details>
+
+<details>
+<summary>我的病患資料會被上傳嗎？</summary>
+<p>完全不會。這四個 tool 只查公開健保代碼、處置、Wiki，<strong>不傳送任何病患名字、病歷號、臨床內容</strong>。當你問 AI「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。</p>
+<p>proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。</p>
+</details>
+
+<details>
+<summary>資料多久更新一次？</summary>
+<p>每月同步健保署最新公告。重要更新會發 GitHub Release + CHANGELOG 公告。到 repo 右上 Watch → All Activity 可訂閱變更通知。</p>
+</details>
+
+<details>
+<summary>我的診所或醫院可以拿去商業使用嗎？</summary>
+<p>可以。MIT 授權不限商業用途。你可以把 @opdstar/nhi-mcp 嵌進 HIS 系統、整合到付費醫療 AI 產品、內部員工訓練使用。唯一請求：<strong>保留 powered_by 的 OPDSTAR 標示</strong>（工具回應內建，不應被移除）。</p>
+</details>
+
+<details>
+<summary>資料錯了怎麼辦？</summary>
+<p>請<strong>一定</strong>告訴我們（這比任何讚美都珍貴）：</p>
+<p>• GitHub 開 Issue（<a href="https://github.com/tatsuju/opdstar-nhi-mcp/issues/new/choose">使用 Bug 模板</a>）<br>
+• Email：support@opdstar.com</p>
+<p>附上「正確應該是什麼」+「官方文件連結」的話，我們通常 24-48 小時內修正並發 patch 版本。</p>
+</details>
+
+<details>
+<summary>可以幫忙貢獻嗎？</summary>
+<p>非常歡迎！MIT 授權下任何人都可以：</p>
+<p>🐛 <a href="https://github.com/tatsuju/opdstar-nhi-mcp/issues/new?template=bug_report.md">回報 bug</a>（資料錯、工具崩潰）<br>
+💡 <a href="https://github.com/tatsuju/opdstar-nhi-mcp/issues/new?template=new_tool_proposal.md">提新工具想法</a><br>
+🌐 幫忙改英/中文說明文字<br>
+📦 補 Cursor / Continue.dev / Zed 等 client config 範例<br>
+🧪 幫忙寫更多 edge case 測試</p>
+<p>詳細規則見 <a href="https://github.com/tatsuju/opdstar-nhi-mcp/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>。</p>
+</details>
+
+</section>
+
+<section>
+<h2>資料來源</h2>
+<p>所有資料整理自台灣公開健保資源：</p>
+<ul>
+  <li><a href="https://www.nhi.gov.tw/" target="_blank" rel="noopener">健保署全球資訊網</a> — 主網站</li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-4142-4a9a4-2636-1.html" target="_blank" rel="noopener">專業審查注意事項 v114.12.01</a></li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-4141-4a9a3-2636-1.html" target="_blank" rel="noopener">不予支付理由代碼 v115.01.05</a></li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">藥品給付規定</a></li>
+  <li><a href="https://www.nhi.gov.tw/ch/cp-2636-a1031-2912-1.html" target="_blank" rel="noopener">健保醫療費用申報與審查電腦作業手冊</a></li>
+</ul>
+<p>每月同步，以 <code>source_document</code> + <code>effective_date</code> 欄位追溯版本。</p>
+</section>
+
+<section>
+<h2>免責聲明</h2>
+<p>本工具僅提供健保資料<strong>查詢與參考</strong>，屬於翻譯/字典性質：</p>
+<ul>
+  <li>❌ <strong>非醫療器材軟體（SaMD）</strong></li>
+  <li>❌ <strong>非診斷工具</strong></li>
+  <li>❌ <strong>非用藥建議系統</strong></li>
+</ul>
+<p>
+  最終臨床判斷與申報決定均由醫師本人負責。若資料與健保署最新公告有出入，以健保署官方為準；
+  發現誤差請到 GitHub 開 Issue，我們會盡速修正。
+</p>
+</section>
+
+</main>
+
+<footer>
+  <p>
+    <strong>@opdstar/nhi-mcp</strong> · MIT 授權 · 由
+    <a href="https://opdstar.com">OPDSTAR 團隊</a> 開源維護 · 台北，台灣
+  </p>
+  <p style="margin-top:.5rem;font-size:.8125rem;">
+    本工具僅供參考，非診斷工具。最終臨床判斷仍由主治醫師為準。
+  </p>
+  <p style="margin-top:1rem;">
+    <a href="../">English version</a> · <a href="https://github.com/tatsuju/opdstar-nhi-mcp">原始碼</a> · <a href="mailto:support@opdstar.com">聯絡我們</a>
+  </p>
+</footer>
+
+</body>
+</html>

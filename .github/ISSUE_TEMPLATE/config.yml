@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Questions & Discussion
+    url: https://github.com/tatsuju/opdstar-nhi-mcp/discussions
+    about: Open-ended questions, ideas, show-and-tell
+  - name: 🏥 OPDSTAR main product
+    url: https://opdstar.com
+    about: Full chart translation + audit-risk prevention for Taiwan outpatient docs
+  - name: 📧 Sensitive / private issues
+    url: mailto:support@opdstar.com
+    about: Security concerns, partnership inquiries, or anything not suitable for a public issue

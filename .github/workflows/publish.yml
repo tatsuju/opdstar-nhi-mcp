@@ -1,0 +1,71 @@
+name: Publish to npm
+
+# OIDC Trusted Publishing (since v0.2.0):
+# ----------------------------------------
+# This workflow uses GitHub OIDC to publish without an NPM_TOKEN secret.
+# Setup required in npm dashboard (one-time, per-package):
+#   1. https://www.npmjs.com/package/@opdstar/nhi-mcp/access
+#   2. Click "Trusted Publisher" → Add publisher
+#   3. Publisher type: GitHub Actions
+#   4. Organization: tatsuju
+#   5. Repository: OPDSTAR
+#   6. Workflow filename: .github/workflows/publish.yml  (matches this file)
+#   7. Environment: (leave blank — not using GitHub Environments)
+# Once configured, the `id-token: write` permission below is enough to
+# authenticate — no NPM_TOKEN needed.
+#
+# Why we still keep NODE_AUTH_TOKEN fallback: until the user actually
+# configures trusted publisher in npm dashboard, the fallback classic
+# token still works. Once trusted publisher is active, npm auto-prefers
+# OIDC and ignores the token. Safe to leave both during transition.
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:  # Allow manual triggering from Actions tab
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Required for npm provenance + OIDC trusted publishing
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          # Node 24 ships with npm 11+, required for OIDC trusted
+          # publishing (auth, not just provenance attestation).
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # MANDATORY pre-publish leak audit — non-zero exit blocks publish.
+      # Catches accidental disclosure of row counts, data sources,
+      # acquisition methods, or tech-stack specifics in any file destined
+      # for public exposure (README/CHANGELOG/tool descriptions/dist bundle).
+      # If this fails, fix the source, force-push the tag, and the workflow
+      # re-runs.
+      - name: Pre-publish leak audit
+        run: bash scripts/pre-publish-audit.sh --verbose
+
+      - name: Publish
+        # Auth via OIDC trusted publisher (configured on npm dashboard).
+        # NPM_TOKEN intentionally NOT passed — when both exist, npm CLI
+        # prefers the token and never tries OIDC, causing 404.
+        run: npm publish --access public --provenance
