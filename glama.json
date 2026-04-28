@@ -2,5 +2,12 @@
   "$schema": "https://glama.ai/mcp/schemas/server.json",
   "maintainers": [
     "tatsuju"
-  ]
+  ],
+  "categories": [
+    "healthcare",
+    "data",
+    "search",
+    "developer-tools"
+  ],
+  "description": "Reference lookups for Taiwan National Health Insurance (NHI) — rejection codes, procedure codes, audit indicators, drug rules, fee schedule, and wiki search. For Taiwan healthcare professionals using AI assistants and developers building NHI-aware tooling."
 }
