@@ -1,7 +1,7 @@
 {
   "name": "@opdstar/nhi-mcp",
-  "version": "0.5.0",
-  "description": "Taiwan National Health Insurance (NHI) data for AI agents via Model Context Protocol — rejection codes, ICD-10→procedure mappings, audit indicators, and semantic wiki search. Powered by OPDSTAR (https://opdstar.com).",
+  "version": "0.6.0",
+  "description": "Taiwan National Health Insurance (NHI) data for AI agents via Model Context Protocol \u2014 rejection codes, ICD-10\u2192procedure mappings, audit indicators, and semantic wiki search. Powered by OPDSTAR (https://opdstar.com).",
   "keywords": [
     "mcp",
     "mcp-server",
@@ -14,9 +14,9 @@
     "healthcare",
     "medical",
     "opdstar",
-    "台灣健保",
-    "健保",
-    "核刪"
+    "\u53f0\u7063\u5065\u4fdd",
+    "\u5065\u4fdd",
+    "\u6838\u522a"
   ],
   "type": "module",
   "main": "dist/index.js",

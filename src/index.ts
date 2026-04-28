@@ -75,6 +75,14 @@ import {
   LOOKUP_AUDIT_INDICATOR_DEF,
   runLookupAuditIndicator,
 } from './tools/lookupAuditIndicator.js';
+import {
+  LOOKUP_APPEAL_STATISTICS_DEF,
+  runLookupAppealStatistics,
+} from './tools/lookupAppealStatistics.js';
+import {
+  COUNT_APPEAL_PRECEDENTS_DEF,
+  runCountAppealPrecedents,
+} from './tools/countAppealPrecedents.js';
 
 const client = new OpdstarClient();
 
@@ -107,6 +115,8 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     LOOKUP_MAJOR_ILLNESS_DEF,
     CHECK_ICD_FOR_MAJOR_ILLNESS_DEF,
     LOOKUP_AUDIT_INDICATOR_DEF,
+    LOOKUP_APPEAL_STATISTICS_DEF,
+    COUNT_APPEAL_PRECEDENTS_DEF,
   ],
 }));
 
@@ -159,6 +169,12 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
         break;
       case 'lookup_audit_indicator':
         result = await runLookupAuditIndicator(client, args as never);
+        break;
+      case 'lookup_appeal_statistics_by_category':
+        result = await runLookupAppealStatistics(client, args as never);
+        break;
+      case 'count_appeal_precedents_for_rejection_code':
+        result = await runCountAppealPrecedents(client, args as never);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);

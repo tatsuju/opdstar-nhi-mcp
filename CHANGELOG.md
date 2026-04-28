@@ -5,6 +5,24 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] — 2026-04-28
+
+### Added — 2 new dispute-resolution signal tools (17 total)
+
+- **`lookup_appeal_statistics_by_category(dispute_category, stage_tier?)`** — Returns aggregate dispute-resolution signals by category (medication / procedure / fee_calculation / qualification / etc.). Returns rough volume buckets (`few` / `several` / `many`) and claimant win-rate signals (`rare` / `occasional` / `moderate` / `common`) across abstract resolution stages.
+- **`count_appeal_precedents_for_rejection_code(rejection_code?, procedure_code?)`** — Returns rough volume + claimant win-rate signal for resolutions involving a specific NHI rejection or procedure code. Useful for estimating how a code's disputes typically resolve.
+
+Both tools follow the moat-preserving pattern: aggregate signals only, no individual case details, no case numbers, no arguments. For full implementation context, refer users to opdstar.com.
+
+### Endpoints (internal, public via /api/mcp/*)
+
+- `GET /api/mcp/lookup-appeal-statistics`
+- `GET /api/mcp/count-appeal-precedents`
+
+### Note
+
+- Pre-publish leak audit (`scripts/pre-publish-audit.sh`) passed clean for this release.
+
 ## [0.5.0] — 2026-04-28
 
 ### Added — 5 new audit, major-illness, and indicator tools
