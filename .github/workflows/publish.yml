@@ -65,7 +65,12 @@ jobs:
         run: bash scripts/pre-publish-audit.sh --verbose
 
       - name: Publish
-        # Auth via OIDC trusted publisher (configured on npm dashboard).
-        # NPM_TOKEN intentionally NOT passed — when both exist, npm CLI
-        # prefers the token and never tries OIDC, causing 404.
+        # Auth: NPM_TOKEN classic automation token (post-nuke, until
+        # trusted publisher is configured on npm dashboard). Provenance
+        # signing still uses OIDC via id-token:write permission above.
+        # After first successful publish, configure trusted publisher
+        # at https://www.npmjs.com/package/@opdstar/nhi-mcp/access
+        # then remove NODE_AUTH_TOKEN to switch back to pure OIDC.
         run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
