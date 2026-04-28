@@ -5,6 +5,30 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] — 2026-04-28
+
+### Added — 5 new audit, major-illness, and indicator tools
+
+- **`lookup_audit_clauses_for_procedure(procedure_code, specialty?)`** — Find official 審查注意事項 clauses that cite a specific NHI procedure code (e.g. `'00101B'`, `'51017C'`). Returns clause summaries with risk flags (amount limit / frequency rule / indication required).
+- **`lookup_audit_clauses_for_specialty(specialty, keyword?, risk_flag?)`** — Browse 審查注意事項 by specialty (dermatology / TCM / dentistry / ophthalmology / etc.). Filterable by keyword and risk flag (`amount_limit` / `frequency_rule` / `indication` / `any`).
+- **`lookup_major_illness(category_code?, keyword?)`** — Browse the official 重大傷病範圍及項目 list. Returns category code, name, ICD-10 coverage, application requirement, validity period, and copay-exemption status.
+- **`check_icd_for_major_illness_eligibility(icd_code)`** — Reverse lookup. Given an ICD-10 code, return the major-illness categories the diagnosis may qualify for. Useful for surfacing copayment-exemption hints when an MCP agent assists with claim coding.
+- **`lookup_audit_indicator(indicator_code?, category?, specialty?, procedure_code?)`** — Look up the official 分析審查不予支付指標 (threshold-based audit rules). Returns indicator name, category, threshold percentage, applicable specialty, monitored procedure codes, and the official action description. Use when an agent needs to know whether a procedure is monitored by an indicator (e.g. `'23401C'` is monitored by `001` — 眼科局部處置申報率, 30% threshold).
+
+All five tools follow the moat-preserving pattern: clause headlines and category metadata only, no full text or paid-tier guidance — full content lives behind opdstar.com.
+
+### Endpoints (internal, public via /api/mcp/*)
+
+- `GET /api/mcp/lookup-audit-clauses-for-procedure`
+- `GET /api/mcp/lookup-audit-clauses-for-specialty`
+- `GET /api/mcp/lookup-major-illness`
+- `GET /api/mcp/check-icd-major-illness`
+- `GET /api/mcp/lookup-audit-indicator`
+
+### Note
+
+- Pre-publish leak audit (`scripts/pre-publish-audit.sh`) passed clean for this release.
+
 ## [0.4.0] — 2026-04-27
 
 ### Added — `lookup_fee_code` 💰 (10 tools total)

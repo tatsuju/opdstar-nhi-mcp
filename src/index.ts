@@ -2,27 +2,34 @@
  * @opdstar/nhi-mcp — Taiwan's first public NHI MCP Server
  * Powered by OPDSTAR (https://opdstar.com)
  *
- * Exposes 9 read-only tools that let any MCP-compatible AI agent
+ * Read-only MCP tools that let any MCP-compatible AI agent
  * (Claude Desktop, Cursor, etc.) query Taiwan's National Health Insurance
  * curated dataset:
  *
  *   v0.1.0:
- *     1. lookup_rejection_code         — NHI 核刪代碼
- *     2. get_procedures_for_icd        — ICD-10 → 處置碼對照
- *     3. get_indicator                 — 健保指標（008/014/027/P043）
- *     4. search_nhi_wiki               — 官方 Wiki 語意搜
+ *     1. lookup_rejection_code                       — NHI 核刪代碼
+ *     2. get_procedures_for_icd                      — ICD-10 → 處置碼對照
+ *     3. get_indicator                               — 健保指標（008/014/027/P043）
+ *     4. search_nhi_wiki                             — 官方 Wiki 語意搜
  *
  *   v0.2.0:
- *     5. get_drug_rules                — 藥品給付規定限制
- *     6. get_safe_phrases              — 安全句型庫（精簡版）
- *     7. search_audit_guidelines       — 審查注意事項摘要
- *     8. get_rejection_code_category   — 核刪代碼分類列表
+ *     5. get_drug_rules                              — 藥品給付規定限制
+ *     6. get_safe_phrases                            — 安全句型庫（精簡版）
+ *     7. search_audit_guidelines                     — 審查注意事項摘要
+ *     8. get_rejection_code_category                 — 核刪代碼分類列表
  *
  *   v0.3.0:
- *     9. lookup_drug                   — 健保藥品目錄查詢
+ *     9. lookup_drug                                 — 健保藥品目錄查詢
  *
  *   v0.4.0:
- *     10. lookup_fee_code              — 健保支付標準查詢（current effective edition）
+ *    10. lookup_fee_code                             — 健保支付標準查詢
+ *
+ *   v0.5.0:
+ *    11. lookup_audit_clauses_for_procedure         — 處置碼 → 審查注意事項
+ *    12. lookup_audit_clauses_for_specialty         — 科別 → 審查注意事項
+ *    13. lookup_major_illness                       — 重大傷病類別查詢
+ *    14. check_icd_for_major_illness_eligibility    — ICD → 重大傷病反查
+ *    15. lookup_audit_indicator                     — 分析審查不予支付指標
  *
  * Runs over stdio. Invoke via `npx @opdstar/nhi-mcp`.
  */
@@ -48,6 +55,26 @@ import { SEARCH_AUDIT_GUIDELINES_DEF, runSearchAuditGuidelines } from './tools/s
 import { GET_REJECTION_CODE_CATEGORY_DEF, runGetRejectionCodeCategory } from './tools/getRejectionCodeCategory.js';
 import { LOOKUP_DRUG_DEF, runLookupDrug } from './tools/lookupDrug.js';
 import { LOOKUP_FEE_CODE_DEF, runLookupFeeCode } from './tools/lookupFeeCode.js';
+import {
+  LOOKUP_AUDIT_CLAUSES_FOR_PROCEDURE_DEF,
+  runLookupAuditClausesForProcedure,
+} from './tools/lookupAuditClausesForProcedure.js';
+import {
+  LOOKUP_AUDIT_CLAUSES_FOR_SPECIALTY_DEF,
+  runLookupAuditClausesForSpecialty,
+} from './tools/lookupAuditClausesForSpecialty.js';
+import {
+  LOOKUP_MAJOR_ILLNESS_DEF,
+  runLookupMajorIllness,
+} from './tools/lookupMajorIllness.js';
+import {
+  CHECK_ICD_FOR_MAJOR_ILLNESS_DEF,
+  runCheckIcdForMajorIllness,
+} from './tools/checkIcdForMajorIllness.js';
+import {
+  LOOKUP_AUDIT_INDICATOR_DEF,
+  runLookupAuditIndicator,
+} from './tools/lookupAuditIndicator.js';
 
 const client = new OpdstarClient();
 
@@ -75,6 +102,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     GET_REJECTION_CODE_CATEGORY_DEF,
     LOOKUP_DRUG_DEF,
     LOOKUP_FEE_CODE_DEF,
+    LOOKUP_AUDIT_CLAUSES_FOR_PROCEDURE_DEF,
+    LOOKUP_AUDIT_CLAUSES_FOR_SPECIALTY_DEF,
+    LOOKUP_MAJOR_ILLNESS_DEF,
+    CHECK_ICD_FOR_MAJOR_ILLNESS_DEF,
+    LOOKUP_AUDIT_INDICATOR_DEF,
   ],
 }));
 
@@ -112,6 +144,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
         break;
       case 'lookup_fee_code':
         result = await runLookupFeeCode(client, args as never);
+        break;
+      case 'lookup_audit_clauses_for_procedure':
+        result = await runLookupAuditClausesForProcedure(client, args as never);
+        break;
+      case 'lookup_audit_clauses_for_specialty':
+        result = await runLookupAuditClausesForSpecialty(client, args as never);
+        break;
+      case 'lookup_major_illness':
+        result = await runLookupMajorIllness(client, args as never);
+        break;
+      case 'check_icd_for_major_illness_eligibility':
+        result = await runCheckIcdForMajorIllness(client, args as never);
+        break;
+      case 'lookup_audit_indicator':
+        result = await runLookupAuditIndicator(client, args as never);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);
