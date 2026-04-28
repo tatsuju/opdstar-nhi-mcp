@@ -65,12 +65,7 @@ jobs:
         run: bash scripts/pre-publish-audit.sh --verbose
 
       - name: Publish
-        # Auth: NPM_TOKEN classic automation token (post-nuke, until
-        # trusted publisher is configured on npm dashboard). Provenance
-        # signing still uses OIDC via id-token:write permission above.
-        # After first successful publish, configure trusted publisher
-        # at https://www.npmjs.com/package/@opdstar/nhi-mcp/access
-        # then remove NODE_AUTH_TOKEN to switch back to pure OIDC.
+        # Pure OIDC trusted publisher (configured on npm dashboard
+        # 2026-04-28 after v0.5.0 first publish). No NPM_TOKEN needed.
+        # When both exist, npm CLI prefers token and never tries OIDC.
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
