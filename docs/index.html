@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@opdstar/nhi-mcp — Taiwan NHI MCP Server · Powered by OPDSTAR</title>
-<meta name="description" content="Taiwan's first public Model Context Protocol (MCP) server for National Health Insurance data. Lets Claude Desktop, Cursor, ChatGPT Desktop query 234 rejection codes, 1,497 procedure codes, audit indicators, and 8,232 wiki chunks. Free, MIT-licensed, by OPDSTAR.">
+<meta name="description" content="Taiwan's first public Model Context Protocol (MCP) server for National Health Insurance data. Lets Claude Desktop, Cursor, ChatGPT Desktop query NHI rejection codes, procedure mappings, audit indicators and clauses, drug catalog and rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic wiki search. Free, MIT-licensed, by OPDSTAR.">
 <meta name="keywords" content="MCP server, Taiwan NHI, National Health Insurance, 健保, 核刪, healthcare AI, Claude Desktop, Cursor, Model Context Protocol, OPDSTAR, 台灣健保, medical AI, anthropic">
 
 <!-- hreflang for language alternatives -->
@@ -39,11 +39,11 @@
   "applicationCategory": "DeveloperApplication",
   "applicationSubCategory": "Healthcare API",
   "operatingSystem": "Cross-platform (Node.js 18+)",
-  "description": "Taiwan's first public Model Context Protocol server for National Health Insurance data. Enables AI assistants like Claude Desktop, Cursor, and ChatGPT Desktop to query 234 NHI rejection codes, 1,497 procedure codes across 20 specialties, audit indicators, and 8,232 chunks of semantic-searchable wiki content.",
+  "description": "Taiwan's first public Model Context Protocol server for National Health Insurance data. Enables AI assistants like Claude Desktop, Cursor, and ChatGPT Desktop to query NHI rejection codes, procedure mappings, audit indicators, audit clauses, drug catalog, drug payment rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic-searchable wiki content.",
   "url": "https://tatsuju.github.io/opdstar-nhi-mcp/",
   "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
-  "softwareVersion": "0.1.0",
-  "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.1.0",
+  "softwareVersion": "0.6.0",
+  "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.6.0",
   "inLanguage": "en",
   "author": {
     "@type": "Organization",
@@ -68,10 +68,15 @@
   "programmingLanguage": "TypeScript",
   "runtimePlatform": "Node.js",
   "featureList": [
-    "lookup_rejection_code — 234 Taiwan NHI rejection codes with severity and category",
-    "get_procedures_for_icd — 1,497 procedure codes mapped to ICD-10 across 20 specialties",
-    "get_indicator — NHI audit indicators (008, 014, 027, P043) with thresholds",
-    "search_nhi_wiki — Semantic and full-text search over 8,232 official NHI wiki chunks"
+    "Rejection codes — lookup individual NHI rejection codes with severity and category",
+    "Procedure mappings — ICD-10 to NHI procedure codes across major specialties",
+    "Audit indicators — official threshold-based audit rules (008/014/027/P043 and others)",
+    "Audit clauses — find 審查注意事項 by procedure code or specialty with risk flags",
+    "Drug catalog and rules — formulary search and 藥品給付規定 lookup",
+    "Fee schedule — current effective NHI fee codes with audit notes",
+    "Major-illness coverage — 重大傷病範圍 lookup and ICD-10 reverse check",
+    "Wiki search — semantic and full-text search across the official NHI wiki",
+    "Appeal precedents — aggregate dispute-resolution signals (no case details)"
   ],
   "keywords": "Taiwan NHI, Model Context Protocol, MCP server, healthcare API, Claude Desktop, rejection codes, 健保, 核刪, medical AI"
 }
@@ -394,10 +399,9 @@
   </div>
 
   <div class="stats">
-    <span><strong>234</strong> NHI rejection codes</span>
-    <span><strong>1,497</strong> procedures × 20 specialties</span>
-    <span><strong>8,232</strong> wiki chunks</span>
-    <span><strong>4</strong> read-only tools</span>
+    <span><strong>17</strong> read-only tools</span>
+    <span>Free · No account · No API key</span>
+    <span>Public NHI data only</span>
   </div>
 </header>
 
@@ -413,30 +417,50 @@
   <a href="https://opdstar.com" target="_blank" rel="noopener">OPDSTAR</a> team.
 </p>
 <p>
-  Built on top of six months of structured-data curation from 健保署 publications,
-  this package exposes four carefully-scoped read-only tools that let doctors and developers
-  integrate real NHI lookup into their AI workflows with one command.
+  This package exposes a comprehensive set of read-only tools that let doctors and developers
+  integrate real NHI reference lookups into their AI workflows with one command —
+  no account, no API key, no setup beyond pasting a config snippet.
 </p>
 </section>
 
 <section>
-<h2>Four tools</h2>
+<h2>What's covered</h2>
 <div class="tools-grid">
   <div class="tool-card">
-    <code>lookup_rejection_code</code>
-    <p>Look up a 5-character NHI rejection code (e.g. 0317A, 0338A). Returns severity, category, and the official Chinese description.</p>
+    <code>Rejection codes</code>
+    <p><code>lookup_rejection_code</code> · <code>get_rejection_code_category</code> — look up individual NHI rejection codes or browse by category (00–09).</p>
   </div>
   <div class="tool-card">
-    <code>get_procedures_for_icd</code>
-    <p>Given an ICD-10 code and specialty, return NHI procedure codes applicable — with points, audit notes, SOAP requirements.</p>
+    <code>Procedure mappings</code>
+    <p><code>get_procedures_for_icd</code> — given an ICD-10 code and specialty, return applicable NHI procedure codes with points and audit notes.</p>
   </div>
   <div class="tool-card">
-    <code>get_indicator</code>
-    <p>NHI audit indicators (008, 014, 027, P043) — thresholds, applicable drugs/diagnoses, compliance meaning.</p>
+    <code>Audit indicators</code>
+    <p><code>get_indicator</code> · <code>lookup_audit_indicator</code> — official threshold-based audit rules (008 / 014 / 027 / P043 and others) with applicable specialties.</p>
   </div>
   <div class="tool-card">
-    <code>search_nhi_wiki</code>
-    <p>Semantic + full-text search across 9 categories of official 健保署 wiki content (8,232 chunks).</p>
+    <code>Audit clauses</code>
+    <p><code>lookup_audit_clauses_for_procedure</code> · <code>lookup_audit_clauses_for_specialty</code> · <code>search_audit_guidelines</code> — find 審查注意事項 by procedure / specialty / keyword with risk flags.</p>
+  </div>
+  <div class="tool-card">
+    <code>Drugs</code>
+    <p><code>lookup_drug</code> · <code>get_drug_rules</code> — search the NHI formulary and look up 藥品給付規定 by specialty / rejection code / drug category.</p>
+  </div>
+  <div class="tool-card">
+    <code>Fee schedule</code>
+    <p><code>lookup_fee_code</code> — current effective 全民健康保險醫療服務給付項目及支付標準 with category prefix filtering.</p>
+  </div>
+  <div class="tool-card">
+    <code>Major illness</code>
+    <p><code>lookup_major_illness</code> · <code>check_icd_for_major_illness_eligibility</code> — browse 重大傷病範圍 and reverse-look up by ICD-10.</p>
+  </div>
+  <div class="tool-card">
+    <code>Wiki search</code>
+    <p><code>search_nhi_wiki</code> — semantic + full-text search across 9 categories of official 健保署 wiki content.</p>
+  </div>
+  <div class="tool-card">
+    <code>Appeal signals</code>
+    <p><code>lookup_appeal_statistics_by_category</code> · <code>count_appeal_precedents_for_rejection_code</code> — aggregate dispute-resolution signals (no individual case details).</p>
   </div>
 </div>
 </section>
@@ -453,7 +477,7 @@
     }
   }
 }</pre>
-<p>Restart Claude Desktop. You should see 4 new tools.</p>
+<p>Restart Claude Desktop. You should see all NHI tools appear.</p>
 </section>
 
 <section>

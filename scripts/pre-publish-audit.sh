@@ -50,6 +50,13 @@ SCAN_GLOBS=(
   "src/version.ts"
   "src/client.ts"
   ".github/workflows/*.yml"
+  "docs/*.html"
+  "docs/zh/*.html"
+  "docs/_config.yml"
+  "examples/*.json"
+  "package.json"
+  "smithery.yaml"
+  "glama.json"
 )
 
 # Exclusion regexp: lines we know are safe (legitimate uses of numbers/keywords)
@@ -103,19 +110,29 @@ run_audit "Audit 1 — Row counts" \
 
 # ─── Audit 2: methods + sources ─────────────────────────────────
 run_audit "Audit 2 — Methods + sources" \
-  '(crawl|scrape|markitdown|firecrawl|TXT export|PDF download|/dl-[0-9]|Dataset A21|OpenData|post-extraction|bulk import|114\.0[1-9]|115\.0[1-9])' \
+  '(crawl|scrape|markitdown|firecrawl|TXT export|PDF download|/dl-[0-9]|Dataset A21|OpenData|post-extraction|bulk import|structured-data curation|months of curation|six months of)' \
   ''
 
 # ─── Audit 3: tech stack ────────────────────────────────────────
 # 'edge-cached' is generic CDN terminology and is allowed.
 # 'Vercel Edge' / 'Supabase' / etc. reveal stack and are blocked.
+# '5 engines' / 'five engines' reveals OPDSTAR internal architecture.
+# 'vector + keyword index' / 'vector index' is a pgvector implementation hint.
 run_audit "Audit 3 — Tech stack specifics" \
-  '(Supabase|PostgREST|pgvector|Vercel Edge|Gemini 768d|iad1)' \
+  '(Supabase|PostgREST|pgvector|Vercel Edge|Gemini 768d|iad1|5 engines|five engines|vector \+ keyword|vector index)' \
   ''
 
-# ─── Audit 4: dist bundle (built artifact ships to every MCP client) ─
+# ─── Audit 4: row counts in NHI context (plain, no comma) ─────
+# Catches '234 rejection codes' / '234 個核刪代碼' / '930 函釋' / etc.
+# The existing Audit 1 pattern catches comma-formatted counts (1,497 / 8,232).
+# This pattern catches 2-4 digit counts adjacent to NHI-specific subjects.
+run_audit "Audit 4 — Plain row counts in NHI context" \
+  '\b[0-9]{2,4}\s+(rejection codes?|NHI rejection|個核刪|核刪代碼|procedure codes?|處置碼|wiki chunks?|Wiki 片段|chunks of|筆處置|筆函釋|個函釋|specialties|大專科)' \
+  ''
+
+# ─── Audit 5: dist bundle (built artifact ships to every MCP client) ─
 echo ""
-echo "── Audit 4 — dist bundle ──"
+echo "── Audit 5 — dist bundle ──"
 if [[ -f dist/index.js ]]; then
   bundle_leaks=$(grep -oE '(crawl|scrape|markitdown|firecrawl|Dataset A21|OpenData|Supabase|PostgREST|pgvector|Gemini 768d)' dist/index.js | sort -u || true)
   if [[ -z "$bundle_leaks" ]]; then

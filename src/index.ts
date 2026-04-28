@@ -31,6 +31,10 @@
  *    14. check_icd_for_major_illness_eligibility    — ICD → 重大傷病反查
  *    15. lookup_audit_indicator                     — 分析審查不予支付指標
  *
+ *   v0.6.0:
+ *    16. lookup_appeal_statistics_by_category       — 申復統計訊號（按類別）
+ *    17. count_appeal_precedents_for_rejection_code — 拒付碼/處置碼申復案量
+ *
  * Runs over stdio. Invoke via `npx @opdstar/nhi-mcp`.
  */
 

@@ -8,7 +8,7 @@ const CATEGORIES = [
 export const SEARCH_NHI_WIKI_DEF = {
   name: 'search_nhi_wiki',
   description:
-    "Semantic + full-text search across Taiwan's official NHI Wiki (健保署全球資訊網), 9 categories: audit (審查)/drugs (藥品特材)/fees (費用)/plans (醫療計畫)/services (醫療服務)/insurance (投保)/forms (表單)/records (紀錄)/admin (行政). Comprehensive vector + keyword index. Curated and indexed by OPDSTAR (https://opdstar.com).",
+    "Semantic + full-text search across Taiwan's official NHI Wiki (健保署全球資訊網), 9 categories: audit (審查)/drugs (藥品特材)/fees (費用)/plans (醫療計畫)/services (醫療服務)/insurance (投保)/forms (表單)/records (紀錄)/admin (行政). Curated and indexed by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

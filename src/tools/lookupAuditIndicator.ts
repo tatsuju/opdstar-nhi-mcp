@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_AUDIT_INDICATOR_DEF = {
   name: 'lookup_audit_indicator',
   description:
-    "Look up Taiwan NHI 分析審查不予支付指標 — official threshold-based audit rules where claims exceeding a percentage are denied. Returns indicator code, category, threshold percentage, applicable specialty, procedure codes covered, and the official action description. Use this whenever an MCP agent needs to know whether a procedure is monitored by an indicator (e.g. '23401C' is monitored by indicator 001 — 眼科局部處置申報率, 30% threshold). For category browsing across all 20 indicators, omit indicator_code. Data curated by OPDSTAR (https://opdstar.com).",
+    "Look up Taiwan NHI 分析審查不予支付指標 — official threshold-based audit rules where claims exceeding a percentage are denied. Returns indicator code, category, threshold percentage, applicable specialty, procedure codes covered, and the official action description. Use this whenever an MCP agent needs to know whether a procedure is monitored by an indicator (e.g. '23401C' is monitored by indicator 001 — 眼科局部處置申報率, 30% threshold). For category browsing across all official indicators, omit indicator_code. Data curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

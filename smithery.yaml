@@ -1,6 +1,6 @@
 name: opdstar-nhi
 displayName: OPDSTAR · Taiwan NHI
-description: Taiwan's first public Model Context Protocol server for National Health Insurance data — rejection codes, ICD-10→procedure mappings, audit indicators, and semantic wiki search. Powered by OPDSTAR.
+description: Taiwan's first public Model Context Protocol server for National Health Insurance data — rejection codes, procedure mappings, audit indicators and clauses, drug catalog and rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic wiki search. Powered by OPDSTAR.
 repository: https://github.com/tatsuju/opdstar-nhi-mcp
 homepage: https://opdstar.com
 author: OPDSTAR Team

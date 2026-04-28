@@ -83,10 +83,15 @@ Ask your AI in natural language:
 
 It auto-calls the right tools and pulls real NHI data:
 
-- **NHI rejection codes** (e.g. `0317A`, `0338A`) with severity + category
+- **NHI rejection codes** (e.g. `0317A`, `0338A`) with severity + category, browsable by category (00–09)
 - **NHI procedure codes** across major specialties, mapped to ICD-10
-- **NHI audit indicators** (008 / 014 / 027 / P043) with thresholds
+- **NHI audit indicators** (008 / 014 / 027 / P043 and others) with thresholds and applicable specialty
+- **NHI 審查注意事項 (audit clauses)** by procedure code or specialty, with risk flags
+- **NHI drug catalog and 藥品給付規定** — search formulary + look up payment rules
+- **NHI fee schedule** — current effective 全民健康保險醫療服務給付項目及支付標準
+- **NHI 重大傷病範圍** (major-illness coverage) lookup and ICD-10 reverse check
 - **Semantic + full-text search** over the 健保署 official wiki
+- **Aggregate dispute-resolution signals** by category or rejection code (no individual case details)
 
 All served through the `opdstar.com` edge layer — zero configuration, cached globally, under 100ms response.
 
@@ -119,7 +124,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) o
 }
 ```
 
-Restart Claude Desktop. You should see **10 new tools** appear in the tools menu.
+Restart Claude Desktop. You should see **17 tools** appear in the tools menu.
 
 ### Cursor config
 
@@ -381,6 +386,86 @@ Look up the Taiwan NHI fee schedule (全民健康保險醫療服務給付項目�
 
 > Note: `applicable_icd_pattern` is OPDSTAR-curated and sparse — original NHI data has no ICD-10 mapping. The `icd` filter only matches codes already enriched.
 
+### 11. `lookup_audit_clauses_for_procedure` <sub>v0.5</sub>
+
+Find official 審查注意事項 clauses that cite a specific NHI procedure code. Returns clause summaries with risk flags (`amount_limit` / `frequency_rule` / `indication`).
+
+**Arguments**: `{ procedure_code: string, specialty?: string }`
+
+**Example**:
+```
+> 處置碼 51017C 有哪些審查注意事項？
+→ [tool call: lookup_audit_clauses_for_procedure(procedure_code="51017C")]
+→ {
+    "count": 3,
+    "results": [
+      {
+        "clause_headline": "...",
+        "specialty": "...",
+        "risk_flags": ["amount_limit"],
+        "source_url": "https://opdstar.com/..."
+      },
+      ...
+    ]
+  }
+```
+
+### 12. `lookup_audit_clauses_for_specialty` <sub>v0.5</sub>
+
+Browse 審查注意事項 by specialty (dermatology / TCM / dentistry / ophthalmology / etc.). Filterable by keyword and risk flag.
+
+**Arguments**: `{ specialty: string, keyword?: string, risk_flag?: "amount_limit"|"frequency_rule"|"indication"|"any" }`
+
+### 13. `lookup_major_illness` <sub>v0.5</sub>
+
+Browse the official 重大傷病範圍及項目 list. Returns category code, name, ICD-10 coverage, application requirement, validity period, and copay-exemption status.
+
+**Arguments**: `{ category_code?: string, keyword?: string }`
+
+### 14. `check_icd_for_major_illness_eligibility` <sub>v0.5</sub>
+
+Reverse lookup. Given an ICD-10 code, return major-illness categories the diagnosis may qualify for. Useful for surfacing copayment-exemption hints when an MCP agent assists with claim coding.
+
+**Arguments**: `{ icd_code: string }`
+
+### 15. `lookup_audit_indicator` <sub>v0.5</sub>
+
+Look up the official 分析審查不予支付指標 (threshold-based audit rules). Returns indicator name, category, threshold percentage, applicable specialty, monitored procedure codes, and the official action description.
+
+**Arguments**: `{ indicator_code?: string, category?: string, specialty?: string, procedure_code?: string }`
+
+**Example**:
+```
+> '23401C' 是被哪個指標監控？
+→ [tool call: lookup_audit_indicator(procedure_code="23401C")]
+→ {
+    "count": 1,
+    "results": [{
+      "indicator_code": "001",
+      "name": "眼科局部處置申報率",
+      "threshold_pct": 30,
+      "applicable_specialty": "ophthalmology",
+      ...
+    }]
+  }
+```
+
+### 16. `lookup_appeal_statistics_by_category` <sub>v0.6</sub>
+
+Aggregate dispute-resolution signals by category (medication / procedure / fee_calculation / qualification / etc.). Returns abstract volume buckets (`few` / `several` / `many`) and claimant win-rate signals (`rare` / `occasional` / `moderate` / `common`) across resolution stages.
+
+**Arguments**: `{ dispute_category: string, stage_tier?: string }`
+
+> Aggregate signals only — no individual case details, no case numbers, no arguments. Full implementation context lives behind opdstar.com.
+
+### 17. `count_appeal_precedents_for_rejection_code` <sub>v0.6</sub>
+
+Returns rough volume + claimant win-rate signal for resolutions involving a specific NHI rejection or procedure code. Useful for estimating how a code's disputes typically resolve.
+
+**Arguments**: `{ rejection_code?: string, procedure_code?: string }`
+
+> Aggregate signals only — same moat-preserving pattern as #16.
+
 ---
 
 ## How it works
@@ -524,15 +609,7 @@ Data is kept in sync with the latest official publications.
 
 ## Roadmap
 
-### v0.2 (planned)
-- `get_drug_rules` — 藥品給付規定 lookup
-- `get_safe_phrases` — safe-phrase library (subset)
-- API key tier for higher rate limits
-
-### v0.3 (aspirational)
-- `compare_rejection_rates` — anonymized system-wide rejection stats
-- `get_latest_amendments` — recent NHI policy changes feed
-- English / Japanese wiki translation layer
+See [CHANGELOG.md](CHANGELOG.md) for the per-version history. The high-level direction lives in [ROADMAP.md](ROADMAP.md). New tool proposals welcome via GitHub Issues using the `new_tool_proposal` template — see CONTRIBUTING.md.
 
 ---
 

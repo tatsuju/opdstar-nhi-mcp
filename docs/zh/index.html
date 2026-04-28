@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@opdstar/nhi-mcp — 台灣健保 MCP Server · Powered by OPDSTAR</title>
-<meta name="description" content="台灣第一個公開的健保 MCP Server。讓 Claude Desktop、Cursor、ChatGPT Desktop 等 AI 助理直接查詢 234 個核刪代碼、1,497 個處置碼、健保指標、8,232 條健保署 Wiki。MIT 授權，永久免費，由 OPDSTAR 團隊開源維護。">
+<meta name="description" content="台灣第一個公開的健保 MCP Server。讓 Claude Desktop、Cursor、ChatGPT Desktop 等 AI 助理直接查詢核刪代碼、處置碼對應、審查指標與條文、藥品目錄與給付規定、支付標準、重大傷病、申復統計訊號、健保署 Wiki。MIT 授權，永久免費，由 OPDSTAR 團隊開源維護。">
 <meta name="keywords" content="健保 MCP, 台灣健保, 健保核刪, 核刪代碼, 健保處置碼, OPDSTAR, 病歷翻譯, Claude Desktop, Cursor, Model Context Protocol, 健保申報, 全民健康保險, AI 醫療工具, 醫療 AI, 健保署">
 
 <!-- hreflang for language alternatives -->
@@ -39,11 +39,11 @@
   "applicationCategory": "DeveloperApplication",
   "applicationSubCategory": "Healthcare API",
   "operatingSystem": "跨平台（Node.js 18+）",
-  "description": "台灣第一個公開的 Model Context Protocol server，專為查詢全民健康保險資料而設計。讓 Claude Desktop、Cursor、ChatGPT Desktop 等 AI 助理直接查詢 234 個核刪代碼、20 大專科 1,497 個處置碼、健保審查指標、以及 8,232 個可語意搜尋的健保署官方 Wiki 片段。",
+  "description": "台灣第一個公開的 Model Context Protocol server，專為查詢全民健康保險資料而設計。讓 Claude Desktop、Cursor、ChatGPT Desktop 等 AI 助理直接查詢核刪代碼、ICD-10 對應處置碼、審查指標與條文、藥品目錄與給付規定、支付標準、重大傷病、申復統計訊號，以及可語意搜尋的健保署官方 Wiki。",
   "url": "https://tatsuju.github.io/opdstar-nhi-mcp/zh/",
   "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
-  "softwareVersion": "0.1.0",
-  "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.1.0",
+  "softwareVersion": "0.6.0",
+  "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.6.0",
   "inLanguage": "zh-TW",
   "author": {
     "@type": "Organization",
@@ -68,10 +68,15 @@
   "programmingLanguage": "TypeScript",
   "runtimePlatform": "Node.js",
   "featureList": [
-    "lookup_rejection_code — 查詢 234 個台灣健保核刪代碼的嚴重度與類別",
-    "get_procedures_for_icd — 查詢 ICD-10 對應的處置碼（1,497 筆 × 20 專科）",
-    "get_indicator — 查詢健保審查指標（008/014/027/P043）的閾值與條件",
-    "search_nhi_wiki — 語意搜尋 8,232 條健保署官方 Wiki 片段（9 大分類）"
+    "核刪代碼查詢 — 查單一核刪代碼或按類別瀏覽（lookup_rejection_code / get_rejection_code_category）",
+    "ICD-10 對應處置 — 查診斷代碼對應的處置碼、點數、審查注意（get_procedures_for_icd）",
+    "審查指標 — 健保官方分析審查指標（008/014/027/P043 等）（get_indicator / lookup_audit_indicator）",
+    "審查注意事項 — 按處置碼或科別查條文（lookup_audit_clauses_for_procedure / _for_specialty / search_audit_guidelines）",
+    "藥品 — 健保藥品目錄查詢與給付規定（lookup_drug / get_drug_rules）",
+    "支付標準 — 健保現行支付標準（lookup_fee_code）",
+    "重大傷病 — 範圍項目查詢與 ICD-10 反查（lookup_major_illness / check_icd_for_major_illness_eligibility）",
+    "Wiki 語意搜 — 9 大分類官方 Wiki 內容（search_nhi_wiki）",
+    "申復統計訊號 — 拒付碼/處置碼的彙總申復案量（aggregate-only，無個案明細）"
   ],
   "keywords": "台灣健保, 健保 MCP, 核刪代碼, 處置碼, Claude Desktop, 病歷翻譯, 健保申報, 醫療 AI"
 }
@@ -97,7 +102,7 @@
       "name": "我是醫師不懂技術，這個對我有什麼用？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "你只要在 Claude Desktop 設定檔貼一段 10 行 JSON、重啟 App，就多了四個健保查詢工具。之後在 Claude 用自然語言問「0317A 核刪代碼什麼意思？」或「L30.9 皮膚科能申報哪些處置？」AI 會自動呼叫 tool 並回真實健保資料，你完全不需要懂程式。"
+        "text": "你只要在 Claude Desktop 設定檔貼一段 10 行 JSON、重啟 App，就多了一整套健保查詢工具。之後在 Claude 用自然語言問「0317A 核刪代碼什麼意思？」或「L30.9 皮膚科能申報哪些處置？」AI 會自動呼叫 tool 並回真實健保資料，你完全不需要懂程式。"
       }
     },
     {
@@ -453,10 +458,9 @@
   </div>
 
   <div class="stats">
-    <span><strong>234</strong> 核刪代碼</span>
-    <span><strong>1,497</strong> 處置碼 × 20 專科</span>
-    <span><strong>8,232</strong> Wiki 片段</span>
-    <span><strong>4</strong> 個查詢工具</span>
+    <span><strong>17</strong> 個唯讀查詢工具</span>
+    <span>免費 · 免帳號 · 免 API key</span>
+    <span>純公開健保資料</span>
   </div>
 </header>
 
@@ -473,8 +477,8 @@
   整理與維護。
 </p>
 <p>
-  這是累積六個月結構化整理健保署官方資料後的成果，封裝成四個精心設計的**唯讀查詢工具**，
-  讓台灣醫師與 HIS 廠商能一行指令就把健保資料整合進 AI 工作流。
+  這是長期整理健保署公開資料後的成果，封裝成一整套**唯讀查詢工具**，
+  讓台灣醫師與 HIS 廠商能一行指令就把健保資料整合進 AI 工作流 — 不用註冊、不用 API key。
 </p>
 </section>
 
@@ -504,7 +508,7 @@
   <blockquote class="q">「中耳炎 H66.9 耳鼻喉科能申報哪些處置？」</blockquote>
   <blockquote>Claude 呼叫 <code>get_procedures_for_icd</code>：<br>
   「27002C 耳鏡檢查（25 點）、27018C 耳膜穿刺（120 點）、36005C 鼓室通氣管置入（記錄雙側或單側）…」<br>
-  完整清單 1,497 筆處置 × 20 專科。</blockquote>
+  涵蓋健保處置碼跨多個專科。</blockquote>
 </div>
 
 <div class="scenario">
@@ -517,27 +521,52 @@
 </section>
 
 <section>
-<h2>四個查詢工具</h2>
+<h2>涵蓋哪些查詢？</h2>
 <div class="tools-grid">
   <div class="tool-card">
-    <code>lookup_rejection_code</code>
-    <span class="zh">健保核刪代碼查詢</span>
-    <p>輸入 5 碼（如 0317A、0338A），回傳嚴重度、類別、官方說明。</p>
+    <code>核刪代碼</code>
+    <span class="zh">查碼 + 分類瀏覽</span>
+    <p><code>lookup_rejection_code</code> · <code>get_rejection_code_category</code> — 查單一核刪代碼或按 00–09 類別瀏覽。</p>
   </div>
   <div class="tool-card">
-    <code>get_procedures_for_icd</code>
-    <span class="zh">ICD-10 對應處置碼</span>
-    <p>給 ICD-10 + 專科，列出該科適用處置、點數、審查注意事項、SOAP 要求。</p>
+    <code>處置對應</code>
+    <span class="zh">ICD-10 → 處置碼</span>
+    <p><code>get_procedures_for_icd</code> — 給 ICD-10 + 專科，列出該科適用處置、點數、審查注意事項。</p>
   </div>
   <div class="tool-card">
-    <code>get_indicator</code>
-    <span class="zh">健保審查指標</span>
-    <p>查 008 / 014 / 027 / P043 等指標的閾值、適用藥物、適用診斷。</p>
+    <code>審查指標</code>
+    <span class="zh">官方分析審查</span>
+    <p><code>get_indicator</code> · <code>lookup_audit_indicator</code> — 008 / 014 / 027 / P043 等指標的閾值與適用範圍。</p>
   </div>
   <div class="tool-card">
-    <code>search_nhi_wiki</code>
-    <span class="zh">健保署 Wiki 語意搜</span>
-    <p>語意 + 全文搜尋 9 大分類的官方 Wiki 內容（8,232 chunks）。</p>
+    <code>審查注意事項</code>
+    <span class="zh">處置 / 科別 / 關鍵字</span>
+    <p><code>lookup_audit_clauses_for_procedure</code> · <code>_for_specialty</code> · <code>search_audit_guidelines</code> — 多種維度查條文，附 risk flags。</p>
+  </div>
+  <div class="tool-card">
+    <code>藥品</code>
+    <span class="zh">目錄 + 給付規定</span>
+    <p><code>lookup_drug</code> · <code>get_drug_rules</code> — 健保藥品目錄查詢與藥品給付規定限制。</p>
+  </div>
+  <div class="tool-card">
+    <code>支付標準</code>
+    <span class="zh">健保現行版</span>
+    <p><code>lookup_fee_code</code> — 全民健康保險醫療服務給付項目及支付標準（現行版）。</p>
+  </div>
+  <div class="tool-card">
+    <code>重大傷病</code>
+    <span class="zh">範圍 + ICD 反查</span>
+    <p><code>lookup_major_illness</code> · <code>check_icd_for_major_illness_eligibility</code> — 範圍項目瀏覽與診斷代碼反查。</p>
+  </div>
+  <div class="tool-card">
+    <code>Wiki 語意搜</code>
+    <span class="zh">9 大分類</span>
+    <p><code>search_nhi_wiki</code> — 語意 + 全文搜尋官方 Wiki 內容。</p>
+  </div>
+  <div class="tool-card">
+    <code>申復統計訊號</code>
+    <span class="zh">彙總層級</span>
+    <p><code>lookup_appeal_statistics_by_category</code> · <code>count_appeal_precedents_for_rejection_code</code> — 按類別/拒付碼的彙總訊號（無個案明細）。</p>
   </div>
 </div>
 </section>
@@ -576,7 +605,7 @@
   <tbody>
     <tr><td>查核刪代碼 / 處置 / Wiki</td><td>✅</td><td>✅</td></tr>
     <tr><td>AI 自動寫英文 SOAP 病歷</td><td>❌</td><td>✅</td></tr>
-    <tr><td>核刪風險即時偵測（5 engines）</td><td>❌</td><td>✅</td></tr>
+    <tr><td>核刪風險即時偵測（多重引擎）</td><td>❌</td><td>✅</td></tr>
     <tr><td>AI 優化病歷內容符合處置</td><td>❌</td><td>✅</td></tr>
     <tr><td>安全寫作句型自動套用</td><td>❌</td><td>✅</td></tr>
     <tr><td>個人用藥偏好記憶</td><td>❌</td><td>✅</td></tr>
@@ -596,7 +625,7 @@
 
 <details>
 <summary>我是醫師不懂技術，這個對我有什麼用？</summary>
-<p>你只要在 Claude Desktop 設定檔貼一段 10 行 JSON、重啟 App，就多了四個健保查詢工具。之後在 Claude 用自然語言問「0317A 核刪代碼什麼意思？」或「L30.9 皮膚科能申報哪些處置？」AI 會自動呼叫 tool 並回真實健保資料。<strong>你完全不需要懂程式</strong>。</p>
+<p>你只要在 Claude Desktop 設定檔貼一段 10 行 JSON、重啟 App，就多了一整套健保查詢工具。之後在 Claude 用自然語言問「0317A 核刪代碼什麼意思？」或「L30.9 皮膚科能申報哪些處置？」AI 會自動呼叫 tool 並回真實健保資料。<strong>你完全不需要懂程式</strong>。</p>
 </details>
 
 <details>
@@ -617,7 +646,7 @@
 
 <details>
 <summary>我的病患資料會被上傳嗎？</summary>
-<p>完全不會。這四個 tool 只查公開健保代碼、處置、Wiki，<strong>不傳送任何病患名字、病歷號、臨床內容</strong>。當你問 AI「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。</p>
+<p>完全不會。這些 tool 只查公開健保代碼、處置、Wiki，<strong>不傳送任何病患名字、病歷號、臨床內容</strong>。當你問 AI「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。</p>
 <p>proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。</p>
 </details>
 
@@ -662,7 +691,7 @@
   <li><a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">藥品給付規定</a></li>
   <li><a href="https://www.nhi.gov.tw/ch/cp-2636-a1031-2912-1.html" target="_blank" rel="noopener">健保醫療費用申報與審查電腦作業手冊</a></li>
 </ul>
-<p>每月同步，以 <code>source_document</code> + <code>effective_date</code> 欄位追溯版本。</p>
+<p>每月同步，所有規則資料附帶版本溯源欄位（來源文件 + 生效日期），便於追蹤健保署修法變動。</p>
 </section>
 
 <section>
