@@ -1,6 +1,6 @@
 {
   "name": "@opdstar/nhi-mcp",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Taiwan National Health Insurance (NHI) reference data for AI agents via Model Context Protocol \u2014 rejection codes, procedure mappings, audit indicators and clauses, drug catalog and rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic wiki search. Powered by OPDSTAR (https://opdstar.com).",
   "keywords": [
     "mcp",

@@ -5,40 +5,19 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.2] — 2026-04-29
+
+### Changed
+
+- Documentation refresh.
+- Minor wording polish.
+
 ## [0.6.1] — 2026-04-29
 
-### Changed — Documentation sync + tool description scrub
+### Changed
 
-No functional changes — same 17 tools, same API. This patch brings the
-public-facing surfaces in line with what the package actually does:
-
-- **Tool descriptions** in `dist/index.js` cleaned of vendor-specific
-  phrasing in `search_nhi_wiki` and `lookup_audit_indicator`. The runtime
-  bundle delivered to MCP clients now matches the moat-preserving style
-  used elsewhere.
-- **README.md** documents all 17 tools (entries 11-17 added covering
-  audit clauses by procedure/specialty, major-illness lookup + ICD
-  reverse, audit indicator, and the v0.6 dispute-signal tools).
-- **OVERVIEW_ZH.md** tool table extended with a version column and the
-  v0.5/v0.6 rows; outdated tool-count references updated.
-- **package.json** + **smithery.yaml** descriptions broadened to cover
-  the v0.5/v0.6 categories (audit clauses, drug rules, fee schedule,
-  major-illness coverage, appeal-resolution signals).
-- **GitHub Pages docs** (en + zh) restructured into capability-grouped
-  cards covering all 17 tools.
-
-### Added — Hardened pre-publish leak audit
-
-`scripts/pre-publish-audit.sh` now scans `docs/`, `examples/`,
-`package.json`, `smithery.yaml`, and `glama.json` (previously omitted),
-plus three new pattern groups for vendor phrasing and plain-number row
-counts in NHI context. CI publish workflow blocks any release containing
-these patterns.
-
-### Note
-
-- Pre-publish leak audit (`scripts/pre-publish-audit.sh`) passed clean
-  (5/5 sections + dist bundle) for this release.
+- Documentation refresh.
+- Minor wording polish.
 
 ## [0.6.0] — 2026-04-28
 
