@@ -4,7 +4,7 @@ import type { IndicatorResult } from '../types.js';
 export const GET_INDICATOR_DEF = {
   name: 'get_indicator',
   description:
-    "Look up a Taiwan NHI audit indicator (e.g. '008', '014', '027', 'P043') — threshold, applicable drugs/diagnoses, and compliance meaning. These are the indicators the NHI uses to flag overprescription and trigger audits. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up a single Taiwan NHI prescribing-pattern indicator (e.g. '008' antibiotic-on-URI, '014' multi-PPI, '027' duration limit, 'P043') — returns threshold, applicable drugs / diagnoses, and the compliance meaning behind the indicator. **Use when** an agent needs the human-readable explanation for a specific indicator code referenced during a SOAP review. **Don't use** for the official 分析審查不予支付指標 list (a different system) — call `lookup_audit_indicator` instead; for the drug rule behind an indicator, call `get_drug_rules` with the indicator's rejection code. **Reference only** — thresholds reflect published guidance and may change with each NHI release. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

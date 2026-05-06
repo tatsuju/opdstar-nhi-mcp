@@ -8,7 +8,7 @@ const CATEGORIES = [
 export const SEARCH_NHI_WIKI_DEF = {
   name: 'search_nhi_wiki',
   description:
-    "Semantic + full-text search across Taiwan's official NHI Wiki (健保署全球資訊網), 9 categories: audit (審查)/drugs (藥品特材)/fees (費用)/plans (醫療計畫)/services (醫療服務)/insurance (投保)/forms (表單)/records (紀錄)/admin (行政). Curated and indexed by OPDSTAR (https://opdstar.com).",
+    "Search across Taiwan's official NHI knowledge base (健保署全球資訊網) — 9 categories: audit (審查) · drugs (藥品特材) · fees (費用) · plans (醫療計畫) · services (醫療服務) · insurance (投保) · forms (表單) · records (紀錄) · admin (行政). Returns the most relevant excerpts (1-10 per call) for a natural-language query. **Use when** an agent needs broad NHI background information not covered by code-specific tools (e.g. '慢性病連續處方箋天數上限', 'how to register a contracted clinic'). **Don't use** to look up a specific rejection code, procedure code, drug, or audit clause — those have dedicated tools. **Reference only** — official 健保署 publications are authoritative; results may lag the latest revision. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

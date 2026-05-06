@@ -4,7 +4,7 @@ import type { GetDrugRulesResult } from '../types.js';
 export const GET_DRUG_RULES_DEF = {
   name: 'get_drug_rules',
   description:
-    "Look up Taiwan NHI drug payment rules (藥品給付規定). Filter by specialty, rejection_code, or drug_category_query — at least one filter required. Returns rules covering when drugs are / aren't reimbursable, with severity and source citations. Data curated by OPDSTAR (https://opdstar.com) from 健保藥品給付規定 官方文件.",
+    "Look up Taiwan NHI drug payment rules (藥品給付規定) — when a drug class is / isn't reimbursable, with severity and source citation. Filter by `specialty`, `rejection_code`, or `drug_category_query` (at least one required). **Use when** an agent is checking whether a drug choice will trigger a rejection before submission, or wants to read the rule behind a known rejection code. **Don't use** to identify a specific drug (brand / generic / strength) — call `lookup_drug` instead; for the underlying audit clauses, use `lookup_audit_clauses_for_procedure` or `lookup_audit_clauses_for_specialty`. **Reference only** — official 健保藥品給付規定 is authoritative; curated subset, not exhaustive. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

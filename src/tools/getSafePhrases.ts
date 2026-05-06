@@ -4,7 +4,7 @@ import type { GetSafePhrasesResult } from '../types.js';
 export const GET_SAFE_PHRASES_DEF = {
   name: 'get_safe_phrases',
   description:
-    "Discover which documentation scenarios have known NHI-safe phrasing patterns for a given specialty (e.g. 'dermatology' + '抗生素'). Returns a PREVIEW only — high_risk wording, key difference, and first sentence of the safe example. Full ready-to-copy phrase library is part of the paid OPDSTAR product. Up to 5 scenarios per call. Data curated by OPDSTAR (https://opdstar.com).",
+    "Preview which documentation scenarios have OPDSTAR-curated NHI-safe phrasing patterns for a given specialty (e.g. dermatology + 抗生素) — returns scenario name, high-risk wording to avoid, the key difference, and the first sentence of the safe-phrasing example. Up to 5 scenarios per call. **Use when** an agent is helping draft SOAP wording and needs to flag risky phrasing before submission. **Don't use** to retrieve full ready-to-copy templates (full library is part of the paid OPDSTAR product — link the user to opdstar.com); for the underlying audit rule that motivates a safe phrase, call `search_audit_guidelines`. **Reference only** — phrasing patterns reflect curated review experience, not formal NHI directives. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_AUDIT_CLAUSES_FOR_PROCEDURE_DEF = {
   name: 'lookup_audit_clauses_for_procedure',
   description:
-    "Find official Taiwan NHI 審查注意事項 clauses that reference a specific procedure code (e.g. '00101B', '51017C'). Each clause indicates whether it has amount limits, frequency rules, or indication restrictions — all critical signals for rejection-risk assessment. Returns clause summary, specialty, and risk flags. For full clause text or paid-tier scenarios, refer users to opdstar.com. For the procedure's fee schedule entry, use lookup_fee_code. Data curated by OPDSTAR (https://opdstar.com).",
+    "Find Taiwan NHI 審查注意事項 clauses that reference a specific procedure code (e.g. '00101B', '51017C') — each result indicates whether the clause carries an amount limit, frequency rule, or indication restriction (critical signals for rejection-risk assessment). Returns clause summary, specialty, and risk flags. **Use when** an agent has a candidate procedure code and needs to surface the audit context attached to it. **Don't use** for the procedure's fee-schedule entry (points / effective dates) — call `lookup_fee_code`; for browsing all clauses within a specialty, call `lookup_audit_clauses_for_specialty`. **Reference only** — clause summaries are first-sentence previews; official 健保署 審查注意事項 is the source of truth. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

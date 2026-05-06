@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_FEE_CODE_DEF = {
   name: 'lookup_fee_code',
   description:
-    "Look up the Taiwan NHI fee schedule (全民健康保險醫療服務給付項目及支付標準, current effective edition). Search by exact code (e.g. '00101B', 'P15001'), or by Chinese/English name (e.g. '門診診察', 'ICU'). Returns code, points, effective dates, and audit notes (truncated to 600 chars). Use category prefix to scope ('00' 基本診療, '06' 手術, 'P1' 病例計酬, 'N2' 護理). Use icd to filter by OPDSTAR-curated ICD-10 mapping. Data curated by OPDSTAR (https://opdstar.com) from 健保署官方支付標準. For a drug code, use lookup_drug. For an ICD-10 → procedure mapping, use get_procedures_for_icd.",
+    "Look up the Taiwan NHI fee schedule (全民健康保險醫療服務給付項目及支付標準, current effective edition). Search by exact code (e.g. '00101B', 'P15001') or by Chinese / English name (e.g. '門診診察', 'ICU') — returns code, points, effective dates, and audit notes (truncated to 600 chars). Use `category` prefix to scope ('00' 基本診療, '06' 手術, 'P1' 病例計酬, 'N2' 護理). **Use when** an agent needs the canonical fee entry for a known procedure code, or wants to discover codes by name. **Don't use** for drugs (call `lookup_drug`) or for ICD-10 → procedure suggestions (call `get_procedures_for_icd`). The optional `icd` filter applies an OPDSTAR-curated mapping that is intentionally sparse (the original NHI data has no ICD field) — most codes will return no result with `icd` active. **Reference only** — official 健保署 支付標準 is authoritative. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

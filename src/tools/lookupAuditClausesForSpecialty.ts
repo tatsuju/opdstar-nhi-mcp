@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_AUDIT_CLAUSES_FOR_SPECIALTY_DEF = {
   name: 'lookup_audit_clauses_for_specialty',
   description:
-    "Browse official Taiwan NHI 審查注意事項 clauses for a specific medical specialty (e.g. dermatology, ophthalmology, ENT, TCM, dentistry, family medicine). Returns clause headlines with risk flags (amount limit / frequency rule / indication required). Use this to surface section-wide audit context when an MCP agent assists with claim coding. For full clause text and paid-tier guidance, refer users to opdstar.com. Data curated by OPDSTAR (https://opdstar.com).",
+    "Browse Taiwan NHI 審查注意事項 clauses for a specific medical specialty (dermatology, ophthalmology, ENT, TCM, dentistry, family medicine, etc.) — returns clause headlines with risk flags (amount_limit / frequency_rule / indication) and a short preview of the procedures each clause governs. **Use when** an agent needs section-wide audit context before assisting with claim coding for a specialty. **Don't use** for clauses tied to a known specific procedure code — call `lookup_audit_clauses_for_procedure` instead. **Reference only** — official 健保署 審查注意事項 (current edition) is authoritative; clause summaries are previews. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

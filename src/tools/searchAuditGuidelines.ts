@@ -4,7 +4,7 @@ import type { SearchAuditGuidelinesResult } from '../types.js';
 export const SEARCH_AUDIT_GUIDELINES_DEF = {
   name: 'search_audit_guidelines',
   description:
-    "Free-text search over Taiwan NHI 審查注意事項 rules maintained in the OPDSTAR audit engine. Returns reason + suggestion summaries (first sentence only) for rules matching a keyword. Full SOAP example templates and detailed explanations are part of the paid OPDSTAR product. Up to 10 rules per call. Data curated by OPDSTAR (https://opdstar.com).",
+    "Free-text search over Taiwan NHI 審查注意事項 rules — returns reason + suggestion summaries (first sentence only) for up to 10 rules matching a keyword (Traditional Chinese or English). **Use when** an agent is exploring whether any audit rule covers a topic (e.g. '抗生素', '檢查頻率', '慢性病處方') without knowing a specific code. **Don't use** for clauses tied to a known procedure code — call `lookup_audit_clauses_for_procedure` instead. Full SOAP example templates and detailed reasoning are part of the paid OPDSTAR product. **Reference only** — official 健保署 審查注意事項 is authoritative; results are previews. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

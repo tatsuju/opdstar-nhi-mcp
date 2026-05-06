@@ -3,21 +3,55 @@
 #
 # Runs before npm publish (in GitHub Actions) AND optionally locally
 # before tagging. Exits non-zero on any detected leak so CI blocks
-# the publish — preventing competitive-intel from sneaking out.
+# the publish.
 #
-# Patterns checked:
-#   1. Specific row counts (\d,?\d{3} not in safe-list)
-#   2. Data acquisition methods (crawl/scrape/markitdown/firecrawl/
-#      TXT export/PDF download/Dataset IDs/post-extraction language)
-#   3. Tech stack specifics (Supabase/PostgREST/pgvector/Vercel Edge/Gemini)
+# ─── Why this audit exists ────────────────────────────────────────
+# This package is the public surface of a private product. The package
+# itself ships a deliberately narrow capability layer; the underlying
+# implementation (data shape, sources, methods, tooling, infrastructure
+# choices) stays private. That asymmetry is the whole point.
 #
-# Allowed exceptions (fingerprinted in SAFE_PATTERNS):
+# This script protects one direction of that asymmetry — making sure
+# the contents of the public files never quietly start describing the
+# private implementation in detail.
+#
+# ─── What the script catches ──────────────────────────────────────
+# Pattern groups (see Audit 1-5 below). Maintainers can extend the
+# patterns; do not narrow them without a clear reason.
+#
+# ─── What the script does NOT catch (also matters) ────────────────
+# Public release text is part of the same public surface as the files:
+#   - CHANGELOG entries
+#   - git commit subject + body
+#   - GitHub Release notes
+#   - tag annotation messages
+#
+# These are not parsed by the audit. Describing in detail what was
+# changed — especially when the change is "removed something" — gives
+# a reader the full reverse map of what was being protected. A clean
+# tarball with a verbose CHANGELOG documenting exactly what was scrubbed
+# is functionally the same as the original leak.
+#
+# RULE for public release text:
+#   Stay capability-level. Acceptable phrasing:
+#     "Documentation refresh" / "Minor wording polish" / "Tooling updates"
+#     "Tool catalog now reflects current API" / "Bug fixes"
+#   Do NOT in public CHANGELOG / commit / release notes:
+#     - name specific files that were changed
+#     - quote what was removed or what it was replaced with
+#     - explain the reason in commercial / strategic terms
+#     - call attention to "scrub", "leak", "moat", or similar
+#
+# Detailed change rationale belongs in private maintainer notes, not
+# in any text that ships with the package or appears on the public repo.
+#
+# ─── Allowed exceptions in the patterns below ─────────────────────
 #   - Example codes (0317A, 00101B, etc. — required for tool docs)
 #   - HTTP URLs (require numbers in domain/path)
 #   - Year numbers, version strings
-#   - BLOG_POST Vercel-Edge developer-lesson content (waitUntil bug story)
+#   - BLOG_POST tech-lesson content fingerprinted via BLOG_POST_LESSON_RE
 #
-# Usage:
+# ─── Usage ────────────────────────────────────────────────────────
 #   bash scripts/pre-publish-audit.sh           # exit 0 = clean, 1 = leaks
 #   bash scripts/pre-publish-audit.sh --verbose # show every match line
 

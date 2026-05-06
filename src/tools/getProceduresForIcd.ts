@@ -10,7 +10,7 @@ const SPECIALTIES = [
 export const GET_PROCEDURES_FOR_ICD_DEF = {
   name: 'get_procedures_for_icd',
   description:
-    'Given a Taiwan ICD-10 code and specialty, return the NHI procedure codes applicable. Results include nhi_points (healthcare payment points) and audit_notes (review caveats). Curated mapping across major specialties by OPDSTAR (https://opdstar.com).',
+    "Given a Taiwan ICD-10 code and specialty, return the NHI procedure codes plausibly applicable to that diagnosis — results include nhi_points (payment points) and audit_notes (review caveats). **Use when** an agent is suggesting a starting set of procedure codes for a given diagnosis within a specific specialty context. **Don't use** as a billing source of truth (the original NHI fee schedule has no ICD field; this is a curated, intentionally conservative mapping) — for the canonical fee-schedule entry of a specific code, call `lookup_fee_code`. **Reference only** — final code selection remains the clinician's responsibility. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_MAJOR_ILLNESS_DEF = {
   name: 'lookup_major_illness',
   description:
-    "Look up Taiwan NHI 重大傷病 (major illness) categories — official categories that grant copayment exemption and a more lenient claim-review process. Each entry includes the category name, ICD-10 code coverage, application requirement, and validity period. Useful when an MCP agent needs to know whether a diagnosis qualifies the patient for major-illness benefits. For ICD → category reverse lookup, use check_icd_for_major_illness_eligibility instead. Data curated by OPDSTAR (https://opdstar.com) from 衛生福利部 official 重大傷病範圍及項目.",
+    "Browse Taiwan NHI 重大傷病 (major illness) categories — official categories that grant copayment exemption and a more lenient claim-review process. Returns category name, ICD-10 code coverage, application requirement, and validity period. **Use when** an agent needs to enumerate or filter major-illness categories (e.g. 'all cancer categories', 'categories that don't require an application'). **Don't use** if you already have an ICD-10 code and want to know which categories it qualifies for — call `check_icd_for_major_illness_eligibility` instead. **Reference only** — final eligibility requires a formal application with supporting documentation per the official 重大傷病範圍及項目. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

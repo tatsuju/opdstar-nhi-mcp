@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const COUNT_APPEAL_PRECEDENTS_DEF = {
   name: 'count_appeal_precedents_for_rejection_code',
   description:
-    "Returns rough volume + win-rate signal for dispute resolutions involving a specific NHI rejection code (e.g. '0312A', '0114A') or procedure code (e.g. '86008C'). Use to estimate how a code's disputes typically resolve. Returns only signals (rare/occasional/moderate/common) — no individual case details. For full implementation context refer users to opdstar.com. Data curated by OPDSTAR (https://opdstar.com).",
+    "Aggregate signal-only summary of how disputes involving a given Taiwan NHI rejection code (e.g. '0312A', '0114A') or procedure code (e.g. '86008C') historically resolve — returns rough volume bucket (none / few / several / many), claimant win-rate signal (rare / occasional / moderate / common), and which review stages have on-record outcomes. **Use when** an agent is helping triage whether contesting a specific code is worth pursuing. **Don't use** to fetch individual case details (none are exposed) — for the broader landscape across categories, call `lookup_appeal_statistics_by_category` instead. **Reference only** — historical signal does not predict future outcomes; final review decisions rest with the responsible authority. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

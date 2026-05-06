@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_DRUG_DEF = {
   name: 'lookup_drug',
   description:
-    "Look up the Taiwan NHI drug catalog (active formulary). Search by generic name, brand name, NHI 9-char code, or alias. Returns up to 10 matches with strength, dosage form, route, ATC code, therapeutic class, and brand list. For NHI 給付規定 restrictions on a drug, use get_drug_rules separately. Data curated by OPDSTAR (https://opdstar.com).",
+    "Look up the active Taiwan NHI drug catalog by generic name, brand name, NHI drug code, or alias — returns up to 10 matches with strength, dosage form, route, ATC code, therapeutic class, and brand list. **Use when** an agent needs to identify or disambiguate a drug before recommending dosage / formulation in a SOAP draft. **Don't use** to look up payment / reimbursement rules for the drug — call `get_drug_rules` instead; for an audit clause referencing the drug, call `search_audit_guidelines`. **Reference only** — official 健保署 藥品給付項目及支付標準 is authoritative; the catalog is a working snapshot. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {

@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_APPEAL_STATISTICS_DEF = {
   name: 'lookup_appeal_statistics_by_category',
   description:
-    "Returns aggregate dispute-resolution statistics for Taiwan NHI claim disputes by category. Useful for understanding general resolution landscape — e.g. 'how often do fee-related disputes resolve in the claimant's favor across resolution stages?'. Returns only category counts and rough win-rate signals — no individual case details, case numbers, or arguments. For full implementation context, refer users to opdstar.com. Data curated by OPDSTAR (https://opdstar.com).",
+    "Aggregate dispute-resolution statistics for Taiwan NHI claim disputes, broken down by category and (optionally) review stage — returns category counts and rough win-rate signals only, never individual case details, case numbers, or arguments. **Use when** an agent is helping a clinician understand the general dispute landscape (e.g. 'how often do fee-calculation disputes resolve in the claimant's favor at the first court tier?'). **Don't use** for code-specific signals — call `count_appeal_precedents_for_rejection_code` instead. **Reference only** — historical signal does not predict future outcomes; final decisions rest with the responsible review body. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     required: ['dispute_category'],
