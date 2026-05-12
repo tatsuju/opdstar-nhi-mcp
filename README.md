@@ -1,8 +1,8 @@
 <h1 align="center">@opdstar/nhi-mcp</h1>
 
 <p align="center">
-  <b>Taiwan's first public Model Context Protocol server for National Health Insurance data</b><br/>
-  <sub>台灣第一個公開的健保 MCP Server</sub>
+  <b>The MCP server for Taiwan NHI billing intelligence</b><br/>
+  <sub>Rejection codes · audit clauses · drug payment rules · fee schedule · special materials · appeal precedents</sub>
 </p>
 
 <p align="center">
@@ -26,14 +26,26 @@
 
 ## Who is this for?
 
-**Taiwan healthcare professionals** using AI assistants (Claude Desktop, Cursor, ChatGPT Desktop) who want to:
+**Taiwan healthcare professionals + AI agent developers** building tools that need authoritative Taiwan National Health Insurance reference data. Plug this MCP into Claude Desktop, Cursor, ChatGPT Desktop, Claude.ai, or any MCP-compatible agent to answer questions like:
 
-- 🩺 **Check NHI rejection risk** before submitting a claim, without leaving their AI chat
-- 📋 **Look up procedure codes** applicable to a diagnosis in seconds
-- 📖 **Ask questions in Chinese** about NHI rules and get grounded answers with source URLs
-- 🏥 **Integrate NHI data** into their own clinic software / HIS without building from scratch
+- **Billing accuracy** — Will this code / diagnosis combination get rejected? What's the prior-auth status?
+- **Audit guidelines** — What does the NHI 審查注意事項 say about this specialty / procedure?
+- **Drug rules** — What's the NHI payment rule for this medication?
+- **Appeal precedents** — Has anyone appealed this rejection code? What's the success rate?
+- **Fee schedule** — What's the official point value and effective date for this code?
 
-**Developers** building Taiwan-specific healthcare AI tools — hook into one well-curated data source instead of scraping 健保署 manually.
+## Scope
+
+This MCP focuses exclusively on **Taiwan NHI-specific billing rules and reference data**.
+
+**Out of scope:**
+
+- International standards (SNOMED CT, LOINC, FHIR R4 generation, RxNorm)
+- Drug interaction databases
+- Clinical decision support / diagnosis suggestions
+- General TFDA drug registry queries (OPDSTAR cross-references but doesn't replicate)
+
+OPDSTAR focuses on Taiwan NHI billing intelligence — that's what it does best.
 
 ---
 
@@ -99,6 +111,23 @@ All served through the `opdstar.com` edge layer — zero configuration, cached g
 
 ## Install
 
+Two ways to use the OPDSTAR MCP server.
+
+### Option A — Remote (one-click, no install)
+
+> Available via the [Anthropic MCP Directory](https://claude.com/connectors) — listing under review.
+
+Point any MCP-compatible client at the hosted JSON-RPC 2.0 endpoint:
+
+```
+POST https://opdstar.com/api/mcp
+Content-Type: application/json
+```
+
+Live status, tool list, and dataset freshness: [opdstar.com/mcp/status](https://opdstar.com/mcp/status).
+
+### Option B — Local (npm)
+
 ```bash
 # Claude Desktop — one-line, no install
 npx @opdstar/nhi-mcp
@@ -124,7 +153,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) o
 }
 ```
 
-Restart Claude Desktop. You should see **17 tools** appear in the tools menu.
+Restart Claude Desktop. You should see **20 tools** appear in the tools menu.
 
 ### Cursor config
 
@@ -466,6 +495,26 @@ Returns rough volume + claimant win-rate signal for resolutions involving a spec
 
 > Aggregate signals only — same moat-preserving pattern as #16.
 
+### 18. `recent_nhi_amendments` <sub>v0.7</sub>
+
+List recent amendments to 健保署「醫療費用審查注意事項」(近一年修正公告). Returns effective / announce dates, title, type (primary vs comparison), and direct links to the official DOCX / ODT / PDF.
+
+**Arguments**: `{ since_days?: number, type?: 'primary' | 'comparison' | 'all', limit?: number }`
+
+### 19. `search_taiwan_drug` <sub>v0.7</sub>
+
+Unified Taiwan drug lookup across NHI and TFDA registries. Returns generic name (EN + 中文), brand names, NHI 9碼, ATC code, dosage form, strength, route, specialties, and effective date. Auto-detects input as NHI 9碼 / ATC code / generic name / brand name / alias.
+
+**Arguments**: `{ query?: string, atc_prefix?: string, form?: string, limit?: number }`
+
+### 20. `lookup_icd10_cm` <sub>v0.7</sub>
+
+Look up ICD-10-CM codes with English / 中文 descriptions, category, and the OPDSTAR specialties each code is keyed against. Free-text keyword search supported.
+
+**Arguments**: `{ code?: string, keyword?: string, lang?: 'en' | 'zh' | 'both', limit?: number }`
+
+> Currently backed by the OPDSTAR specialty-keyed Taiwan-relevant subset; the full CMS public-domain ICD-10-CM 2025 set will be merged in a later release.
+
 ---
 
 ## How it works
@@ -478,8 +527,8 @@ Returns rough volume + claimant win-rate signal for resolutions involving a spec
            │ MCP (stdio)
            ▼
 ┌────────────────────┐
-│  @opdstar/nhi-mcp  │   (this package, ~9KB single-file bundle)
-│ 10 read-only tools │
+│  @opdstar/nhi-mcp  │   (npm: stdio · or remote: HTTPS JSON-RPC)
+│ 20 read-only tools │
 └──────────┬─────────┘
            │ HTTPS
            ▼

@@ -5,6 +5,35 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] — 2026-05-13
+
+### Added
+
+- **Remote MCP HTTPS endpoint** at `opdstar.com/api/mcp` — one-click connect from MCP Directory-compatible clients (Claude.ai, Claude Desktop, Cursor, etc.). JSON-RPC 2.0 over HTTPS POST, no install required.
+- **Status page** at [opdstar.com/mcp/status](https://opdstar.com/mcp/status) — live tool list, dataset freshness, sample request / response, and configuration snippets.
+- **`recent_nhi_amendments`** — list recent amendments to 健保署「醫療費用審查注意事項」(近一年修正公告). Filters by `since_days`, `type` (primary/comparison/all), `limit`.
+- **`search_taiwan_drug`** — unified Taiwan drug lookup with NHI 9碼 ↔ ATC code ↔ generic name ↔ brand cross-reference. Auto-detects input shape (NHI code / ATC / text).
+- **`lookup_icd10_cm`** — ICD-10-CM code lookup with EN / 中文 descriptions, category, and OPDSTAR specialties. Free-text keyword search supported.
+- **Privacy + Terms pages** at `/legal/mcp-privacy` and `/legal/mcp-terms` covering the MCP endpoint surface (public read-only, no PII).
+
+### Changed
+
+- **Refactored stdio dispatcher** into a transport-agnostic `handleMcpRequest` exported from `@opdstar/nhi-mcp/http-handler`, so the stdio entry and the new remote HTTPS endpoint share one source of truth.
+- **Package description** refined for clearer scope (Taiwan NHI billing intelligence).
+- **README** expanded with explicit scope statement, remote + local install options, and updated tool catalogue (17 → 20 tools).
+
+### Endpoints (internal, public via `/api/mcp/*`)
+
+- `GET /api/mcp/recent-amendments`
+- `GET /api/mcp/search-taiwan-drug`
+- `GET /api/mcp/lookup-icd10`
+- `POST /api/mcp` — top-level JSON-RPC remote MCP entry
+- `GET /api/mcp-status` — health + capability surface
+
+### Note
+
+This is a feature release; no breaking changes to existing tools. Total tool count: 17 → 20.
+
 ## [0.6.4] — 2026-05-07
 
 ### Changed

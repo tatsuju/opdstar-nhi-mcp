@@ -151,3 +151,81 @@ export interface RejectionCodesByCategoryResult {
   results: RejectionCodeItem[];
   message?: string;
 }
+
+// ─── v0.7.0 additions ───────────────────────────────────────────────
+
+export interface NhiAmendmentItem {
+  effective_date: string | null;
+  announce_date: string | null;
+  amendment_type: 'primary' | 'comparison' | string;
+  target_document: string;
+  title: string;
+  description: string | null;
+  doc_url: string | null;
+  odt_url: string | null;
+  pdf_url: string | null;
+  source_url: string;
+}
+
+export interface RecentNhiAmendmentsResult {
+  filters: {
+    since_days: number;
+    type: 'primary' | 'comparison' | 'all';
+    limit: number;
+  };
+  since_date: string;
+  count: number;
+  results: NhiAmendmentItem[];
+}
+
+export interface TaiwanDrugItem {
+  generic_name: string;
+  generic_name_zh: string | null;
+  brand_names: string[];
+  aliases: string[];
+  strength: string | null;
+  dosage_form: string | null;
+  route: string | null;
+  nhi_drug_code: string | null;
+  atc_code: string | null;
+  drug_category: string | null;
+  therapeutic_class: string | null;
+  specialties: string[];
+  is_compound: boolean;
+  effective_date: string | null;
+  source_document: string | null;
+  source_url: string;
+}
+
+export interface SearchTaiwanDrugResult {
+  filters: {
+    query: string | null;
+    atc_prefix: string | null;
+    form: string | null;
+    limit: number;
+  };
+  query_kind: 'nhi_code' | 'atc_code' | 'text' | 'atc_only';
+  count: number;
+  results: TaiwanDrugItem[];
+}
+
+export interface Icd10CmItem {
+  code: string;
+  description_en?: string;
+  description_zh?: string;
+  category: string;
+  specialties: string[];
+  source_url: string;
+}
+
+export interface LookupIcd10CmResult {
+  filters: {
+    code: string | null;
+    keyword: string | null;
+    lang: 'en' | 'zh' | 'both';
+    limit: number;
+  };
+  count: number;
+  scope_note: string;
+  results: Icd10CmItem[];
+}
