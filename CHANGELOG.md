@@ -5,6 +5,28 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] — 2026-05-13
+
+### Added
+
+- MCP spec tool annotations on all 20 tools:
+  - `annotations.title` — user-friendly title shown in MCP clients
+  - `annotations.readOnlyHint: true` — every tool is read-only
+  - `annotations.destructiveHint: false`
+  - `annotations.idempotentHint: true` — same input returns the same
+    output within the dataset's freshness window
+  - `annotations.openWorldHint: false` — closed Taiwan NHI dataset,
+    not arbitrary web
+
+  Injected centrally in `src/http-handler.ts` so the same shape ships
+  on both stdio and the remote HTTPS endpoint. No per-tool edits.
+
+### Why
+
+Required for the Anthropic MCP Directory listing — directories need
+human-readable labels and accurate behaviour hints so clients can
+auto-allow read-only tools and display tool metadata correctly.
+
 ## [0.7.0] — 2026-05-13
 
 ### Added

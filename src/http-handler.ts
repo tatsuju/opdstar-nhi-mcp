@@ -42,7 +42,7 @@ import { RECENT_NHI_AMENDMENTS_DEF, runRecentNhiAmendments } from './tools/recen
 import { SEARCH_TAIWAN_DRUG_DEF, runSearchTaiwanDrug } from './tools/searchTaiwanDrug.js';
 import { LOOKUP_ICD10_CM_DEF, runLookupIcd10Cm } from './tools/lookupIcd10Cm.js';
 
-export const TOOL_DEFS = [
+const RAW_TOOL_DEFS = [
   LOOKUP_REJECTION_CODE_DEF,
   GET_PROCEDURES_FOR_ICD_DEF,
   GET_INDICATOR_DEF,
@@ -64,6 +64,61 @@ export const TOOL_DEFS = [
   SEARCH_TAIWAN_DRUG_DEF,
   LOOKUP_ICD10_CM_DEF,
 ] as const;
+
+/**
+ * User-friendly tool titles surfaced via MCP `annotations.title`.
+ * Required by the Anthropic MCP Directory listing so clients can
+ * display a human-readable label next to the machine-readable name.
+ */
+const TOOL_TITLES: Record<string, string> = {
+  lookup_rejection_code: 'Lookup NHI Rejection Code',
+  get_procedures_for_icd: 'Get NHI Procedures for ICD-10',
+  get_indicator: 'Get NHI Audit Indicator',
+  search_nhi_wiki: 'Search NHI Wiki',
+  get_drug_rules: 'Get NHI Drug Payment Rules',
+  get_safe_phrases: 'Get Safe SOAP Phrases',
+  search_audit_guidelines: 'Search NHI Audit Guidelines',
+  get_rejection_code_category: 'Browse Rejection Codes by Category',
+  lookup_drug: 'Lookup NHI Drug',
+  lookup_fee_code: 'Lookup NHI Fee Schedule',
+  lookup_audit_clauses_for_procedure: 'Audit Clauses for a Procedure Code',
+  lookup_audit_clauses_for_specialty: 'Audit Clauses by Specialty',
+  lookup_major_illness: 'Lookup Major-Illness Category',
+  check_icd_for_major_illness_eligibility: 'Check ICD for Major-Illness Coverage',
+  lookup_audit_indicator: 'Lookup Audit Indicator Detail',
+  lookup_appeal_statistics_by_category: 'Appeal Statistics by Category',
+  count_appeal_precedents_for_rejection_code: 'Count Appeal Precedents',
+  recent_nhi_amendments: 'Recent NHI Rule Amendments',
+  search_taiwan_drug: 'Search Taiwan Drug Catalog',
+  lookup_icd10_cm: 'Lookup ICD-10-CM Code',
+};
+
+/**
+ * Every tool in this server is a uniform read-only reference to a
+ * closed Taiwan NHI dataset, so the four MCP behaviour hints are the
+ * same for all 20 tools. Centralizing here keeps individual tool
+ * files free of boilerplate.
+ *
+ *   readOnlyHint   — no state mutation
+ *   destructiveHint — no destructive operations
+ *   idempotentHint — same input returns the same output within the
+ *                    dataset's freshness window (updated monthly+)
+ *   openWorldHint  — closed dataset; does not browse arbitrary URLs
+ */
+const SHARED_ANNOTATIONS = {
+  readOnlyHint: true,
+  destructiveHint: false,
+  idempotentHint: true,
+  openWorldHint: false,
+} as const;
+
+export const TOOL_DEFS = RAW_TOOL_DEFS.map((def) => ({
+  ...def,
+  annotations: {
+    title: TOOL_TITLES[def.name] ?? def.name,
+    ...SHARED_ANNOTATIONS,
+  },
+}));
 
 export interface ToolCallContent {
   content: Array<{ type: 'text'; text: string }>;
