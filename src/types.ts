@@ -67,6 +67,22 @@ export interface SearchWikiResult {
   results: WikiHit[];
 }
 
+export interface InterpretationHit {
+  doc_no: string;
+  doc_category: string;
+  issue_date: string | null;
+  subject: string;
+  excerpt: string;
+  source_url_nhi: string | null;
+  source_url_opdstar: string;
+}
+
+export interface SearchInterpretationsResult {
+  query: string;
+  count: number;
+  results: InterpretationHit[];
+}
+
 // ─── v0.2.0 additions ───────────────────────────────────────────────
 
 export interface DrugRuleItem {

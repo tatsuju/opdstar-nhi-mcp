@@ -5,6 +5,25 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] — 2026-05-18
+
+### Added
+
+- **`search_nhi_interpretations`** — search Taiwan's official NHI
+  administrative interpretations (健保署行政函釋 / 函令): the binding
+  公告 and 解釋函 that clarify how payment rules, drug-formulary
+  provisions, special-material coverage, and review policy apply in
+  practice. Returns ranked excerpts, each with the official document
+  number (字號), issue date, 主旨, a content excerpt, and the government
+  source URL. Use it when a question turns on an official ruling rather
+  than a code definition.
+
+### Why
+
+Agents answering Taiwan NHI questions often need the authoritative 函釋
+behind a payment or review rule, not just the code definition. This adds
+a search-only, reference-level interface for that layer.
+
 ## [0.7.1] — 2026-05-13
 
 ### Added

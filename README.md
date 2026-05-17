@@ -153,7 +153,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) o
 }
 ```
 
-Restart Claude Desktop. You should see **20 tools** appear in the tools menu.
+Restart Claude Desktop. You should see **21 tools** appear in the tools menu.
 
 ### Cursor config
 
@@ -514,6 +514,16 @@ Look up ICD-10-CM codes with English / 中文 descriptions, category, and the OP
 **Arguments**: `{ code?: string, keyword?: string, lang?: 'en' | 'zh' | 'both', limit?: number }`
 
 > Currently backed by the OPDSTAR specialty-keyed Taiwan-relevant subset; the full CMS public-domain ICD-10-CM 2025 set will be merged in a later release.
+
+---
+
+### 21. `search_nhi_interpretations` <sub>v0.8</sub>
+
+Search Taiwan's official NHI administrative interpretations (健保署行政函釋 / 函令) — the binding 公告 and 解釋函 that clarify how payment rules, drug-formulary provisions, and review policy apply in practice. Returns ranked excerpts, each with the official document number (字號), issue date, 主旨, a content excerpt, and the government source URL.
+
+**Arguments**: `{ query: string, limit?: number }`
+
+> Reference only — the official 健保署 / 衛福部 publication is authoritative; open the source URL for the binding text.
 
 ---
 

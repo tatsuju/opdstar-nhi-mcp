@@ -19,6 +19,10 @@ import { LOOKUP_REJECTION_CODE_DEF, runLookupRejectionCode } from './tools/looku
 import { GET_PROCEDURES_FOR_ICD_DEF, runGetProceduresForIcd } from './tools/getProceduresForIcd.js';
 import { GET_INDICATOR_DEF, runGetIndicator } from './tools/getIndicator.js';
 import { SEARCH_NHI_WIKI_DEF, runSearchNhiWiki } from './tools/searchNhiWiki.js';
+import {
+  SEARCH_NHI_INTERPRETATIONS_DEF,
+  runSearchNhiInterpretations,
+} from './tools/searchNhiInterpretations.js';
 import { GET_DRUG_RULES_DEF, runGetDrugRules } from './tools/getDrugRules.js';
 import { GET_SAFE_PHRASES_DEF, runGetSafePhrases } from './tools/getSafePhrases.js';
 import { SEARCH_AUDIT_GUIDELINES_DEF, runSearchAuditGuidelines } from './tools/searchAuditGuidelines.js';
@@ -47,6 +51,7 @@ const RAW_TOOL_DEFS = [
   GET_PROCEDURES_FOR_ICD_DEF,
   GET_INDICATOR_DEF,
   SEARCH_NHI_WIKI_DEF,
+  SEARCH_NHI_INTERPRETATIONS_DEF,
   GET_DRUG_RULES_DEF,
   GET_SAFE_PHRASES_DEF,
   SEARCH_AUDIT_GUIDELINES_DEF,
@@ -75,6 +80,7 @@ const TOOL_TITLES: Record<string, string> = {
   get_procedures_for_icd: 'Get NHI Procedures for ICD-10',
   get_indicator: 'Get NHI Audit Indicator',
   search_nhi_wiki: 'Search NHI Wiki',
+  search_nhi_interpretations: 'Search NHI Official Interpretations',
   get_drug_rules: 'Get NHI Drug Payment Rules',
   get_safe_phrases: 'Get Safe SOAP Phrases',
   search_audit_guidelines: 'Search NHI Audit Guidelines',
@@ -144,6 +150,9 @@ export async function callToolByName(
         break;
       case 'search_nhi_wiki':
         result = await runSearchNhiWiki(client, args as never);
+        break;
+      case 'search_nhi_interpretations':
+        result = await runSearchNhiInterpretations(client, args as never);
         break;
       case 'get_drug_rules':
         result = await runGetDrugRules(client, args as never);
