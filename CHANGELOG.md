@@ -5,6 +5,31 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] — 2026-05-19
+
+### Added
+
+- **`lookup_preventive_service`** — browse Taiwan NHI preventive-care and
+  screening services: adult health checks, the major cancer screenings
+  (breast, cervical, colorectal, oral, lung LDCT), prenatal care, child
+  preventive health, and child dental fluoride / pit-and-fissure sealant
+  programs. Returns each service's target population, age / sex
+  eligibility, subsidy frequency, and screening tool.
+- **`lookup_chronic_prescription_rule`** — given an ICD-10 code or a
+  disease name, look up whether a condition falls within Taiwan's
+  official chronic-disease scope for continuous prescriptions
+  (慢性病連續處方箋), with the dispensing day limits (per dispense,
+  total medication days, prescription validity).
+- **`lookup_point_value`** — look up Taiwan NHI floating point values
+  (浮動點值): the settled per-point payment amount by region and
+  total-budget sector, for estimating actual reimbursement.
+
+### Why
+
+These three tools extend the server into preventive care,
+continuous-prescription eligibility, and reimbursement-rate reference —
+three layers outpatient agents routinely need beyond code definitions.
+
 ## [0.8.0] — 2026-05-18
 
 ### Added

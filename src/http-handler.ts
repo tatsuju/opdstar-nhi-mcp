@@ -45,6 +45,12 @@ import { COUNT_APPEAL_PRECEDENTS_DEF, runCountAppealPrecedents } from './tools/c
 import { RECENT_NHI_AMENDMENTS_DEF, runRecentNhiAmendments } from './tools/recentNhiAmendments.js';
 import { SEARCH_TAIWAN_DRUG_DEF, runSearchTaiwanDrug } from './tools/searchTaiwanDrug.js';
 import { LOOKUP_ICD10_CM_DEF, runLookupIcd10Cm } from './tools/lookupIcd10Cm.js';
+import { LOOKUP_PREVENTIVE_SERVICE_DEF, runLookupPreventiveService } from './tools/lookupPreventiveService.js';
+import {
+  LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF,
+  runLookupChronicPrescriptionRule,
+} from './tools/lookupChronicPrescriptionRule.js';
+import { LOOKUP_POINT_VALUE_DEF, runLookupPointValue } from './tools/lookupPointValue.js';
 
 const RAW_TOOL_DEFS = [
   LOOKUP_REJECTION_CODE_DEF,
@@ -68,6 +74,9 @@ const RAW_TOOL_DEFS = [
   RECENT_NHI_AMENDMENTS_DEF,
   SEARCH_TAIWAN_DRUG_DEF,
   LOOKUP_ICD10_CM_DEF,
+  LOOKUP_PREVENTIVE_SERVICE_DEF,
+  LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF,
+  LOOKUP_POINT_VALUE_DEF,
 ] as const;
 
 /**
@@ -97,6 +106,9 @@ const TOOL_TITLES: Record<string, string> = {
   recent_nhi_amendments: 'Recent NHI Rule Amendments',
   search_taiwan_drug: 'Search Taiwan Drug Catalog',
   lookup_icd10_cm: 'Lookup ICD-10-CM Code',
+  lookup_preventive_service: 'Lookup Preventive-Care Service',
+  lookup_chronic_prescription_rule: 'Lookup Chronic-Prescription Rule',
+  lookup_point_value: 'Lookup NHI Floating Point Value',
 };
 
 /**
@@ -201,6 +213,15 @@ export async function callToolByName(
         break;
       case 'lookup_icd10_cm':
         result = await runLookupIcd10Cm(client, args as never);
+        break;
+      case 'lookup_preventive_service':
+        result = await runLookupPreventiveService(client, args as never);
+        break;
+      case 'lookup_chronic_prescription_rule':
+        result = await runLookupChronicPrescriptionRule(client, args as never);
+        break;
+      case 'lookup_point_value':
+        result = await runLookupPointValue(client, args as never);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);

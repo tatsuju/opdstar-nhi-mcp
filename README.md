@@ -153,7 +153,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) o
 }
 ```
 
-Restart Claude Desktop. You should see **21 tools** appear in the tools menu.
+Restart Claude Desktop. You should see **24 tools** appear in the tools menu.
 
 ### Cursor config
 
@@ -527,6 +527,36 @@ Search Taiwan's official NHI administrative interpretations (健保署行政函�
 
 ---
 
+### 22. `lookup_preventive_service` <sub>v0.9</sub>
+
+Browse Taiwan NHI preventive-care and screening services — adult health checks, the major cancer screenings (breast, cervical, colorectal, oral, lung LDCT), prenatal care, child preventive health, and child dental fluoride / pit-and-fissure sealant programs. Returns each service's target population, age / sex eligibility, subsidy frequency, and screening tool.
+
+**Arguments**: `{ category?: string, keyword?: string }`
+
+> Reference only — eligibility and subsidy follow the official 衛生福利部 announcements; the screening provider confirms eligibility at the point of service.
+
+---
+
+### 23. `lookup_chronic_prescription_rule` <sub>v0.9</sub>
+
+Look up Taiwan NHI chronic-disease continuous-prescription (慢性病連續處方箋) rules. Given an ICD-10 code or a disease name, returns whether the condition falls within the official chronic-disease scope and its dispensing limits — maximum days per dispense, maximum total medication days, and prescription validity.
+
+**Arguments**: `{ icd_code?: string, disease?: string, category?: string }`
+
+> Reference only — the issuing physician confirms the patient's condition is stable per the official 全民健康保險醫療辦法 慢性病範圍.
+
+---
+
+### 24. `lookup_point_value` <sub>v0.9</sub>
+
+Look up Taiwan NHI floating point values (浮動點值) — the settled per-point payment amount by region and total-budget sector. Taiwan NHI reimburses on a points system under a global budget, so one claimed point is usually worth less than NT$1. With no year, returns the latest settled value per region × sector; with a year, returns the quarterly time series. Useful for estimating actual reimbursement (claimed points × point value ≈ amount paid).
+
+**Arguments**: `{ region?: string, sector?: string, year?: number, quarter?: number, metric?: string }`
+
+> Reference only — official figures are published quarterly by 衛生福利部中央健康保險署.
+
+---
+
 ## How it works
 
 ```
@@ -538,7 +568,7 @@ Search Taiwan's official NHI administrative interpretations (健保署行政函�
            ▼
 ┌────────────────────┐
 │  @opdstar/nhi-mcp  │   (npm: stdio · or remote: HTTPS JSON-RPC)
-│ 20 read-only tools │
+│ 24 read-only tools │
 └──────────┬─────────┘
            │ HTTPS
            ▼

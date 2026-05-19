@@ -1,6 +1,6 @@
 {
   "name": "@opdstar/nhi-mcp",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "The MCP server for Taiwan NHI billing intelligence \u2014 rejection codes, audit clauses, drug payment rules, fee schedule, special materials, and appeal case precedents. Helps AI agents answer Taiwan health-insurance billing and audit questions with authoritative data. Powered by OPDSTAR (https://opdstar.com).",
   "keywords": [
     "mcp",
