@@ -10,6 +10,15 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: "development"
+    ignore:
+      # Block major bumps that need manual verification.
+      # Minor and patch updates still flow through automatically.
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -17,3 +26,8 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    ignore:
+      # Block setup-node major bumps — OIDC trusted publishing path
+      # needs smoke-test verification before upgrading.
+      - dependency-name: "actions/setup-node"
+        update-types: ["version-update:semver-major"]
