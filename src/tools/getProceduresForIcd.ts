@@ -3,8 +3,8 @@ import type { ProceduresForIcdResult } from '../types.js';
 
 const SPECIALTIES = [
   'dermatology','internal','family','pediatrics','ent','ophthalmology','orthopedics',
-  'pmr','gastro','urology','psychiatry','neurology','cardiology','pulmonology',
-  'surgery','obstetrics_gynecology','infectious','rheumatology','dentistry','tcm',
+  'pmr','gastroenterology','urology','psychiatry','neurology','cardiology','pulmonology',
+  'general_surgery','obgyn','infectious_disease','rheumatology','dentistry','tcm',
 ] as const;
 
 export const GET_PROCEDURES_FOR_ICD_DEF = {
@@ -24,7 +24,7 @@ export const GET_PROCEDURES_FOR_ICD_DEF = {
       specialty: {
         type: 'string',
         description:
-          "Required. The clinician's specialty (lowercase ID). Curated mappings differ by specialty because procedure relevance is specialty-specific (e.g. L30.9 in dermatology surfaces topical-treatment codes; in family medicine surfaces general-care codes). Pass the closest match — e.g. 'internal' for internal medicine, 'obstetrics_gynecology' for OB/GYN, 'tcm' for traditional Chinese medicine.",
+          "Required. The clinician's specialty (lowercase ID). Curated mappings differ by specialty because procedure relevance is specialty-specific (e.g. L30.9 in dermatology surfaces topical-treatment codes; in family medicine surfaces general-care codes). Pass the closest match — e.g. 'internal' for internal medicine, 'obgyn' for OB/GYN, 'general_surgery' for general surgery, 'gastroenterology' for GI, 'infectious_disease' for ID, 'tcm' for traditional Chinese medicine.",
         enum: [...SPECIALTIES],
       },
       limit: {

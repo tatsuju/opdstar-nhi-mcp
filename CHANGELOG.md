@@ -5,6 +5,22 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] — 2026-05-28
+
+### Fixed
+
+- **`get_procedures_for_icd`** — four specialty IDs (`gastro`, `surgery`,
+  `obstetrics_gynecology`, `infectious`) did not match the backend
+  canonical naming and were returning empty result sets. The enum now
+  uses the four RPC-accepted values; description examples were updated
+  to match.
+
+### Internal
+
+- Synced the in-source `VERSION` constant with `package.json` so the
+  `USER-AGENT` header reports the published version (was reporting a
+  stale value).
+
 ## [0.9.0] — 2026-05-19
 
 ### Added
