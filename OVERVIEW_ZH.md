@@ -69,7 +69,7 @@ AI 呼叫 `search_nhi_wiki`，回：
 | `lookup_rejection_code` | 5 碼核刪代碼（0317A、0338A...）| 嚴重度、類別、官方說明 | v0.1 |
 | `get_rejection_code_category` | 類別代碼（00-09）| 該類別所有核刪代碼 | v0.2 |
 | `get_procedures_for_icd` | ICD-10 + 專科 | 該科對該診斷的處置碼清單、點數、審查注意 | v0.1 |
-| `get_indicator` | 指標代碼（008/014/027/P043）| 閾值、適用藥物類別、適用 ICD | v0.1 |
+| `get_indicator` | 指標代碼 | 閾值、適用藥物類別、適用 ICD | v0.1 |
 | `search_nhi_wiki` | 自然語言問題 | 健保署官方 Wiki 片段（語意 + 全文檢索）| v0.1 |
 | `get_drug_rules` | 科別 / 拒付碼 / 藥品分類 | 藥品給付規定限制 | v0.2 |
 | `get_safe_phrases` | 科別 + 情境 | 安全句型 preview（完整句型庫為付費）| v0.2 |

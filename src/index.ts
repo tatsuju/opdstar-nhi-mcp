@@ -8,7 +8,7 @@
  *
  * Tool registry + dispatcher lives in `./http-handler.ts` so the same
  * surface can be exposed over stdio (this entry) and over HTTPS JSON-RPC
- * (opdstar.com `/api/mcp` Vercel edge route).
+ * (opdstar.com `/api/mcp` endpoint).
  *
  * Runs over stdio. Invoke via `npx @opdstar/nhi-mcp`.
  */

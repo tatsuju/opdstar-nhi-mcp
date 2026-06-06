@@ -84,6 +84,7 @@ SCAN_GLOBS=(
   "src/version.ts"
   "src/client.ts"
   ".github/workflows/*.yml"
+  ".github/ISSUE_TEMPLATE/*.md"
   "docs/*.html"
   "docs/zh/*.html"
   "docs/_config.yml"
@@ -153,7 +154,7 @@ run_audit "Audit 2 — Methods + sources" \
 # '5 engines' / 'five engines' reveals OPDSTAR internal architecture.
 # 'vector + keyword index' / 'vector index' is a pgvector implementation hint.
 run_audit "Audit 3 — Tech stack specifics" \
-  '(Supabase|PostgREST|pgvector|Vercel Edge|Gemini 768d|iad1|5 engines|five engines|vector \+ keyword|vector index)' \
+  '(Supabase|PostgREST|pgvector|Vercel Edge|Gemini 768d|iad1|5 engines|five engines|[0-9]+-engine|five-engine|vector \+ keyword|vector index)' \
   ''
 
 # ─── Audit 4: row counts in NHI context (plain, no comma) ─────
@@ -161,14 +162,69 @@ run_audit "Audit 3 — Tech stack specifics" \
 # The existing Audit 1 pattern catches comma-formatted counts (1,497 / 8,232).
 # This pattern catches 2-4 digit counts adjacent to NHI-specific subjects.
 run_audit "Audit 4 — Plain row counts in NHI context" \
-  '\b[0-9]{2,4}\s+(rejection codes?|NHI rejection|個核刪|核刪代碼|procedure codes?|處置碼|wiki chunks?|Wiki 片段|chunks of|筆處置|筆函釋|個函釋|specialties|大專科)' \
+  '\b[0-9]{2,4}\s+(rejection codes?|NHI rejection|個核刪|核刪代碼|procedure codes?|處置碼|wiki chunks?|Wiki 片段|chunks of|筆處置|筆函釋|個函釋|specialties|大專科|codes? (currently )?(indexed|grouped)|rules? (and growing|indexed)|procedures? (and growing|indexed)|rows? (and growing|indexed))' \
   ''
+
+# ─── Audit 6: architecture / method leaks (zero legitimate uses → NO exclusions) ─
+# '5-engine' / 'proprietary prompt' must never appear regardless of what else is
+# on the line. Unlike Audit 1-4 this does NOT apply SAFE_LINE_RE — that line-level
+# exclusion is why the live README leak slipped through (the leak shared a line
+# with 'opdstar.com', which SAFE_LINE_RE whitelists).
+echo ""
+echo "── Audit 6 — Architecture / method leaks (no exclusions) ──"
+arch_hits=0
+arch_matches=""
+for glob in "${SCAN_GLOBS[@]}"; do
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    arch_matches+="$line"$'\n'
+    arch_hits=$((arch_hits + 1))
+  done < <(grep -rnEi '([0-9]+[- ]engines?|five[- ]engines?|proprietary prompt|prompt engineering)' $glob 2>/dev/null || true)
+done
+if [[ $arch_hits -eq 0 ]]; then
+  echo -e "  ${GREEN}✓${NC} clean"
+else
+  echo -e "  ${RED}✗ ${arch_hits} architecture/method leak(s)${NC}"
+  if [[ $VERBOSE -eq 1 ]]; then
+    echo "$arch_matches" | head -20 | sed 's/^/    /'
+  else
+    echo "    (run with --verbose to see matches)"
+  fi
+  LEAKS=$((LEAKS + arch_hits))
+fi
+
+# ─── Audit 7: proprietary indicator-set enumeration + vector tells (no exclusions) ─
+# Enumerating ≥2 of the monitored prescribing-pattern indicators (008/014/027/P043)
+# together reveals the engine trigger map; a `similarity:` JSON field is a vector/
+# cosine-search tell. Neither should appear on any public surface.
+echo ""
+echo "── Audit 7 — Indicator-set / vector tells (no exclusions) ──"
+ind_hits=0
+ind_matches=""
+for glob in "${SCAN_GLOBS[@]}"; do
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    ind_matches+="$line"$'\n'
+    ind_hits=$((ind_hits + 1))
+  done < <(grep -rnE '((008|014|027|P043)[^0-9A-Za-z]{1,60}(008|014|027|P043)|"?similarity"?[[:space:]]*:)' $glob 2>/dev/null || true)
+done
+if [[ $ind_hits -eq 0 ]]; then
+  echo -e "  ${GREEN}✓${NC} clean"
+else
+  echo -e "  ${RED}✗ ${ind_hits} indicator-set / vector leak(s)${NC}"
+  if [[ $VERBOSE -eq 1 ]]; then
+    echo "$ind_matches" | head -20 | sed 's/^/    /'
+  else
+    echo "    (run with --verbose to see matches)"
+  fi
+  LEAKS=$((LEAKS + ind_hits))
+fi
 
 # ─── Audit 5: dist bundle (built artifact ships to every MCP client) ─
 echo ""
 echo "── Audit 5 — dist bundle ──"
 if [[ -f dist/index.js ]]; then
-  bundle_leaks=$(grep -oE '(crawl|scrape|markitdown|firecrawl|Dataset A21|OpenData|Supabase|PostgREST|pgvector|Gemini 768d)' dist/index.js | sort -u || true)
+  bundle_leaks=$(grep -oE '(crawl|scrape|markitdown|firecrawl|Dataset A21|OpenData|Supabase|PostgREST|pgvector|Gemini 768d|P043|"similarity")' dist/index.js | sort -u || true)
   if [[ -z "$bundle_leaks" ]]; then
     echo -e "  ${GREEN}✓${NC} bundle clean"
   else

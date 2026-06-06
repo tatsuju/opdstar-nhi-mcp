@@ -97,7 +97,7 @@ It auto-calls the right tools and pulls real NHI data:
 
 - **NHI rejection codes** (e.g. `0317A`, `0338A`) with severity + category, browsable by category (00–09)
 - **NHI procedure codes** across major specialties, mapped to ICD-10
-- **NHI audit indicators** (008 / 014 / 027 / P043 and others) with thresholds and applicable specialty
+- **NHI audit indicators** with thresholds and applicable specialty
 - **NHI 審查注意事項 (audit clauses)** by procedure code or specialty, with risk flags
 - **NHI drug catalog and 藥品給付規定** — search formulary + look up payment rules
 - **NHI fee schedule** — current effective 全民健康保險醫療服務給付項目及支付標準
@@ -257,7 +257,6 @@ Semantic + full-text search over Taiwan's official NHI wiki (9 categories).
       {
         "title": "慢性病連續處方箋使用規定",
         "content": "慢性病連續處方箋每次調劑之藥品使用期間，最長以 3 個月為限...",
-        "similarity": 0.87,
         "source_url_nhi": "https://www.nhi.gov.tw/ch/cp-XXX.html",
         "source_url_opdstar": "https://opdstar.com/ask?q=..."
       }
@@ -602,7 +601,7 @@ Look up Taiwan NHI floating point values (浮動點值) — the settled per-poin
 - ❌ Does NOT make diagnostic or prescribing recommendations
 - ❌ Does NOT constitute clinical decision support (SaMD)
 
-Final clinical judgment remains with the treating physician. For end-to-end audit with OPDSTAR's 5-engine risk prediction, use the full app at [opdstar.com](https://opdstar.com).
+Final clinical judgment remains with the treating physician. For end-to-end audit with OPDSTAR's multi-layer risk prediction, use the full app at [opdstar.com](https://opdstar.com).
 
 Data sourced from [健保署全球資訊網](https://www.nhi.gov.tw/) (public) and curated by the OPDSTAR team.
 
@@ -652,7 +651,7 @@ Tool arguments and responses support both **Traditional Chinese (繁體中文)**
 
 ### Can this replace the full OPDSTAR SaaS product?
 
-**No — different scope.** This MCP offers read-only lookups. The full [OPDSTAR](https://opdstar.com) product provides AI-powered chart translation, real-time audit risk detection with a 5-engine rule system, safe-phrase suggestion, and personalized prescription tracking — all requiring proprietary prompt engineering and clinical knowledge that remains closed-source.
+**No — different scope.** This MCP offers read-only lookups. The full [OPDSTAR](https://opdstar.com) product provides AI-powered chart translation, real-time audit risk detection, safe-phrase suggestion, and personalized prescription tracking — built on closed-source clinical logic and a curated knowledge base.
 
 ### How do I report wrong data or propose new tools?
 
@@ -668,14 +667,7 @@ For sensitive issues: `support@opdstar.com`.
 
 ## Trusted data sources
 
-All data is curated from publicly available Taiwan NHI resources:
-
-- [健保署全球資訊網](https://www.nhi.gov.tw/) — official NHI website
-- 專業審查注意事項 (audit guidelines)
-- 不予支付理由代碼 (rejection codes)
-- 藥品給付規定 (drug payment rules)
-- 健保醫療費用申報與審查電腦作業手冊 (claims submission manual)
-- 全民健康保險醫療服務給付項目及支付標準 (fee schedule)
+All data is curated from publicly available Taiwan NHI publications on the [健保署全球資訊網](https://www.nhi.gov.tw/) — covering audit, payment, and fee-schedule references.
 
 Data is kept in sync with the latest official publications.
 

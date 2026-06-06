@@ -5,6 +5,12 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2] — 2026-06-06
+
+### Changed
+
+- Tool descriptions and documentation reworded for clarity and consistency.
+
 ## [0.9.1] — 2026-05-28
 
 ### Fixed
@@ -246,7 +252,7 @@ Taiwan's first public Model Context Protocol server for National Health Insuranc
 
 - `lookup_rejection_code(code)` — NHI rejection codes (5-char, e.g. `0317A`)
 - `get_procedures_for_icd(icd10, specialty, limit?)` — NHI procedures across major specialties
-- `get_indicator(code)` — NHI audit indicators with thresholds (008, 014, 027, P043)
+- `get_indicator(code)` — NHI audit indicators with thresholds
 - `search_nhi_wiki(query, category?, limit?)` — semantic + full-text search of NHI wiki
 
 **Client features:**

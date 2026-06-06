@@ -55,7 +55,6 @@ export interface WikiHit {
   content: string;
   chunk_type: string;
   specialty: string | null;
-  similarity: number;
   source_url_nhi: string | null;
   source_url_opdstar: string;
 }

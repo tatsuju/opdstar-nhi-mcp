@@ -3,14 +3,14 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_AUDIT_INDICATOR_DEF = {
   name: 'lookup_audit_indicator',
   description:
-    "Look up Taiwan NHI 分析審查不予支付指標 (official threshold-based audit rules where claims exceeding a percentage are denied) — returns indicator code, category, threshold, applicable specialty, monitored procedure codes, and official action description. **Use when** an agent needs to know whether a procedure code is under a percentage-cap audit (e.g. '23401C' is monitored by indicator 001 眼科局部處置申報率, 30% threshold). Omit `indicator_code` to browse by category / specialty / procedure. **Don't use** for prescribing-pattern indicators (008 / 014 / 027 / P043 etc.) — those live in `get_indicator`. **Reference only** — thresholds change with each official release. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up Taiwan NHI 分析審查不予支付指標 (official threshold-based audit rules where claims exceeding a percentage are denied) — returns indicator code, category, threshold, applicable specialty, monitored procedure codes, and official action description. **Use when** an agent needs to know whether a procedure code is under a percentage-cap audit (e.g. '23401C' is monitored by indicator 001 眼科局部處置申報率, 30% threshold). Omit `indicator_code` to browse by category / specialty / procedure. **Don't use** for prescribing-pattern indicators — those live in `get_indicator`. **Reference only** — thresholds change with each official release. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
       indicator_code: {
         type: 'string',
         description:
-          "Optional 1-4 char indicator code (e.g. '001', '008', '027', '043'). If omitted, returns indicators filtered by other params.",
+          "Optional 1-4 char indicator code. If omitted, returns indicators filtered by other params.",
       },
       category: {
         type: 'string',

@@ -3,7 +3,7 @@
  *
  * Used by:
  *   - src/index.ts (stdio transport)
- *   - opdstar.com `api/mcp.ts` Vercel edge route (HTTPS JSON-RPC transport)
+ *   - opdstar.com `/api/mcp` HTTPS JSON-RPC endpoint
  *
  * Exports:
  *   - TOOL_DEFS — array of all tool definitions

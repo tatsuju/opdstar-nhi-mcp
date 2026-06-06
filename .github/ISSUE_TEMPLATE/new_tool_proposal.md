@@ -20,7 +20,7 @@ Required criteria (check all that apply):
 
 - [ ] Data source is **publicly available** on 健保署 website or other public Taiwan gov resource
 - [ ] Tool is **read-only** (no writes, no personal data)
-- [ ] Tool does **not** overlap with OPDSTAR's private features (5-engine audit, AI optimization, safe phrases)
+- [ ] Tool does **not** overlap with OPDSTAR's private features (audit risk detection, optimization, safe phrases)
 - [ ] Response shape is **small and structured** (fits in a single MCP tool response)
 
 ## Proposed interface
