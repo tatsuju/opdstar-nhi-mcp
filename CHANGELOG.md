@@ -5,6 +5,37 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.3] — 2026-09-14
+
+### Added
+
+- **`lookup_sampling_audit_rules(region?, rule_group?, specialty?)`** — look up
+  the 專業審查抽審指標 that determine which clinics get selected for
+  professional claim review: mandatory-audit triggers (new-contract clinics,
+  annual rotation, disciplinary actions), weighted scoring indicators,
+  growth-rate thresholds that remove audit exemption, and exemption
+  conditions. Each rule returns its official definition text alongside
+  structured thresholds. Thresholds are set independently by each NHI
+  regional division and are not interchangeable, so `region` should always be
+  passed; a region that is not yet covered returns an empty result set rather
+  than "this region has no rules".
+
+### Changed
+
+- **`lookup_audit_indicator`** — each indicator now also carries structured
+  thresholds (value, unit, and any tiered levels) beside the existing
+  threshold percentage and original wording, so an agent no longer has to
+  parse the text to compare against a clinic's own figures.
+
+### Fixed
+
+- **`lookup_fee_code`** — the `category` argument was documented as a 1–2
+  character *prefix* labelled `'A0'-'D9' 牙醫`. Both halves were wrong: the
+  filter is an exact match on the code's first two characters (a bucket), and
+  those buckets are 中醫, not 牙醫. Filtering behaviour is unchanged — only
+  the documentation was misleading. The description now lists the 中醫
+  buckets and flags the ones that mix 中醫 with 西醫 items.
+
 ## [0.9.2] — 2026-06-06
 
 ### Changed

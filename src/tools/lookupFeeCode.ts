@@ -16,7 +16,7 @@ export const LOOKUP_FEE_CODE_DEF = {
       category: {
         type: 'string',
         description:
-          "Optional 1-2 char category prefix filter. Examples: '00' 基本診療, '01' 麻醉, '06' 手術, '08' 檢驗, 'P1'/'P4' 病例計酬, 'N2' 護理, 'A0'-'D9' 牙醫.",
+          "Optional category filter. Exact match on the code's first two characters (a bucket, not a free-text prefix search): '00101B' is bucket '00'. Examples: '00' 基本診療, '01' 麻醉, '06' 手術, '08' 檢驗, 'P1'/'P4' 病例計酬, 'N2' 護理; 中醫 buckets include 'A0', 'A4', 'A5', 'B7', 'C0', 'CH', 'D0', 'F1'-'F8'. A few buckets mix 中醫 with 西醫 items ('A1', 'A2', 'A3', 'E1', 'F0').",
       },
       icd: {
         type: 'string',

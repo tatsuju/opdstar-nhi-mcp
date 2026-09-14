@@ -153,7 +153,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) o
 }
 ```
 
-Restart Claude Desktop. You should see **24 tools** appear in the tools menu.
+Restart Claude Desktop. You should see **25 tools** appear in the tools menu.
 
 ### Cursor config
 
@@ -554,6 +554,29 @@ Look up Taiwan NHI floating point values (浮動點值) — the settled per-poin
 
 > Reference only — official figures are published quarterly by 衛生福利部中央健康保險署.
 
+### 25. `lookup_sampling_audit_rules` <sub>v0.9.3</sub>
+
+Look up the 專業審查抽審指標 that decide **which clinics** get selected for professional claim review — mandatory-audit triggers (new-contract clinics, annual rotation, disciplinary actions), weighted scoring indicators, growth-rate thresholds that remove audit exemption, and exemption conditions. Each rule carries its official definition text plus structured thresholds. Every NHI regional division sets its own thresholds and they are not interchangeable, so always pass `region`.
+
+**Arguments**: `{ region?: string, rule_group?: string, specialty?: string }`
+
+**Example**:
+```
+> 新開業的診所會被連續抽審多久？（高屏）
+→ [tool call: lookup_sampling_audit_rules(region="kaoping", rule_group="mandatory_management")]
+→ {
+    "results": [{
+      "item_no": "1",
+      "name": "新特約院所",
+      "definition": "首次申報月起連續審查9個月；若已參加分會新特約座談會者，縮短審查期為6個月。",
+      "thresholds": { "audit_months_default": 9, "audit_months_with_seminar": 6 },
+      ...
+    }]
+  }
+```
+
+> Reference only — thresholds are revised quarterly by each region's joint-management meetings. A region that is not yet covered returns an empty result set, which is not the same as "this region has no rules".
+
 ---
 
 ## How it works
@@ -567,7 +590,7 @@ Look up Taiwan NHI floating point values (浮動點值) — the settled per-poin
            ▼
 ┌────────────────────┐
 │  @opdstar/nhi-mcp  │   (npm: stdio · or remote: HTTPS JSON-RPC)
-│ 24 read-only tools │
+│ 25 read-only tools │
 └──────────┬─────────┘
            │ HTTPS
            ▼

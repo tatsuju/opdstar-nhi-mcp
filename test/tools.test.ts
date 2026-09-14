@@ -10,6 +10,7 @@ import { runSearchAuditGuidelines } from '../src/tools/searchAuditGuidelines.js'
 import { runGetRejectionCodeCategory } from '../src/tools/getRejectionCodeCategory.js';
 import { runLookupDrug } from '../src/tools/lookupDrug.js';
 import { runLookupFeeCode } from '../src/tools/lookupFeeCode.js';
+import { runLookupSamplingAuditRules } from '../src/tools/lookupSamplingAuditRules.js';
 
 /**
  * Offline tool tests — mocks global fetch, asserts:
@@ -267,6 +268,33 @@ describe('lookup_fee_code (v0.4)', () => {
     expect(url).toContain('q=');
     expect(url).not.toContain('category=');
     expect(url).not.toContain('icd=');
+  });
+});
+
+describe('lookup_sampling_audit_rules', () => {
+  it('builds GET url with region + rule_group params, lowercased', async () => {
+    mockFetch({
+      filters: { region: 'kaoping', rule_group: 'exemption_exclusion', specialty: null },
+      count: 1,
+      results: [],
+    });
+    const client = new OpdstarClient();
+    await runLookupSamplingAuditRules(client, {
+      region: 'KAOPING',
+      rule_group: 'exemption_exclusion',
+    });
+    const url = String(fetchSpy.mock.calls[0][0]);
+    expect(url).toBe(
+      'https://opdstar.com/api/mcp/lookup-sampling-audit-rules?region=kaoping&rule_group=exemption_exclusion'
+    );
+  });
+
+  it('omits empty filters', async () => {
+    mockFetch({ filters: {}, count: 0, results: [] });
+    const client = new OpdstarClient();
+    await runLookupSamplingAuditRules(client, {});
+    const url = String(fetchSpy.mock.calls[0][0]);
+    expect(url).toBe('https://opdstar.com/api/mcp/lookup-sampling-audit-rules');
   });
 });
 

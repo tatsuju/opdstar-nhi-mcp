@@ -47,6 +47,9 @@ export interface AuditIndicatorEntry {
   nature: string | null;
   threshold_pct: number | null;
   threshold_text: string | null;
+  /** 結構化閾值：{primary, unit:'pct'|'count_per_visit'|'percentile', tiers?:[各層]}。
+   *  unit 區分申報率%／件次／百分位；tiers 保全多層閾值。閾值原文仍見 threshold_text。 */
+  thresholds: { primary: number; unit: 'pct' | 'count_per_visit' | 'percentile'; tiers?: number[] } | null;
   procedure_codes: string[];
   applicable_specialty: string | null;
   action_description: string | null;

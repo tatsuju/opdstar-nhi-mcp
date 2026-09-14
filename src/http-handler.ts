@@ -51,6 +51,10 @@ import {
   runLookupChronicPrescriptionRule,
 } from './tools/lookupChronicPrescriptionRule.js';
 import { LOOKUP_POINT_VALUE_DEF, runLookupPointValue } from './tools/lookupPointValue.js';
+import {
+  LOOKUP_SAMPLING_AUDIT_RULES_DEF,
+  runLookupSamplingAuditRules,
+} from './tools/lookupSamplingAuditRules.js';
 
 const RAW_TOOL_DEFS = [
   LOOKUP_REJECTION_CODE_DEF,
@@ -77,6 +81,7 @@ const RAW_TOOL_DEFS = [
   LOOKUP_PREVENTIVE_SERVICE_DEF,
   LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF,
   LOOKUP_POINT_VALUE_DEF,
+  LOOKUP_SAMPLING_AUDIT_RULES_DEF,
 ] as const;
 
 /**
@@ -109,6 +114,7 @@ const TOOL_TITLES: Record<string, string> = {
   lookup_preventive_service: 'Lookup Preventive-Care Service',
   lookup_chronic_prescription_rule: 'Lookup Chronic-Prescription Rule',
   lookup_point_value: 'Lookup NHI Floating Point Value',
+  lookup_sampling_audit_rules: 'Clinic-Level Sampling Audit Rules by Region',
 };
 
 /**
@@ -222,6 +228,9 @@ export async function callToolByName(
         break;
       case 'lookup_point_value':
         result = await runLookupPointValue(client, args as never);
+        break;
+      case 'lookup_sampling_audit_rules':
+        result = await runLookupSamplingAuditRules(client, args as never);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);
