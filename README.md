@@ -153,7 +153,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (Mac) o
 }
 ```
 
-Restart Claude Desktop. You should see **25 tools** appear in the tools menu.
+Restart Claude Desktop. You should see **27 tools** appear in the tools menu.
 
 ### Cursor config
 
@@ -577,6 +577,52 @@ Look up the 專業審查抽審指標 that decide **which clinics** get selected 
 
 > Reference only — thresholds are revised quarterly by each region's joint-management meetings. A region that is not yet covered returns an empty result set, which is not the same as "this region has no rules".
 
+### 26. `lookup_special_material` <sub>v0.10.0</sub>
+
+Look up Taiwan NHI special-material payment rules by material name or code, or find materials associated with a procedure code. The result includes the rule wording and effective period. A superseded version can read just like a current rule, so the default shows only the version in force; set `current: false` deliberately when reviewing an earlier claim.
+
+**Arguments**: `{ q?: string, procedure?: string, current?: boolean }`
+
+**Example**:
+```
+> 人工水晶體的特材給付規定是什麼？
+→ [tool call: lookup_special_material(q="人工水晶體")]
+→ {
+    "results": [{
+      "material_code": "…",
+      "name_zh": "人工水晶體",
+      "is_current": true,
+      "rule_text": "…",
+      "effective_start": "…"
+    }]
+  }
+```
+
+> Reference only — confirm the effective rule version and claiming conditions before use; the final decision remains with the treating physician.
+
+### 27. `lookup_p4p_program` <sub>v0.10.0</sub>
+
+Find Taiwan NHI care and pay-for-performance programmes by diagnosis code, specialty, or programme name, then review their enrolment conditions and related fee codes. ICD matching works in both directions: a short prefix such as `E11` can match a more specific target, and a specific code such as `E11.9` can match a stored prefix. Programme criteria here are reference summaries; check the linked programme wording for the final conditions.
+
+**Arguments**: `{ icd?: string, specialty?: string, q?: string }`
+
+**Example**:
+```
+> E11.9 可以查到哪些照護方案？
+→ [tool call: lookup_p4p_program(icd="E11.9")]
+→ {
+    "results": [{
+      "program_code": "…",
+      "program_name": "…",
+      "target_icd10": ["E11"],
+      "enrollment_criteria": "…",
+      "fee_codes": ["…"]
+    }]
+  }
+```
+
+> Reference only — programme enrolment requires physician judgment against the current programme wording.
+
 ---
 
 ## How it works
@@ -590,7 +636,7 @@ Look up the 專業審查抽審指標 that decide **which clinics** get selected 
            ▼
 ┌────────────────────┐
 │  @opdstar/nhi-mcp  │   (npm: stdio · or remote: HTTPS JSON-RPC)
-│ 25 read-only tools │
+│ 27 read-only tools │
 └──────────┬─────────┘
            │ HTTPS
            ▼

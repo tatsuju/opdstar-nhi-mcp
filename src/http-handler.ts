@@ -55,6 +55,11 @@ import {
   LOOKUP_SAMPLING_AUDIT_RULES_DEF,
   runLookupSamplingAuditRules,
 } from './tools/lookupSamplingAuditRules.js';
+import {
+  LOOKUP_SPECIAL_MATERIAL_DEF,
+  runLookupSpecialMaterial,
+} from './tools/lookupSpecialMaterial.js';
+import { LOOKUP_P4P_PROGRAM_DEF, runLookupP4pProgram } from './tools/lookupP4pProgram.js';
 
 const RAW_TOOL_DEFS = [
   LOOKUP_REJECTION_CODE_DEF,
@@ -82,6 +87,8 @@ const RAW_TOOL_DEFS = [
   LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF,
   LOOKUP_POINT_VALUE_DEF,
   LOOKUP_SAMPLING_AUDIT_RULES_DEF,
+  LOOKUP_SPECIAL_MATERIAL_DEF,
+  LOOKUP_P4P_PROGRAM_DEF,
 ] as const;
 
 /**
@@ -90,6 +97,8 @@ const RAW_TOOL_DEFS = [
  * display a human-readable label next to the machine-readable name.
  */
 const TOOL_TITLES: Record<string, string> = {
+  lookup_special_material: 'Lookup NHI Special Material Rule',
+  lookup_p4p_program: 'Lookup NHI Pay-for-Performance Programme',
   lookup_rejection_code: 'Lookup NHI Rejection Code',
   get_procedures_for_icd: 'Get NHI Procedures for ICD-10',
   get_indicator: 'Get NHI Audit Indicator',
@@ -231,6 +240,12 @@ export async function callToolByName(
         break;
       case 'lookup_sampling_audit_rules':
         result = await runLookupSamplingAuditRules(client, args as never);
+        break;
+      case 'lookup_special_material':
+        result = await runLookupSpecialMaterial(client, args as never);
+        break;
+      case 'lookup_p4p_program':
+        result = await runLookupP4pProgram(client, args as never);
         break;
       default:
         throw new Error(`Unknown tool: ${name}`);

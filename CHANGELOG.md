@@ -5,6 +5,23 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] — 2026-09-15
+
+### Added
+
+- **`lookup_special_material`** — look up special-material payment rules for a
+  material code or a related procedure code, including the applicable wording
+  and effective period. A material may have older versions that read like a
+  current rule, so the default returns the version in force; request historical
+  versions explicitly when reviewing an earlier claim.
+
+- **`lookup_p4p_program`** — find care and pay-for-performance programmes by
+  diagnosis code, specialty, or programme name, with their enrolment conditions
+  and related fee codes. A short diagnosis prefix and a more specific code can
+  both match the same programme; the returned criteria are a reference summary,
+  and the physician should check the linked programme wording before deciding
+  whether to enrol a patient.
+
 ## [0.9.3] — 2026-09-14
 
 ### Added
