@@ -5,6 +5,20 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] — 2026-10-14
+
+### Changed
+
+- **`get_procedures_for_icd`** — each result now carries the official
+  fee-schedule notes (`fee_schedule_notes`) and effective date
+  (`effective_start`) for the code, and results are ordered by procedure code.
+  Fields documented by earlier versions beyond these are no longer returned;
+  see the README for the current response shape.
+
+- **`get_indicator`** and **`get_safe_phrases`** — both return a narrower set
+  of fields. Clients that read a field no longer shown in the README should
+  stop relying on it.
+
 ## [0.10.0] — 2026-09-15
 
 ### Added

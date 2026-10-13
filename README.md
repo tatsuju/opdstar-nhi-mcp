@@ -186,7 +186,7 @@ Look up a Taiwan NHI rejection code (5-character, e.g. `0317A`).
 → [tool call: lookup_rejection_code(code="0317A")]
 → {
     "code": "0317A",
-    "description": "處方含抗生素，診斷碼未見感染性疾病",
+    "description": "依據診斷/病況，無使用該類藥品治療之必要",
     "severity": "critical",
     "category": "03",
     "category_name": "藥品特材",
@@ -206,14 +206,15 @@ Given an ICD-10 code and specialty, return the NHI procedure codes applicable.
 > What NHI procedures apply to L30.9 in dermatology?
 → [tool call: get_procedures_for_icd(icd10="L30.9", specialty="dermatology", limit=5)]
 → {
-    "count": 4,
+    "count": 2,
     "results": [
       {
-        "code": "48010C",
-        "name_zh": "傷口處置",
-        "nhi_points": 125,
-        "audit_notes": "需記錄傷口大小、深度、分泌物",
-        "source_url": "https://opdstar.com/faq?q=處置碼 48010C"
+        "code": "30002C",
+        "name_zh": "接觸過敏試驗（每種抗原）",
+        "nhi_points": 25,
+        "fee_schedule_notes": null,
+        "effective_start": "2004-07-01",
+        "source_url": "https://opdstar.com/faq?q=處置碼 30002C"
       },
       ...
     ]
@@ -222,22 +223,20 @@ Given an ICD-10 code and specialty, return the NHI procedure codes applicable.
 
 ### 3. `get_indicator`
 
-Look up a Taiwan NHI audit indicator — threshold, applicable drugs/diagnoses.
+Look up a Taiwan NHI audit indicator — threshold.
 
 **Arguments**: `{ code: string }`
 
 **Example**:
 ```
-> What's indicator 008 about?
-→ [tool call: get_indicator(code="008")]
+> What's indicator 014 about?
+→ [tool call: get_indicator(code="014")]
 → {
-    "code": "008",
-    "name": "急性上呼吸道感染抗生素使用率",
-    "threshold_pct": 10,
-    "applicable_drugs": ["antibiotic"],
-    "applicable_icd_patterns": ["J00","J06","J11","J02","J03","J04"],
+    "code": "014",
+    "name": "高血壓併氣喘/COPD 病患使用 non-selective β-blocker（健保指標 014，超過 15% 部分不予支付）",
+    "threshold_pct": 15,
     "severity": "critical",
-    "rejection_codes": ["0311A", "0349A"]
+    "rejection_codes": ["0308A"]
   }
 ```
 
@@ -277,16 +276,17 @@ Taiwan NHI 藥品給付規定 lookup. At least one filter required (to avoid unb
 > 兒科開抗生素有哪些給付規定？
 → [tool call: get_drug_rules(specialty="pediatrics", drug_category_query="antibiotic")]
 → {
-    "count": 3,
+    "count": 2,
     "results": [
       {
         "specialty": "all",
         "drug_category": "抗生素 (Antibiotics)",
-        "diagnosis_pattern": "J00,J02,J03,J04,J05,J06,J11,J20,J21,J22,J40",
-        "rejection_code": "0311A",
-        "rule_description": "診斷為一般感冒/上呼吸道感染，不應使用抗生素。健保指標 008...",
+        "diagnosis_pattern": "J00,J06",
+        "rejection_code": "0349A",
+        "rule_description": "無細菌性感染之臨床佐證（如黃痰、濃鼻涕不足以作為細菌感染佐證），不應使用抗生素。",
         "severity": "critical"
-      }
+      },
+      ...
     ]
   }
 ```
@@ -309,7 +309,6 @@ Discover which SOAP scenarios have known NHI-safe phrasing for a specialty. **Pr
         "scenario": "開立抗生素",
         "high_risk": "皮膚感染，開抗生素 7 天。",
         "safe_example_preview": "左小腿紅腫熱痛 2 天，查 erythematous plaque 約 8x6 cm… [… 完整範例請至 opdstar.com]",
-        "key_difference": "關鍵不是寫「感染」，而是要寫出細菌性感染的臨床佐證…",
         "full_content_url": "https://opdstar.com/pricing"
       }
     ]
@@ -327,16 +326,17 @@ Free-text search over 審查注意事項 rules. Returns reason + suggestion summ
 > 中醫開藥有什麼注意事項？
 → [tool call: search_audit_guidelines(query="藥品", specialty="tcm")]
 → {
-    "count": 4,
+    "count": 3,
     "results": [
       {
-        "rule_code": "TCM_DAILY_DRUG_COST",
+        "rule_code": "TCM_FORMULARY_ITEM",
         "specialty": "tcm",
-        "severity": "warning",
-        "related_rejection_codes": ["0302C"],
-        "reason_zh": "中醫科每日藥費上限 38 點。一般 7 日約 266 點...",
-        "suggestion_zh": "若需使用較高價藥材，於病歷詳述辨證配伍理由與必要性..."
-      }
+        "severity": "critical",
+        "related_rejection_codes": ["0303C"],
+        "reason_zh": "處方使用非健保收載品項或非標準整編複方仍以健保申報",
+        "suggestion_zh": "僅使用健保中藥用藥品項表內藥品；複方以主管機關整編標準處方為主。"
+      },
+      ...
     ]
   }
 ```
@@ -355,10 +355,10 @@ List all NHI rejection codes in a given category (00-09). Useful for discovery �
 → [tool call: get_rejection_code_category(category="04")]
 → {
     "category": "04",
-    "category_name": "手術處置",
-    "count": 32,
+    "category_name": "手術麻醉處置血液使用",
+    "count": 37,
     "results": [
-      { "code": "0401A", "description": "...", "severity": "critical", "opdstar_relevant": true },
+      { "code": "0401A", "description": "手術切取標本未送病理檢查，手術相關費用併同核刪", "severity": "critical", "opdstar_relevant": false },
       ...
     ]
   }
@@ -372,13 +372,13 @@ Look up the Taiwan NHI drug catalog (active formulary). Search by generic name, 
 
 **Example**:
 ```
-> What drugs match 'augmentin'?
-→ [tool call: lookup_drug(q="augmentin")]
+> What drugs match 'Augmentin'?
+→ [tool call: lookup_drug(q="Augmentin")]
 → {
-    "query": "augmentin",
-    "count": 4,
+    "query": "Augmentin",
+    "count": 5,
     "results": [
-      { "generic_name": "amoxicillin/clavulanate", "brand_names": ["Augmentin", ...], "strength": "875/125 mg", "dosage_form": "tablet", "nhi_drug_code": "BC25551100", "atc_code": "J01CR02", ... },
+      { "generic_name": "Amoxicillin/Clavulanate", "brand_names": ["Augmentin", "安滅菌"], "strength": "500/125mg, 875/125mg", "dosage_form": "tablet", "nhi_drug_code": "BC2615310", "atc_code": "J01CR02", ... },
       ...
     ]
   }
@@ -425,15 +425,19 @@ Find official 審查注意事項 clauses that cite a specific NHI procedure code
 > 處置碼 51017C 有哪些審查注意事項？
 → [tool call: lookup_audit_clauses_for_procedure(procedure_code="51017C")]
 → {
-    "count": 3,
+    "count": 1,
     "results": [
       {
-        "clause_headline": "...",
-        "specialty": "...",
-        "risk_flags": ["amount_limit"],
-        "source_url": "https://opdstar.com/..."
-      },
-      ...
+        "clause_code": "CLAUSE_DERMATOLOGY_001",
+        "specialty_id": "dermatology",
+        "specialty_name_zh": "皮膚科",
+        "nhi_part": "第二部",
+        "clause_label": "(一)",
+        "clause_summary": "(一)冷凍治療【液態氮冷凍治療(51017C)、冷凍治療－單純(51021C)、冷",
+        "has_amount_limit": false,
+        "has_frequency_rule": false,
+        "has_indication": false
+      }
     ]
   }
 ```
@@ -467,14 +471,15 @@ Look up the official 分析審查不予支付指標 (threshold-based audit rules
 > '23401C' 是被哪個指標監控？
 → [tool call: lookup_audit_indicator(procedure_code="23401C")]
 → {
-    "count": 1,
+    "count": 2,
     "results": [{
       "indicator_code": "001",
-      "name": "眼科局部處置申報率",
+      "category": "西醫基層總額",
+      "name": "001-眼科門診局部處置申報率",
       "threshold_pct": 30,
       "applicable_specialty": "ophthalmology",
       ...
-    }]
+    }, ...]
   }
 ```
 
@@ -585,15 +590,15 @@ Look up Taiwan NHI special-material payment rules by material name or code, or f
 
 **Example**:
 ```
-> 人工水晶體的特材給付規定是什麼？
-→ [tool call: lookup_special_material(q="人工水晶體")]
+> 皮膚縫合釘的特材給付規定是什麼？
+→ [tool call: lookup_special_material(q="皮膚縫合釘")]
 → {
     "results": [{
-      "material_code": "…",
-      "name_zh": "人工水晶體",
+      "material_code": "A101-2",
+      "name_zh": "皮膚縫合釘",
       "is_current": true,
-      "rule_text": "…",
-      "effective_start": "…"
+      "rule_text": "1040801起:\r\nSKIN STAPLE限62014C、62015B、62016B 之手術申報，並應依實際病情需要，各不超過6支、12支、20支為原則。",
+      "effective_start": "2015-08-01"
     }]
   }
 ```
@@ -612,11 +617,11 @@ Find Taiwan NHI care and pay-for-performance programmes by diagnosis code, speci
 → [tool call: lookup_p4p_program(icd="E11.9")]
 → {
     "results": [{
-      "program_code": "…",
-      "program_name": "…",
-      "target_icd10": ["E11"],
+      "program_code": "P4P-DM-CKD",
+      "program_name": "全民健康保險糖尿病及初期慢性腎臟病照護整合方案",
+      "target_icd10": ["E08", "E09", "E10", "E11", "E13", "N18.1", "N18.2", "N18.30"],
       "enrollment_criteria": "…",
-      "fee_codes": ["…"]
+      "fee_codes": ["P1407C", "P1408C", "P1409C", "…"]
     }]
   }
 ```

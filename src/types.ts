@@ -19,9 +19,8 @@ export interface ProcedureItem {
   category: string | null;
   nhi_points: number | null;
   applicable_icd10: string[];
-  audit_notes: string | null;
-  soap_minimum: string | null;
-  frequency: string | null;
+  fee_schedule_notes: string | null;
+  effective_start: string | null;
   source_url: string;
 }
 
@@ -38,9 +37,6 @@ export interface IndicatorResult {
   name?: string;
   suggestion?: string | null;
   threshold_pct?: number | null;
-  applicable_drugs?: string[];
-  applicable_icd_patterns?: string[];
-  excluded_icd_patterns?: string[];
   severity?: string;
   rejection_codes?: string[];
   nhi_part?: string | null;
@@ -113,7 +109,6 @@ export interface SafePhraseItem {
   scenario: string;
   high_risk: string | null;
   safe_example_preview: string | null;
-  key_difference: string | null;
   full_content_url: string;
 }
 
