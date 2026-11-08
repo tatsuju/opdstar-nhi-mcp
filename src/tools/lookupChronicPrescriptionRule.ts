@@ -9,19 +9,26 @@ export const LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF = {
     properties: {
       icd_code: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
-          "Optional ICD-10 code (e.g. 'I10', 'E11.9'). Prefix-matched against each chronic disease's ICD-10 range.",
+          "ICD-10 code (e.g. 'I10', 'E11.9'). Prefix-matched against each chronic disease's ICD-10 range. At least one of icd_code / disease / category is required; a call with none is rejected.",
       },
       disease: {
         type: 'string',
-        description: "Optional Chinese disease name keyword (e.g. '高血壓', '糖尿病', '氣喘').",
+        minLength: 1,
+        pattern: '\\S',
+        description: "Chinese disease name keyword (e.g. '高血壓', '糖尿病', '氣喘').",
       },
       category: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
-          "Optional disease category (e.g. 'cardiovascular', 'endocrine_metabolic', 'respiratory', 'psychiatric').",
+          "Disease category (e.g. 'cardiovascular', 'endocrine_metabolic', 'respiratory', 'psychiatric'). Results are capped; narrow with icd_code or disease for a specific answer.",
       },
     },
+    anyOf: [{ required: ['icd_code'] }, { required: ['disease'] }, { required: ['category'] }],
   },
 } as const;
 
@@ -64,6 +71,9 @@ export async function runLookupChronicPrescriptionRule(
   client: OpdstarClient,
   args: LookupChronicPrescriptionRuleArgs,
 ): Promise<LookupChronicPrescriptionRuleResult> {
+  if (!(args?.icd_code?.trim() || args?.disease?.trim() || args?.category?.trim())) {
+    throw new Error('lookup_chronic_prescription_rule requires at least one of icd_code, disease or category');
+  }
   return (await client.get('/lookup-chronic-prescription-rule', {
     icd_code: args?.icd_code?.trim(),
     disease: args?.disease?.trim(),

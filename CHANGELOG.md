@@ -5,6 +5,26 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] — 2026-11-08
+
+### Changed
+
+- **`lookup_major_illness`**, **`lookup_preventive_service`**,
+  **`lookup_chronic_prescription_rule`**, **`lookup_audit_indicator`** and
+  **`lookup_sampling_audit_rules`** — each now requires at least one filter
+  argument. A call with no arguments is rejected before any request is sent,
+  matching the live API, which no longer serves these lists unfiltered. The
+  README lists the accepted filters for each tool.
+
+- **`lookup_fee_code`** — the `category` examples in the tool description now
+  name the right fee-schedule buckets (for example `'06'` is 尿液檢驗, not
+  手術). The `chapter` field is no longer returned.
+
+- **`search_nhi_wiki`** — each excerpt now carries the `category` of the 健保署
+  page it came from (null for interpretation letters and the structured
+  corpora). The description explains when `title` / `source_url_nhi` are null
+  and that the `category` filter applies to web-page excerpts only.
+
 ## [0.11.0] — 2026-10-14
 
 ### Changed

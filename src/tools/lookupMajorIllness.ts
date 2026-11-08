@@ -3,21 +3,26 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_MAJOR_ILLNESS_DEF = {
   name: 'lookup_major_illness',
   description:
-    "Browse Taiwan NHI 重大傷病 (major illness) categories — official categories that grant copayment exemption and a more lenient claim-review process. Returns category name, ICD-10 code coverage, application requirement, and validity period. **Use when** an agent needs to enumerate or filter major-illness categories (e.g. 'all cancer categories', 'categories that don't require an application'). **Don't use** if you already have an ICD-10 code and want to know which categories it qualifies for — call `check_icd_for_major_illness_eligibility` instead. **Reference only** — final eligibility requires a formal application with supporting documentation per the official 重大傷病範圍及項目. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up Taiwan NHI 重大傷病 (major illness) categories — official categories that grant copayment exemption and a more lenient claim-review process. Returns category name, ICD-10 code coverage, application requirement, and validity period. **Use when** an agent needs a category by code or by keyword (e.g. '癌症', '透析'). A call needs category_code or keyword; the full list is not served in one call. **Don't use** if you already have an ICD-10 code and want to know which categories it qualifies for — call `check_icd_for_major_illness_eligibility` instead. **Reference only** — final eligibility requires a formal application with supporting documentation per the official 重大傷病範圍及項目. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
       category_code: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
-          "Optional 1-3 char category code (e.g. '001' = 癌症, '005' = 慢性腎衰竭). If omitted, returns the full official list.",
+          "1-3 char category code (e.g. '001' = 癌症, '005' = 慢性腎衰竭). Required unless keyword is given.",
       },
       keyword: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
-          "Optional Chinese keyword (e.g. '癌症', '透析', '罕見') to filter category names.",
+          "Chinese keyword (e.g. '癌症', '透析', '罕見') matched against category names. Required unless category_code is given.",
       },
     },
+    anyOf: [{ required: ['category_code'] }, { required: ['keyword'] }],
   },
 } as const;
 
@@ -54,6 +59,9 @@ export async function runLookupMajorIllness(
   client: OpdstarClient,
   args: LookupMajorIllnessArgs,
 ): Promise<LookupMajorIllnessResult> {
+  if (!(args?.category_code?.trim() || args?.keyword?.trim())) {
+    throw new Error('lookup_major_illness requires category_code or keyword');
+  }
   return (await client.get('/lookup-major-illness', {
     category_code: args?.category_code?.trim(),
     keyword: args?.keyword?.trim(),

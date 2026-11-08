@@ -450,9 +450,9 @@ Browse 審查注意事項 by specialty (dermatology / TCM / dentistry / ophthalm
 
 ### 13. `lookup_major_illness` <sub>v0.5</sub>
 
-Browse the official 重大傷病範圍及項目 list. Returns category code, name, ICD-10 coverage, application requirement, validity period, and copay-exemption status.
+Look up the official 重大傷病範圍及項目 by category code or keyword. Returns category code, name, ICD-10 coverage, application requirement, validity period, and copay-exemption status.
 
-**Arguments**: `{ category_code?: string, keyword?: string }`
+**Arguments**: `{ category_code?: string, keyword?: string }` — at least one is required.
 
 ### 14. `check_icd_for_major_illness_eligibility` <sub>v0.5</sub>
 
@@ -464,7 +464,7 @@ Reverse lookup. Given an ICD-10 code, return major-illness categories the diagno
 
 Look up the official 分析審查不予支付指標 (threshold-based audit rules). Returns indicator name, category, threshold percentage, applicable specialty, monitored procedure codes, and the official action description.
 
-**Arguments**: `{ indicator_code?: string, category?: string, specialty?: string, procedure_code?: string }`
+**Arguments**: `{ indicator_code?: string, category?: string, specialty?: string, procedure_code?: string }` — at least one is required.
 
 **Example**:
 ```
@@ -533,9 +533,9 @@ Search Taiwan's official NHI administrative interpretations (健保署行政函�
 
 ### 22. `lookup_preventive_service` <sub>v0.9</sub>
 
-Browse Taiwan NHI preventive-care and screening services — adult health checks, the major cancer screenings (breast, cervical, colorectal, oral, lung LDCT), prenatal care, child preventive health, and child dental fluoride / pit-and-fissure sealant programs. Returns each service's target population, age / sex eligibility, subsidy frequency, and screening tool.
+Look up Taiwan NHI preventive-care and screening services by category or keyword — adult health checks, the major cancer screenings (breast, cervical, colorectal, oral, lung LDCT), prenatal care, child preventive health, and child dental fluoride / pit-and-fissure sealant programs. Returns each service's target population, age / sex eligibility, subsidy frequency, and screening tool.
 
-**Arguments**: `{ category?: string, keyword?: string }`
+**Arguments**: `{ category?: string, keyword?: string }` — at least one is required.
 
 > Reference only — eligibility and subsidy follow the official 衛生福利部 announcements; the screening provider confirms eligibility at the point of service.
 
@@ -545,7 +545,7 @@ Browse Taiwan NHI preventive-care and screening services — adult health checks
 
 Look up Taiwan NHI chronic-disease continuous-prescription (慢性病連續處方箋) rules. Given an ICD-10 code or a disease name, returns whether the condition falls within the official chronic-disease scope and its dispensing limits — maximum days per dispense, maximum total medication days, and prescription validity.
 
-**Arguments**: `{ icd_code?: string, disease?: string, category?: string }`
+**Arguments**: `{ icd_code?: string, disease?: string, category?: string }` — at least one is required.
 
 > Reference only — the issuing physician confirms the patient's condition is stable per the official 全民健康保險醫療辦法 慢性病範圍.
 
@@ -563,7 +563,7 @@ Look up Taiwan NHI floating point values (浮動點值) — the settled per-poin
 
 Look up the 專業審查抽審指標 that decide **which clinics** get selected for professional claim review — mandatory-audit triggers (new-contract clinics, annual rotation, disciplinary actions), weighted scoring indicators, growth-rate thresholds that remove audit exemption, and exemption conditions. Each rule carries its official definition text plus structured thresholds. Every NHI regional division sets its own thresholds and they are not interchangeable, so always pass `region`.
 
-**Arguments**: `{ region?: string, rule_group?: string, specialty?: string }`
+**Arguments**: `{ region?: string, rule_group?: string, specialty?: string }` — at least one is required.
 
 **Example**:
 ```

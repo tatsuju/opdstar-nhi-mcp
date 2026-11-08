@@ -3,32 +3,40 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_AUDIT_INDICATOR_DEF = {
   name: 'lookup_audit_indicator',
   description:
-    "Look up Taiwan NHI 分析審查不予支付指標 (official threshold-based audit rules where claims exceeding a percentage are denied) — returns indicator code, category, threshold, applicable specialty, monitored procedure codes, and official action description. **Use when** an agent needs to know whether a procedure code is under a percentage-cap audit (e.g. '23401C' is monitored by indicator 001 眼科局部處置申報率, 30% threshold). Omit `indicator_code` to browse by category / specialty / procedure. **Don't use** for prescribing-pattern indicators — those live in `get_indicator`. **Reference only** — thresholds change with each official release. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up Taiwan NHI 分析審查不予支付指標 (official threshold-based audit rules where claims exceeding a percentage are denied) — returns indicator code, category, threshold, applicable specialty, monitored procedure codes, and official action description. **Use when** an agent needs to know whether a procedure code is under a percentage-cap audit (e.g. '23401C' is monitored by indicator 001 眼科局部處置申報率, 30% threshold). Omit `indicator_code` to filter by category / specialty / procedure; at least one filter is required. **Don't use** for prescribing-pattern indicators — those live in `get_indicator`. **Reference only** — thresholds change with each official release. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
       indicator_code: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
-          "Optional 1-4 char indicator code. If omitted, returns indicators filtered by other params.",
+          "1-4 char indicator code. If omitted, at least one of category / specialty / procedure_code must be given.",
       },
       category: {
         type: 'string',
+        minLength: 1,
         enum: ['西醫基層總額', '醫院總額', '牙醫門診總額'],
         description:
           "Optional category filter. Same indicator code may appear under multiple categories with different thresholds.",
       },
       specialty: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
           "Optional applicable_specialty filter (e.g. 'ophthalmology', 'obstetrics_gynecology', 'ent', 'tcm', 'dentistry').",
       },
       procedure_code: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
           "Optional 5-8 char NHI procedure code (e.g. '23401C', '55009C'). Returns indicators that monitor this code.",
       },
     },
+    anyOf: [{ required: ['indicator_code'] }, { required: ['category'] }, { required: ['specialty'] }, { required: ['procedure_code'] }],
   },
 } as const;
 
@@ -74,6 +82,9 @@ export async function runLookupAuditIndicator(
   client: OpdstarClient,
   args: LookupAuditIndicatorArgs,
 ): Promise<LookupAuditIndicatorResult> {
+  if (!(args?.indicator_code?.trim() || args?.category?.trim() || args?.specialty?.trim() || args?.procedure_code?.trim())) {
+    throw new Error('lookup_audit_indicator requires at least one of indicator_code, category, specialty or procedure_code');
+  }
   return (await client.get('/lookup-audit-indicator', {
     indicator_code: args?.indicator_code?.trim(),
     category: args?.category?.trim(),

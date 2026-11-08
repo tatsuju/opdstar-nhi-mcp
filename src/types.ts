@@ -50,6 +50,8 @@ export interface WikiHit {
   title: string | null;
   content: string;
   chunk_type: string;
+  /** Category of the 健保署 web page the excerpt came from; null for interpretation letters and the structured corpora. */
+  category: string | null;
   specialty: string | null;
   source_url_nhi: string | null;
   source_url_opdstar: string;

@@ -3,7 +3,7 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_FEE_CODE_DEF = {
   name: 'lookup_fee_code',
   description:
-    "Look up the Taiwan NHI fee schedule (全民健康保險醫療服務給付項目及支付標準, current effective edition). Search by exact code (e.g. '00101B', 'P15001') or by Chinese / English name (e.g. '門診診察', 'ICU') — returns code, points, effective dates, and audit notes (truncated to 600 chars). Use `category` prefix to scope ('00' 基本診療, '06' 手術, 'P1' 病例計酬, 'N2' 護理). **Use when** an agent needs the canonical fee entry for a known procedure code, or wants to discover codes by name. **Don't use** for drugs (call `lookup_drug`) or for ICD-10 → procedure suggestions (call `get_procedures_for_icd`). The optional `icd` filter applies an OPDSTAR-curated mapping that is intentionally sparse (the original NHI data has no ICD field) — most codes will return no result with `icd` active. **Reference only** — official 健保署 支付標準 is authoritative. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up the Taiwan NHI fee schedule (全民健康保險醫療服務給付項目及支付標準, current effective edition). Search by exact code (e.g. '00101B', 'P15001') or by Chinese / English name (e.g. '門診診察', 'ICU') — returns code, points, effective dates, and audit notes (truncated to 600 chars). Use `category` prefix to scope ('00' 門診診察費, '06' 尿液檢驗, '08' 血液檢驗, '96' 麻醉, 'P1' 論病例計酬). **Use when** an agent needs the canonical fee entry for a known procedure code, or wants to discover codes by name. **Don't use** for drugs (call `lookup_drug`) or for ICD-10 → procedure suggestions (call `get_procedures_for_icd`). The optional `icd` filter applies an OPDSTAR-curated mapping that is intentionally sparse (the original NHI data has no ICD field) — most codes will return no result with `icd` active. **Reference only** — official 健保署 支付標準 is authoritative. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
@@ -16,7 +16,7 @@ export const LOOKUP_FEE_CODE_DEF = {
       category: {
         type: 'string',
         description:
-          "Optional category filter. Exact match on the code's first two characters (a bucket, not a free-text prefix search): '00101B' is bucket '00'. Examples: '00' 基本診療, '01' 麻醉, '06' 手術, '08' 檢驗, 'P1'/'P4' 病例計酬, 'N2' 護理; 中醫 buckets include 'A0', 'A4', 'A5', 'B7', 'C0', 'CH', 'D0', 'F1'-'F8'. A few buckets mix 中醫 with 西醫 items ('A1', 'A2', 'A3', 'E1', 'F0').",
+          "Optional category filter. Exact match on the code's first two characters (a bucket, not a free-text prefix search): '00101B' is bucket '00'. Examples: '00' 門診診察費, '01' 急診／精神科診察費, '06' 尿液檢驗, '08' 血液檢驗, '96' 麻醉, 'P1'/'P4' 論病例計酬及照護方案項目; 中醫 buckets include 'A0', 'A4', 'A5', 'B7', 'C0', 'CH', 'D0', 'F1'-'F8'. A few buckets mix 中醫 with 西醫 items ('A1', 'A2', 'A3', 'E1', 'F0').",
       },
       icd: {
         type: 'string',
@@ -46,7 +46,6 @@ export interface LookupFeeCodeResult {
     code: string;
     category_prefix: string;
     section: string | null;
-    chapter: string | null;
     name_zh: string;
     name_en: string | null;
     points: number | null;

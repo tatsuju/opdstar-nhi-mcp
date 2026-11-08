@@ -11,6 +11,17 @@ import { runGetRejectionCodeCategory } from '../src/tools/getRejectionCodeCatego
 import { runLookupDrug } from '../src/tools/lookupDrug.js';
 import { runLookupFeeCode } from '../src/tools/lookupFeeCode.js';
 import { runLookupSamplingAuditRules } from '../src/tools/lookupSamplingAuditRules.js';
+import {
+  LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF,
+  runLookupChronicPrescriptionRule,
+} from '../src/tools/lookupChronicPrescriptionRule.js';
+import { LOOKUP_MAJOR_ILLNESS_DEF, runLookupMajorIllness } from '../src/tools/lookupMajorIllness.js';
+import {
+  LOOKUP_PREVENTIVE_SERVICE_DEF,
+  runLookupPreventiveService,
+} from '../src/tools/lookupPreventiveService.js';
+import { LOOKUP_AUDIT_INDICATOR_DEF, runLookupAuditIndicator } from '../src/tools/lookupAuditIndicator.js';
+import { LOOKUP_SAMPLING_AUDIT_RULES_DEF } from '../src/tools/lookupSamplingAuditRules.js';
 
 /**
  * Offline tool tests — mocks global fetch, asserts:
@@ -292,11 +303,84 @@ describe('lookup_sampling_audit_rules', () => {
   it('omits empty filters', async () => {
     mockFetch({ filters: {}, count: 0, results: [] });
     const client = new OpdstarClient();
-    await runLookupSamplingAuditRules(client, {});
+    await runLookupSamplingAuditRules(client, { region: 'kaoping' });
     const url = String(fetchSpy.mock.calls[0][0]);
-    expect(url).toBe('https://opdstar.com/api/mcp/lookup-sampling-audit-rules');
+    expect(url).toBe('https://opdstar.com/api/mcp/lookup-sampling-audit-rules?region=kaoping');
+  });
+
+  it('requires at least one filter', async () => {
+    const client = new OpdstarClient();
+    await expect(runLookupSamplingAuditRules(client, {})).rejects.toThrow(/at least one/);
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
+
+describe('list-type lookups require a filter (no whole-table call)', () => {
+  it.each([
+    ['lookup_chronic_prescription_rule', () => runLookupChronicPrescriptionRule(new OpdstarClient(), {})],
+    ['lookup_major_illness', () => runLookupMajorIllness(new OpdstarClient(), {})],
+    ['lookup_preventive_service', () => runLookupPreventiveService(new OpdstarClient(), {})],
+    ['lookup_audit_indicator', () => runLookupAuditIndicator(new OpdstarClient(), {})],
+  ])('%s throws before any request', async (_name, call) => {
+    await expect(call()).rejects.toThrow(/requires/);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [LOOKUP_CHRONIC_PRESCRIPTION_RULE_DEF, ['icd_code', 'disease', 'category']],
+    [LOOKUP_MAJOR_ILLNESS_DEF, ['category_code', 'keyword']],
+    [LOOKUP_PREVENTIVE_SERVICE_DEF, ['category', 'keyword']],
+    [LOOKUP_AUDIT_INDICATOR_DEF, ['indicator_code', 'category', 'specialty', 'procedure_code']],
+    [LOOKUP_SAMPLING_AUDIT_RULES_DEF, ['region', 'rule_group', 'specialty']],
+  ])('schema of $name rejects {}, empty and blank filters, accepts one real filter', (def, fields) => {
+    const schema = def.inputSchema as unknown as JsonSchema;
+    expect(validateJsonSchema(schema, {})).toBe(false);
+    for (const field of fields as string[]) {
+      expect(validateJsonSchema(schema, { [field]: '' }), `${def.name}.${field} = ''`).toBe(false);
+      expect(validateJsonSchema(schema, { [field]: '   ' }), `${def.name}.${field} = blank`).toBe(false);
+      const prop = schema.properties?.[field];
+      const real = prop?.enum ? prop.enum[0] : 'I10';
+      expect(validateJsonSchema(schema, { [field]: real }), `${def.name}.${field} = ${real}`).toBe(true);
+    }
+  });
+});
+
+/**
+ * Just enough JSON Schema to judge these tool inputs as a validating client
+ * would: type / required / anyOf / properties / minLength / pattern / enum.
+ */
+interface JsonSchema {
+  type?: string;
+  required?: readonly string[];
+  anyOf?: readonly JsonSchema[];
+  properties?: Record<string, JsonSchema>;
+  minLength?: number;
+  pattern?: string;
+  enum?: readonly string[];
+}
+
+function validateJsonSchema(schema: JsonSchema, value: unknown): boolean {
+  if (schema.type === 'object') {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+  }
+  if (schema.type === 'string' && typeof value !== 'string') return false;
+  if (typeof value === 'string') {
+    if (schema.minLength !== undefined && [...value].length < schema.minLength) return false;
+    if (schema.pattern !== undefined && !new RegExp(schema.pattern, 'u').test(value)) return false;
+  }
+  if (schema.enum && !schema.enum.includes(value as string)) return false;
+  if (typeof value === 'object' && value !== null) {
+    const obj = value as Record<string, unknown>;
+    for (const key of schema.required ?? []) {
+      if (!(key in obj)) return false;
+    }
+    for (const [key, sub] of Object.entries(schema.properties ?? {})) {
+      if (key in obj && !validateJsonSchema(sub, obj[key])) return false;
+    }
+  }
+  if (schema.anyOf && !schema.anyOf.some((branch) => validateJsonSchema(branch, value))) return false;
+  return true;
+}
 
 describe('OpdstarClient — env override', () => {
   it('respects OPDSTAR_API_BASE for staging', async () => {

@@ -3,18 +3,20 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_SAMPLING_AUDIT_RULES_DEF = {
   name: 'lookup_sampling_audit_rules',
   description:
-    "Look up Taiwan NHI clinic-level 專業審查抽審指標 (per-region sampling-audit screening rules that decide WHICH CLINICS get selected for professional claim review) — returns mandatory-audit triggers (new-contract clinics, annual rotation, violations), weighted scoring indicators, growth-rate exemption-exclusion thresholds, and audit-exemption conditions, each with the official definition text and structured thresholds. **Region matters**: each NHI regional division sets its own thresholds — always pass `region`; a region not yet covered returns empty results, not 'no rules'. **Use when** a clinic asks why it might be sampled for audit, how new-clinic mandatory review works, or what growth/volume patterns remove audit exemption. **Don't use** for per-claim percentage-cap denial rules — those live in `lookup_audit_indicator`. **Reference only** — thresholds are revised quarterly by regional joint-management meetings. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up Taiwan NHI clinic-level 專業審查抽審指標 (per-region sampling-audit screening rules that decide WHICH CLINICS get selected for professional claim review) — returns mandatory-audit triggers (new-contract clinics, annual rotation, violations), weighted scoring indicators, growth-rate exemption-exclusion thresholds, and audit-exemption conditions, each with the official definition text and structured thresholds. **Region matters**: each NHI regional division sets its own thresholds — always pass `region` (at least one of region / rule_group / specialty is required); a region not yet covered returns empty results, not 'no rules'. **Use when** a clinic asks why it might be sampled for audit, how new-clinic mandatory review works, or what growth/volume patterns remove audit exemption. **Don't use** for per-claim percentage-cap denial rules — those live in `lookup_audit_indicator`. **Reference only** — thresholds are revised quarterly by regional joint-management meetings. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
       region: {
         type: 'string',
+        minLength: 1,
         enum: ['taipei', 'northern', 'central', 'southern', 'kaoping', 'eastern'],
         description:
           "NHI regional division (業務組). Thresholds are region-specific and NOT interchangeable. 'kaoping' = 高屏, 'southern' = 南區.",
       },
       rule_group: {
         type: 'string',
+        minLength: 1,
         enum: [
           'framework',
           'mandatory_management',
@@ -33,10 +35,13 @@ export const LOOKUP_SAMPLING_AUDIT_RULES_DEF = {
       },
       specialty: {
         type: 'string',
+        minLength: 1,
+        pattern: '\\S',
         description:
           "Optional specialty filter (e.g. 'ent', 'psychiatry', 'rehabilitation', 'obstetrics_gynecology'). Only returns rules scoped to that specialty; omit to include clinic-wide rules.",
       },
     },
+    anyOf: [{ required: ['region'] }, { required: ['rule_group'] }, { required: ['specialty'] }],
   },
 } as const;
 
@@ -85,6 +90,9 @@ export async function runLookupSamplingAuditRules(
   client: OpdstarClient,
   args: LookupSamplingAuditRulesArgs,
 ): Promise<LookupSamplingAuditRulesResult> {
+  if (!(args?.region?.trim() || args?.rule_group?.trim() || args?.specialty?.trim())) {
+    throw new Error('lookup_sampling_audit_rules requires at least one of region, rule_group or specialty');
+  }
   return (await client.get('/lookup-sampling-audit-rules', {
     region: args?.region?.trim().toLowerCase(),
     rule_group: args?.rule_group?.trim().toLowerCase(),

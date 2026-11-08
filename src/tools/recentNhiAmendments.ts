@@ -20,7 +20,7 @@ export const RECENT_NHI_AMENDMENTS_DEF = {
         type: 'string',
         enum: ['primary', 'comparison', 'all'],
         description:
-          "'primary' = main regulation update (affects nhi_audit_clauses content); 'comparison' = side-by-side diff document. 'all' returns both. Default 'all'.",
+          "'primary' = main regulation update (changes the audit-guideline clause text); 'comparison' = side-by-side diff document. 'all' returns both. Default 'all'.",
         default: 'all',
       },
       limit: {
