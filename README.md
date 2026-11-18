@@ -1,19 +1,26 @@
-<h1 align="center">@opdstar/nhi-mcp</h1>
+<h1 align="center">台灣健保查詢 MCP Server｜Taiwan NHI MCP</h1>
 
 <p align="center">
-  <b>The MCP server for Taiwan NHI billing intelligence</b><br/>
-  <sub>Rejection codes · audit clauses · drug payment rules · fee schedule · special materials · appeal precedents</sub>
+  <code>@opdstar/nhi-mcp</code>
+</p>
+
+<p align="center">
+  在 Claude、ChatGPT、Cursor 裡直接查台灣健保的核刪代碼、審查注意事項、支付標準、藥品給付規定、特材與 ICD-10 對應。免安裝、免帳號、免金鑰。
+</p>
+
+<p align="center">
+  <sub>Query Taiwan National Health Insurance billing rules — rejection codes, audit clauses, fee schedule, drug payment rules — from any MCP client.</sub>
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@opdstar/nhi-mcp"><img alt="npm" src="https://img.shields.io/npm/v/@opdstar/nhi-mcp.svg?color=0ea5e9"></a>
   <a href="LICENSE"><img alt="MIT" src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
-  <a href="https://opdstar.com"><img alt="Powered by OPDSTAR" src="https://img.shields.io/badge/Powered%20by-OPDSTAR-14b8a6.svg"></a>
+  <a href="https://www.opdstar.com"><img alt="Powered by OPDSTAR" src="https://img.shields.io/badge/Powered%20by-OPDSTAR-14b8a6.svg"></a>
   <a href="https://modelcontextprotocol.io"><img alt="MCP" src="https://img.shields.io/badge/MCP-compatible-7c3aed.svg"></a>
 </p>
 
 <p align="center">
-  <b>Powered by <a href="https://opdstar.com">OPDSTAR</a></b> — 台灣門診醫師病歷翻譯 + 核刪防護 Co-Pilot
+  <b>Powered by <a href="https://www.opdstar.com">OPDSTAR</a></b> — 台灣門診醫師病歷翻譯 + 核刪防護 Co-Pilot
 </p>
 
 <p align="center">
@@ -21,6 +28,21 @@
   <b>Roadmap</b>：<a href="ROADMAP.md">ROADMAP.md</a> ·
   <b>Contributing</b>：<a href="CONTRIBUTING.md">CONTRIBUTING.md</a>
 </p>
+
+---
+
+## 常見問題（快速查詢）
+
+**健保核刪代碼怎麼查？**
+把代碼交給 `lookup_rejection_code`（例如 `0317A`），會回傳官方說明與類別。想看同一類別有哪些代碼，用 `get_rejection_code_category`。
+
+**審查注意事項怎麼查？**
+依處置碼查用 `lookup_audit_clauses_for_procedure`，依科別查用 `lookup_audit_clauses_for_specialty`，只記得關鍵字時用 `search_audit_guidelines`。回傳的是條文原文與出處。
+
+**支付標準的點數怎麼查？**
+用 `lookup_fee_code` 輸入支付標準代碼，會回傳項目名稱、支付點數與生效日。
+
+本工具是查詢與參考用途，不提供診斷或用藥建議。
 
 ---
 
@@ -51,15 +73,13 @@ OPDSTAR focuses on Taiwan NHI billing intelligence — that's what it does best.
 
 ## Real-world examples
 
-### 👩‍⚕️ Scenario 1 — Audit risk pre-check
+### 👩‍⚕️ Scenario 1 — Look up a rejection code
 
-You're writing a chart in Claude Desktop:
+> **You:** 0320A 是什麼核刪理由？相關的審查注意事項怎麼寫？
 
-> **You:** 我給 L30.9 慢性濕疹病人開了 prednisolone 30mg QD 5 天會不會被核刪？
-
-> **Claude** (auto-calls `lookup_rejection_code` + `get_indicator`):
+> **Claude** (auto-calls `lookup_rejection_code` + `search_audit_guidelines`):
 >
-> 依健保審查 **008 指標**，口服類固醇 + 濕疹類診斷若 PE 描述不足，會觸發核刪代碼 **0320A**。建議：PE 補充病灶面積 ≥ 30% 全身，或加入更嚴重的 ICD-10 佐證。
+> 回傳代碼的官方說明、類別，以及對應的審查注意事項條文，供你對照原文。
 >
 > 資料來源：OPDSTAR
 
