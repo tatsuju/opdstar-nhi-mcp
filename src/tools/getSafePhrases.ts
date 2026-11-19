@@ -16,7 +16,7 @@ export const GET_SAFE_PHRASES_DEF = {
       scenario_query: {
         type: 'string',
         description:
-          "Optional free-text filter on scenario (ILIKE match), e.g. '抗生素', '類固醇', '慢性處方'",
+          "Optional free-text filter on scenario (partial match), e.g. '抗生素', '類固醇', '慢性處方'",
       },
     },
     required: ['specialty'],

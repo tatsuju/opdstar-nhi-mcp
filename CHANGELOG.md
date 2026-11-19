@@ -5,6 +5,30 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.1] — 2026-11-20
+
+### Fixed
+
+- Lookups that find nothing now return a normal "not found" result instead of
+  a tool error.
+- Error messages no longer include upstream details.
+- `get_procedures_for_icd` accepts lower-case and undotted ICD-10 codes.
+- `lookup_fee_code` — the `icd` filter also matches entries recorded at the
+  category level (for example `H40.1131` finds an entry recorded as `H40`),
+  and a malformed code is rejected.
+- `source_url` fields point to working pages.
+- Streamable HTTP conformance: notifications are acknowledged with 202,
+  the protocol version is negotiated, and an empty batch is rejected.
+
+### Changed
+
+- `get_rejection_code_category` — results are paged; pass `offset` with the
+  returned `next_offset` to read the rest.
+- The default API host is now `www.opdstar.com`, which removes a redirect on
+  every call.
+- Tool descriptions corrected: rejection-code severity values are
+  `warning` / `critical`; drug search examples use terms that return results.
+
 ## [0.12.0] — 2026-11-08
 
 ### Changed

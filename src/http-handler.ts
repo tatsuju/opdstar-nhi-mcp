@@ -266,7 +266,7 @@ export async function callToolByName(
       content: [
         {
           type: 'text',
-          text: `Error calling tool "${name}": ${msg}\n\nDocs: https://github.com/tatsuju/opdstar-nhi-mcp\nPowered by OPDSTAR (https://opdstar.com)`,
+          text: `Error calling tool "${name}": ${msg}\n\nDocs: https://www.npmjs.com/package/@opdstar/nhi-mcp\nPowered by OPDSTAR (https://opdstar.com)`,
         },
       ],
     };
@@ -275,7 +275,16 @@ export async function callToolByName(
 
 // ─── JSON-RPC 2.0 wire layer ──────────────────────────────────────────
 
-const PROTOCOL_VERSION = '2024-11-05';
+// Revisions this server can speak, newest first. It only offers tools over plain
+// request/response, and that part of the protocol is the same in all of them.
+const SUPPORTED_PROTOCOL_VERSIONS = ['2025-06-18', '2025-03-26', '2024-11-05'] as const;
+
+/** Echo the client's revision when we speak it; otherwise offer our newest. */
+export function negotiateProtocolVersion(requested: unknown): string {
+  return (SUPPORTED_PROTOCOL_VERSIONS as readonly string[]).includes(requested as string)
+    ? (requested as string)
+    : SUPPORTED_PROTOCOL_VERSIONS[0];
+}
 const SERVER_INFO = { name: '@opdstar/nhi-mcp', version: VERSION } as const;
 
 interface JsonRpcRequest {
@@ -333,8 +342,9 @@ export async function handleMcpRequest(
     return rpcError(id, -32600, 'Invalid Request: missing method');
   }
 
-  // Notifications (no id) — never reply.
-  if (method.startsWith('notifications/')) {
+  // A request without an id is a notification: it is never answered, and so
+  // there is no point running it either.
+  if (method.startsWith('notifications/') || body.id === undefined) {
     return null;
   }
 
@@ -342,7 +352,9 @@ export async function handleMcpRequest(
     switch (method) {
       case 'initialize': {
         return rpcSuccess(id, {
-          protocolVersion: PROTOCOL_VERSION,
+          protocolVersion: negotiateProtocolVersion(
+            (body.params as { protocolVersion?: unknown } | undefined)?.protocolVersion
+          ),
           capabilities: { tools: {} },
           serverInfo: SERVER_INFO,
         });

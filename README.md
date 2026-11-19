@@ -745,7 +745,7 @@ Tool arguments and responses support both **Traditional Chinese (繁體中文)**
 
 ### Can this replace the full OPDSTAR SaaS product?
 
-**No — different scope.** This MCP offers read-only lookups. The full [OPDSTAR](https://opdstar.com) product provides AI-powered chart translation, real-time audit risk detection, safe-phrase suggestion, and personalized prescription tracking — built on closed-source clinical logic and a curated knowledge base.
+**No — different scope.** This MCP offers read-only lookups. The full [OPDSTAR](https://opdstar.com) product provides chart translation, real-time audit risk detection, safe-phrase suggestion, and personalized prescription tracking — built on closed-source clinical logic and a curated knowledge base.
 
 ### How do I report wrong data or propose new tools?
 

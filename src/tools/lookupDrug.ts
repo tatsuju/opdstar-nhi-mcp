@@ -3,14 +3,14 @@ import type { OpdstarClient } from '../client.js';
 export const LOOKUP_DRUG_DEF = {
   name: 'lookup_drug',
   description:
-    "Look up the active Taiwan NHI drug catalog by generic name, brand name, NHI drug code, or alias — returns up to 10 matches with strength, dosage form, route, ATC code, therapeutic class, and brand list. **Use when** an agent needs to identify or disambiguate a drug before recommending dosage / formulation in a SOAP draft. **Don't use** to look up payment / reimbursement rules for the drug — call `get_drug_rules` instead; for an audit clause referencing the drug, call `search_audit_guidelines`. **Reference only** — official 健保署 藥品給付項目及支付標準 is authoritative; the catalog is a working snapshot. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up the active Taiwan NHI drug catalog by generic name, brand name, NHI drug code, or alias — returns up to 10 matches with strength, dosage form, route, ATC code, therapeutic class, and brand list. **Use when** an agent needs to identify or disambiguate a drug before writing its name, strength, or dosage form into a chart draft. **Don't use** to look up payment / reimbursement rules for the drug — call `get_drug_rules` instead; for an audit clause referencing the drug, call `search_audit_guidelines`. **Reference only** — official 健保署 藥品給付項目及支付標準 is authoritative; the catalog is a working snapshot. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
       q: {
         type: 'string',
         description:
-          "Required ≥2 chars. Search across generic_name, brand_names, aliases, normalized_key. Also accepts NHI 9-10 char drug code (e.g. 'A02229715'). Examples: 'augmentin', 'amoxicillin', 'A02229715', '阿司匹林', 'lamisil'.",
+          "Required ≥2 chars. Searches generic name, brand names, and aliases. Also accepts NHI 9-10 char drug code (e.g. 'A02229715'). Examples: 'augmentin', 'amoxicillin', 'A02229715', '普拿疼', 'lamisil'.",
         minLength: 2,
       },
       specialty: {

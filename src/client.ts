@@ -2,7 +2,7 @@
  * HTTP client for opdstar.com MCP proxy endpoints.
  *
  * Every request:
- *   - routes through OPDSTAR_API_BASE (default https://opdstar.com/api/mcp)
+ *   - routes through OPDSTAR_API_BASE (default https://www.opdstar.com/api/mcp)
  *   - sends User-Agent `@opdstar/nhi-mcp/<version>` for usage visibility
  *   - returns the parsed JSON body (proxy normalizes errors into JSON)
  *
@@ -11,7 +11,8 @@
 
 import { VERSION, USER_AGENT } from './version.js';
 
-export const DEFAULT_API_BASE = 'https://opdstar.com/api/mcp';
+// The bare domain answers with a redirect; pointing at www saves that hop on every call.
+export const DEFAULT_API_BASE = 'https://www.opdstar.com/api/mcp';
 
 export interface ClientOptions {
   apiBase?: string;
@@ -48,29 +49,44 @@ export class OpdstarClient {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), this.timeoutMs);
     try {
-      const res = await fetch(url, {
-        ...init,
-        headers: {
-          ...(init.headers ?? {}),
-          'User-Agent': USER_AGENT,
-          'Accept': 'application/json',
-        },
-        signal: ctrl.signal,
-      });
+      let res: Response;
+      try {
+        res = await fetch(url, {
+          ...init,
+          headers: {
+            ...(init.headers ?? {}),
+            'User-Agent': USER_AGENT,
+            'Accept': 'application/json',
+          },
+          signal: ctrl.signal,
+        });
+      } catch {
+        // Transport errors carry the upstream URL in their text; keep it out.
+        throw new Error(
+          ctrl.signal.aborted
+            ? 'OPDSTAR API error: request timed out'
+            : 'OPDSTAR API error: service unreachable'
+        );
+      }
 
       const text = await res.text();
       let data: unknown;
       try {
         data = JSON.parse(text);
       } catch {
-        throw new Error(
-          `Non-JSON response from ${url} (status ${res.status}): ${text.slice(0, 200)}`
-        );
+        // The upstream URL and body are not the caller's business: a platform
+        // error page would otherwise be echoed back verbatim.
+        throw new Error(`OPDSTAR API error: HTTP ${res.status}`);
       }
 
       if (!res.ok) {
+        // Only 4xx text is the endpoint's own validation wording. A 5xx body can
+        // come from anywhere along the path, so it is reduced to its status.
+        const body = data as { error?: string; message?: string } | null;
         const errMsg =
-          (data as { error?: string })?.error ?? `HTTP ${res.status}`;
+          res.status < 500
+            ? (body?.error ?? body?.message ?? `HTTP ${res.status}`)
+            : `HTTP ${res.status}`;
         throw new Error(`OPDSTAR API error: ${errMsg}`);
       }
 

@@ -158,8 +158,10 @@ export interface RejectionCodesByCategoryResult {
   category: string;
   category_name?: string;
   opdstar_relevant_only: boolean;
+  offset?: number;
   count: number;
   truncated: boolean;
+  next_offset?: number | null;
   results: RejectionCodeItem[];
   message?: string;
 }

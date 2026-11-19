@@ -76,7 +76,10 @@
     "支付標準 — 健保現行支付標準（lookup_fee_code）",
     "重大傷病 — 範圍項目查詢與 ICD-10 反查（lookup_major_illness / check_icd_for_major_illness_eligibility）",
     "Wiki 語意搜 — 9 大分類官方 Wiki 內容（search_nhi_wiki）",
-    "申復統計訊號 — 拒付碼/處置碼的彙總申復案量（aggregate-only，無個案明細）"
+    "申復統計訊號 — 拒付碼/處置碼的彙總申復案量（aggregate-only，無個案明細）",
+    "診斷代碼 — ICD-10-CM 代碼與中英文名稱（lookup_icd10_cm）",
+    "特殊材料、預防保健、慢性病連續處方箋、醫療給付改善方案",
+    "點值、院所抽審指標、函釋與近期公告異動"
   ],
   "keywords": "台灣健保, 健保 MCP, 核刪代碼, 處置碼, Claude Desktop, 病歷翻譯, 健保申報, 醫療 AI"
 }
@@ -134,7 +137,7 @@
       "name": "我的病患資料會被上傳嗎？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "完全不會。這四個 tool 只查公開健保代碼、處置、Wiki，不傳送任何病患名字、病歷號、臨床內容。當你問 AI「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。"
+        "text": "完全不會。這些 tool 只查公開健保代碼、處置、Wiki，不傳送任何病患名字、病歷號、臨床內容。當你問 AI「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。"
       }
     },
     {
@@ -458,7 +461,7 @@
   </div>
 
   <div class="stats">
-    <span><strong>17</strong> 個唯讀查詢工具</span>
+    <span><strong>27</strong> 個唯讀查詢工具</span>
     <span>免費 · 免帳號 · 免 API key</span>
     <span>純公開健保資料</span>
   </div>
@@ -567,6 +570,36 @@
     <code>申復統計訊號</code>
     <span class="zh">彙總層級</span>
     <p><code>lookup_appeal_statistics_by_category</code> · <code>count_appeal_precedents_for_rejection_code</code> — 按類別/拒付碼的彙總訊號（無個案明細）。</p>
+  </div>
+  <div class="tool-card">
+    <code>診斷代碼</code>
+    <span class="zh">ICD-10-CM</span>
+    <p><code>lookup_icd10_cm</code> — 查診斷代碼與中英文名稱。</p>
+  </div>
+  <div class="tool-card">
+    <code>藥品對照</code>
+    <span class="zh">學名 / 商品名 / 代碼</span>
+    <p><code>search_taiwan_drug</code> — 用學名、商品名、健保碼或 ATC 碼找藥品。</p>
+  </div>
+  <div class="tool-card">
+    <code>特殊材料</code>
+    <span class="zh">特材品項</span>
+    <p><code>lookup_special_material</code> — 用代碼或名稱查健保特材品項。</p>
+  </div>
+  <div class="tool-card">
+    <code>預防保健與慢性病</code>
+    <span class="zh">資格 / 處方箋 / 方案</span>
+    <p><code>lookup_preventive_service</code> · <code>lookup_chronic_prescription_rule</code> · <code>lookup_p4p_program</code> — 預防保健服務、慢性病連續處方箋規定、醫療給付改善方案。</p>
+  </div>
+  <div class="tool-card">
+    <code>點值與抽審</code>
+    <span class="zh">分區</span>
+    <p><code>lookup_point_value</code> · <code>lookup_sampling_audit_rules</code> — 各分區點值與院所抽審指標。</p>
+  </div>
+  <div class="tool-card">
+    <code>函釋與公告</code>
+    <span class="zh">近期異動</span>
+    <p><code>search_nhi_interpretations</code> · <code>recent_nhi_amendments</code> — 健保相關函釋與近期公告異動。</p>
   </div>
 </div>
 </section>

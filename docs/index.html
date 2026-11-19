@@ -76,7 +76,10 @@
     "Fee schedule — current effective NHI fee codes with audit notes",
     "Major-illness coverage — 重大傷病範圍 lookup and ICD-10 reverse check",
     "Wiki search — semantic and full-text search across the official NHI wiki",
-    "Appeal precedents — aggregate dispute-resolution signals (no case details)"
+    "Appeal precedents — aggregate dispute-resolution signals (no case details)",
+    "Diagnosis codes — ICD-10-CM lookup with Chinese and English names",
+    "Special materials, preventive services, chronic prescriptions and pay-for-performance programmes",
+    "Point values, sampling-audit indicators, interpretations and recent announcements"
   ],
   "keywords": "Taiwan NHI, Model Context Protocol, MCP server, healthcare API, Claude Desktop, rejection codes, 健保, 核刪, medical AI"
 }
@@ -170,7 +173,7 @@
     "https://github.com/tatsuju/opdstar-nhi-mcp",
     "https://www.npmjs.com/package/@opdstar/nhi-mcp"
   ],
-  "description": "OPDSTAR develops AI-powered chart translation and NHI audit-risk prevention tools for Taiwanese outpatient doctors. The @opdstar/nhi-mcp package is the open-source data layer of the OPDSTAR platform."
+  "description": "OPDSTAR develops chart translation and NHI audit-risk prevention tools for Taiwanese outpatient doctors. The @opdstar/nhi-mcp package is the open-source data layer of the OPDSTAR platform."
 }
 </script>
 
@@ -399,7 +402,7 @@
   </div>
 
   <div class="stats">
-    <span><strong>17</strong> read-only tools</span>
+    <span><strong>27</strong> read-only tools</span>
     <span>Free · No account · No API key</span>
     <span>Public NHI data only</span>
   </div>
@@ -461,6 +464,30 @@
   <div class="tool-card">
     <code>Appeal signals</code>
     <p><code>lookup_appeal_statistics_by_category</code> · <code>count_appeal_precedents_for_rejection_code</code> — aggregate dispute-resolution signals (no individual case details).</p>
+  </div>
+  <div class="tool-card">
+    <code>Diagnosis codes</code>
+    <p><code>lookup_icd10_cm</code> — look up ICD-10-CM codes and their Chinese / English names.</p>
+  </div>
+  <div class="tool-card">
+    <code>Drug cross-reference</code>
+    <p><code>search_taiwan_drug</code> — find a drug by generic name, brand name, NHI code or ATC code.</p>
+  </div>
+  <div class="tool-card">
+    <code>Special materials</code>
+    <p><code>lookup_special_material</code> — NHI special-material items by code or name.</p>
+  </div>
+  <div class="tool-card">
+    <code>Preventive &amp; chronic care</code>
+    <p><code>lookup_preventive_service</code> · <code>lookup_chronic_prescription_rule</code> · <code>lookup_p4p_program</code> — preventive services, refillable chronic prescriptions, and pay-for-performance programmes.</p>
+  </div>
+  <div class="tool-card">
+    <code>Point values &amp; sampling</code>
+    <p><code>lookup_point_value</code> · <code>lookup_sampling_audit_rules</code> — regional point values and sampling-audit indicators.</p>
+  </div>
+  <div class="tool-card">
+    <code>Rulings &amp; updates</code>
+    <p><code>search_nhi_interpretations</code> · <code>recent_nhi_amendments</code> — NHI interpretations and recent announcements.</p>
   </div>
 </div>
 </section>

@@ -62,7 +62,7 @@ describe('lookup_rejection_code', () => {
 
     expect(fetchSpy).toHaveBeenCalledOnce();
     const [url, init] = fetchSpy.mock.calls[0];
-    expect(String(url)).toBe('https://opdstar.com/api/mcp/lookup-rejection-code?code=0317A');
+    expect(String(url)).toBe('https://www.opdstar.com/api/mcp/lookup-rejection-code?code=0317A');
     expect(init?.method).toBe('GET');
     expect((init?.headers as Record<string, string>)['User-Agent']).toMatch(
       /^@opdstar\/nhi-mcp\/\d+\.\d+\.\d+/
@@ -75,7 +75,7 @@ describe('lookup_rejection_code', () => {
     const client = new OpdstarClient();
     await runLookupRejectionCode(client, { code: '  0317a  ' });
     expect(String(fetchSpy.mock.calls[0][0])).toBe(
-      'https://opdstar.com/api/mcp/lookup-rejection-code?code=0317A'
+      'https://www.opdstar.com/api/mcp/lookup-rejection-code?code=0317A'
     );
   });
 
@@ -108,7 +108,7 @@ describe('get_indicator', () => {
     const client = new OpdstarClient();
     await runGetIndicator(client, { code: '  008  ' });
     expect(String(fetchSpy.mock.calls[0][0])).toBe(
-      'https://opdstar.com/api/mcp/indicator?code=008'
+      'https://www.opdstar.com/api/mcp/indicator?code=008'
     );
   });
 });
@@ -123,7 +123,7 @@ describe('search_nhi_wiki', () => {
       limit: 3,
     });
     const [url, init] = fetchSpy.mock.calls[0];
-    expect(String(url)).toBe('https://opdstar.com/api/mcp/search-wiki');
+    expect(String(url)).toBe('https://www.opdstar.com/api/mcp/search-wiki');
     expect(init?.method).toBe('POST');
     expect(JSON.parse(String(init?.body))).toEqual({
       query: '慢性病連續處方箋',
@@ -296,7 +296,7 @@ describe('lookup_sampling_audit_rules', () => {
     });
     const url = String(fetchSpy.mock.calls[0][0]);
     expect(url).toBe(
-      'https://opdstar.com/api/mcp/lookup-sampling-audit-rules?region=kaoping&rule_group=exemption_exclusion'
+      'https://www.opdstar.com/api/mcp/lookup-sampling-audit-rules?region=kaoping&rule_group=exemption_exclusion'
     );
   });
 
@@ -305,7 +305,7 @@ describe('lookup_sampling_audit_rules', () => {
     const client = new OpdstarClient();
     await runLookupSamplingAuditRules(client, { region: 'kaoping' });
     const url = String(fetchSpy.mock.calls[0][0]);
-    expect(url).toBe('https://opdstar.com/api/mcp/lookup-sampling-audit-rules?region=kaoping');
+    expect(url).toBe('https://www.opdstar.com/api/mcp/lookup-sampling-audit-rules?region=kaoping');
   });
 
   it('requires at least one filter', async () => {

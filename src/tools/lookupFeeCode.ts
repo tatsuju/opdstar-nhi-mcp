@@ -10,7 +10,7 @@ export const LOOKUP_FEE_CODE_DEF = {
       q: {
         type: 'string',
         description:
-          "Required ≥2 chars. Exact code match for 2-8 char alphanumerics (e.g. '00101B', 'OT1', 'P15001'); otherwise ILIKE search across name_zh + name_en. Examples: '00101B', '門診診察費', 'ICU', '麻醉', 'physical therapy'.",
+          "Required ≥2 chars. Exact code match for 2-8 char alphanumerics (e.g. '00101B', 'OT1', 'P15001'); otherwise matches part of the Chinese or English name. Examples: '00101B', '門診診察費', 'ICU', '麻醉', 'physical therapy'.",
         minLength: 2,
       },
       category: {

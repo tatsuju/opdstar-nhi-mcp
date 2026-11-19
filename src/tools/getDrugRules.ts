@@ -21,7 +21,7 @@ export const GET_DRUG_RULES_DEF = {
       drug_category_query: {
         type: 'string',
         description:
-          "Free-text filter on drug_category (ILIKE match), e.g. 'antibiotic', 'PPI', '類固醇'",
+          "Free-text filter on drug_category (partial match), e.g. 'antibiotic', 'PPI', '類固醇'",
       },
     },
   },
