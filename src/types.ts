@@ -35,7 +35,6 @@ export interface IndicatorResult {
   code: string;
   found?: boolean;
   name?: string;
-  suggestion?: string | null;
   threshold_pct?: number | null;
   severity?: string;
   rejection_codes?: string[];
@@ -135,7 +134,8 @@ export interface AuditGuidelineItem {
   severity: string;
   related_rejection_codes: string[];
   reason_zh: string | null;
-  suggestion_zh: string | null;
+  /** Official review-clause text when the rule comes from a clause; null otherwise. */
+  clause_text?: string | null;
   nhi_indicator_code: string | null;
   effective_date: string | null;
   source_url: string;

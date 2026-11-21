@@ -5,6 +5,19 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.5] — 2026-11-22
+
+### Changed
+
+- `get_indicator` no longer returns `suggestion`, and `search_audit_guidelines`
+  no longer returns `suggestion_zh`. These tools return the rule and its
+  reference data, not advice on what to do about it.
+- `search_audit_guidelines` returns the official clause text as `clause_text`
+  for rules that come from a review clause.
+- Lookups respond noticeably faster.
+- `search_nhi_wiki` — a search across the whole collection returns one passage
+  per page or letter, so results cover more sources.
+
 ## [0.12.4] — 2026-11-21
 
 ### Fixed

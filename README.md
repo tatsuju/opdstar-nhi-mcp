@@ -340,25 +340,24 @@ Discover which SOAP scenarios have known NHI-safe phrasing for a specialty. **Pr
 
 ### 7. `search_audit_guidelines` <sub>v0.2</sub>
 
-Free-text search over 審查注意事項 rules. Returns reason + suggestion summaries for matched rules.
+Free-text search over 審查注意事項 rules. Returns a reason summary and the related rejection codes for matched rules, and the official clause text (`clause_text`) when the rule comes from a review clause.
 
 **Arguments**: `{ query: string (2+ chars), specialty?: string }`
 
 **Example**:
 ```
-> 中醫開藥有什麼注意事項？
-→ [tool call: search_audit_guidelines(query="藥品", specialty="tcm")]
+> 維生素有什麼審查注意事項？
+→ [tool call: search_audit_guidelines(query="維生素")]
 → {
-    "count": 3,
+    "count": 1,
     "results": [
-      ...,
       {
-        "rule_code": "TCM_FORMULARY_ITEM",
-        "specialty": "tcm",
-        "severity": "critical",
-        "related_rejection_codes": ["0303C"],
-        "reason_zh": "處方使用非健保收載品項或非標準整編複方仍以健保申報",
-        "suggestion_zh": "僅使用健保中藥用藥品項表內藥品；複方以主管機關整編標準處方為主。"
+        "rule_code": "CLAUSE_RULE_CLAUSE_FAMILY_MEDICINE_004",
+        "specialty": "family_medicine",
+        "severity": "warning",
+        "related_rejection_codes": [],
+        "reason_zh": "4.其他有關之審查原則：",
+        "clause_text": "審查注意事項 (一)4.：4.其他有關之審查原則：\r\n(1)維生素及鐵劑之醣漿製劑，應只限定於治療性使用(如：早產兒、\r\n缺鐵性貧血等)。"
       }
     ]
   }
