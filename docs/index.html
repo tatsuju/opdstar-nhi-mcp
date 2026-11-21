@@ -42,7 +42,7 @@
   "description": "Taiwan's first public Model Context Protocol server for National Health Insurance data. Enables assistants like Claude Desktop, Cursor, and ChatGPT Desktop to query NHI rejection codes, procedure mappings, audit indicators, audit clauses, drug catalog, drug payment rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic-searchable wiki content.",
   "url": "https://tatsuju.github.io/opdstar-nhi-mcp/",
   "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
-  "softwareVersion": "0.12.2",
+  "softwareVersion": "0.12.3",
   "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.6.0",
   "inLanguage": "en",
   "author": {
@@ -129,7 +129,7 @@
       "name": "Is my patient data sent anywhere?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. The tools are pure lookups over public NHI data. Only the code or diagnosis name you ask about is transmitted — never patient names, IDs, or clinical notes. The proxy does not log query content."
+        "text": "No. The tools are pure lookups over public NHI data. Only the code or diagnosis name you ask about is transmitted — never patient names, IDs, or clinical notes. We do not store query content separately — only anonymous usage counts."
       }
     },
     {
@@ -527,7 +527,7 @@
 
 <details>
 <summary>Is my patient data sent anywhere?</summary>
-<p>No. The tools are pure lookups over public NHI data. Only the code or diagnosis name you ask about is transmitted — never patient names, IDs, or clinical notes. The proxy does not log query content.</p>
+<p>No. The tools are pure lookups over public NHI data. Only the code or diagnosis name you ask about is transmitted — never patient names, IDs, or clinical notes. We do not store query content separately — only anonymous usage counts.</p>
 </details>
 
 <details>
@@ -549,12 +549,7 @@
 
 <section>
 <h2>Trusted data sources</h2>
-<ul>
-  <li><a href="https://www.nhi.gov.tw/" target="_blank" rel="noopener">健保署全球資訊網</a> — primary website</li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-4142-4a9a4-2636-1.html" target="_blank" rel="noopener">專業審查注意事項 v114.12.01</a></li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-4141-4a9a3-2636-1.html" target="_blank" rel="noopener">不予支付理由代碼 v115.01.05</a></li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">藥品給付規定</a></li>
-</ul>
+<p>All data is curated from publicly available Taiwan government publications, primarily the <a href="https://www.nhi.gov.tw/" target="_blank" rel="noopener">健保署全球資訊網</a>, and kept in sync with official announcements. Where anything differs from the latest official publication, the official text prevails.</p>
 </section>
 
 <section>

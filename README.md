@@ -50,7 +50,7 @@
 
 **Taiwan healthcare professionals + developers of MCP-based tools** building tools that need authoritative Taiwan National Health Insurance reference data. Plug this MCP into Claude Desktop, Cursor, ChatGPT Desktop, Claude.ai, or any MCP-compatible agent to answer questions like:
 
-- **Billing accuracy** — Will this code / diagnosis combination get rejected? What's the prior-auth status?
+- **Rejection codes** — What does this NHI rejection code mean, and which category does it belong to?
 - **Audit guidelines** — What does the NHI 審查注意事項 say about this specialty / procedure?
 - **Drug rules** — What's the NHI payment rule for this medication?
 - **Appeal precedents** — Has anyone appealed this rejection code? What's the success rate?
@@ -75,13 +75,11 @@ OPDSTAR focuses on Taiwan NHI billing intelligence — that's what it does best.
 
 ### 👩‍⚕️ Scenario 1 — Look up a rejection code
 
-> **You:** 0320A 是什麼核刪理由？相關的審查注意事項怎麼寫？
+> **You:** 0320A 是什麼核刪理由？
 
-> **Claude** (auto-calls `lookup_rejection_code` + `search_audit_guidelines`):
+> **Claude** (auto-calls `lookup_rejection_code`):
 >
-> 回傳代碼的官方說明、類別，以及對應的審查注意事項條文，供你對照原文。
->
-> 資料來源：OPDSTAR
+> `0320A`：不宜長期使用之藥物（類別 03 藥品特材）。
 
 ### 🔍 Scenario 2 — Procedure lookup
 
@@ -89,19 +87,20 @@ OPDSTAR focuses on Taiwan NHI billing intelligence — that's what it does best.
 
 > **Claude** (auto-calls `get_procedures_for_icd`):
 >
-> - `27002C` 耳鏡檢查（25 點）
-> - `27018C` 耳膜穿刺（120 點）
-> - `36005C` 鼓室通氣管置入
+> - `22003C` 聽音電阻檢查（452 點）
+> - `22004C` 鼓室圖檢查（300 點）
+> - `29005C` 鼓膜穿刺（一側）（100 點）
+> - `54036C` 鼓室穿刺（220 點）
 >
-> Full list: NHI procedures across major specialties.
+> 另有數項耳鼻喉局部治療。清單供查詢參考，是否申報由醫師依病情判斷。
 
-### 📚 Scenario 3 — Wiki Q&A
+### 📚 Scenario 3 — Chronic prescription rule
 
-> **You:** 慢性病連續處方箋最長可以開多久？
+> **You:** 高血壓的慢性病連續處方箋，每次可以領幾天的藥？一張最多開幾天？
 
-> **Claude** (auto-calls `search_nhi_wiki`):
+> **Claude** (auto-calls `lookup_chronic_prescription_rule`):
 >
-> 依健保署規定，慢性病連續處方箋每次調劑之藥品使用期間最長 3 個月。原文：nhi.gov.tw/ch/cp-XXX.html
+> 高血壓在慢性病範圍內：每次調劑最多 30 日，一張處方箋總用藥量最多 90 日；第一級、第二級管制藥品不適用。出處：全民健康保險醫療辦法（113-06-20 修正），<https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=L0060009>
 
 ---
 
@@ -111,7 +110,7 @@ OPDSTAR focuses on Taiwan NHI billing intelligence — that's what it does best.
 
 Ask your assistant in natural language:
 
-> "慢性濕疹 L30.9 開 prednisolone 30mg 5 天會不會被核刪？"
+> "核刪代碼 0317A 是什麼意思？L30.9 在皮膚科有哪些處置碼可以查？"
 
 It auto-calls the right tools and pulls real NHI data:
 
@@ -211,7 +210,7 @@ Look up a Taiwan NHI rejection code (5-character, e.g. `0317A`).
     "category": "03",
     "category_name": "藥品特材",
     "opdstar_relevant": true,
-    "source_url": "https://opdstar.com/faq?q=核刪代碼 0317A"
+    "source_url": "https://www.opdstar.com/faq"
   }
 ```
 
@@ -234,7 +233,7 @@ Given an ICD-10 code and specialty, return the NHI procedure codes applicable.
         "nhi_points": 25,
         "fee_schedule_notes": null,
         "effective_start": "2004-07-01",
-        "source_url": "https://opdstar.com/faq?q=處置碼 30002C"
+        "source_url": "https://www.opdstar.com/faq"
       },
       ...
     ]
@@ -268,17 +267,19 @@ Semantic + full-text search over Taiwan's official NHI wiki (9 categories).
 
 **Example**:
 ```
-> Search NHI wiki for chronic prescription rules
-→ [tool call: search_nhi_wiki(query="慢性病連續處方箋天數上限", category="drugs")]
+> 出國前可以一次領完慢性病連續處方箋的藥嗎？
+→ [tool call: search_nhi_wiki(query="慢性病連續處方箋 出國 一次領藥", limit=3)]
 → {
     "count": 3,
     "results": [
       {
-        "title": "慢性病連續處方箋使用規定",
-        "content": "慢性病連續處方箋每次調劑之藥品使用期間，最長以 3 個月為限...",
-        "source_url_nhi": "https://www.nhi.gov.tw/ch/cp-XXX.html",
-        "source_url_opdstar": "https://opdstar.com/ask?q=..."
-      }
+        "title": "有關建議對於預定出國民眾或出海作業船員，持慢性病連續處方箋領藥時…",
+        "content": "【健保署函釋 — 健保醫字第 1030032943 號（2014-03-27）】...",
+        "chunk_type": "interpretation",
+        "source_url_nhi": "https://…（official source page）",
+        "source_url_opdstar": "https://www.opdstar.com/ask"
+      },
+      ...
     ]
   }
 ```
@@ -329,7 +330,7 @@ Discover which SOAP scenarios have known NHI-safe phrasing for a specialty. **Pr
         "scenario": "開立抗生素",
         "high_risk": "皮膚感染，開抗生素 7 天。",
         "safe_example_preview": "左小腿紅腫熱痛 2 天，查 erythematous plaque 約 8x6 cm… [… 完整範例請至 opdstar.com]",
-        "full_content_url": "https://opdstar.com/pricing"
+        "full_content_url": "https://www.opdstar.com/pricing"
       }
     ]
   }
@@ -348,6 +349,7 @@ Free-text search over 審查注意事項 rules. Returns reason + suggestion summ
 → {
     "count": 3,
     "results": [
+      ...,
       {
         "rule_code": "TCM_FORMULARY_ITEM",
         "specialty": "tcm",
@@ -355,8 +357,7 @@ Free-text search over 審查注意事項 rules. Returns reason + suggestion summ
         "related_rejection_codes": ["0303C"],
         "reason_zh": "處方使用非健保收載品項或非標準整編複方仍以健保申報",
         "suggestion_zh": "僅使用健保中藥用藥品項表內藥品；複方以主管機關整編標準處方為主。"
-      },
-      ...
+      }
     ]
   }
 ```
@@ -367,7 +368,7 @@ List all NHI rejection codes in a given category (00-09). Useful for discovery �
 
 **Arguments**: `{ category: "00"|"01"|...|"09", opdstar_relevant_only?: boolean }`
 
-10 categories: `00` 診療品質 · `01` 病歷紀錄 · `02` 基本診療 · `03` 藥品特材 · `04` 手術處置 · `05` 檢查檢驗 · `06` 論病例計酬 · `07` 復健精神 · `08` 其他 · `09` 法令
+10 categories: `00` 診療品質 · `01` 病歷紀錄 · `02` 基本診療 · `03` 藥品特材 · `04` 手術麻醉處置血液使用 · `05` 其他不符健保支付或審查規定 · `06` 論病例計酬 · `07` 復健精神居家預防保健 · `08` 其他不符支付或審查規定 · `09` 其他違反相關法令
 
 **Example**:
 ```
@@ -398,7 +399,7 @@ Look up the Taiwan NHI drug catalog (active formulary). Search by generic name, 
     "query": "Augmentin",
     "count": 5,
     "results": [
-      { "generic_name": "Amoxicillin/Clavulanate", "brand_names": ["Augmentin", "安滅菌"], "strength": "500/125mg, 875/125mg", "dosage_form": "tablet", "nhi_drug_code": "BC2615310", "atc_code": "J01CR02", ... },
+      { "generic_name": "Amoxicillin-Clavulanate", "brand_names": ["Augmentin", "安滅菌", "Curam", "諾快寧"], "strength": "125mg+31.25mg/5mL", "dosage_form": "powder for suspension", "atc_code": "J01CR02", ... },
       ...
     ]
   }
@@ -567,6 +568,25 @@ Look up Taiwan NHI chronic-disease continuous-prescription (慢性病連續處�
 
 **Arguments**: `{ icd_code?: string, disease?: string, category?: string }` — at least one is required.
 
+**Example**:
+```
+> 高血壓的慢性病連續處方箋每次可以領幾天？
+→ [tool call: lookup_chronic_prescription_rule(icd_code="I10")]
+→ {
+    "count": 1,
+    "results": [{
+      "disease_group": "高血壓",
+      "max_days_per_dispense": 30,
+      "max_total_days": 90,
+      "stable_condition_required": true,
+      "excluded_drug_levels": "第一級、第二級管制藥品",
+      "source_document": "全民健康保險慢性病範圍附表（全民健康保險醫療辦法，113-06-20 修正）",
+      "source_url": "https://law.moj.gov.tw/LawClass/LawAll.aspx?PCode=L0060009",
+      ...
+    }]
+  }
+```
+
 > Reference only — the issuing physician confirms the patient's condition is stable per the official 全民健康保險醫療辦法 慢性病範圍.
 
 ---
@@ -721,7 +741,7 @@ Three audiences:
 
 ### Do I need an OPDSTAR account or API key?
 
-**No.** The MCP is fully public and free under MIT license. No account, no API key, no registration. The proxy layer at `opdstar.com` applies rate limiting based on IP, not identity.
+**No.** The MCP is fully public and free under MIT license. No account, no API key, no registration. Usage is rate-limited to keep the service stable, without tracking identity.
 
 ### Is this an official NHI product?
 
@@ -729,7 +749,7 @@ Three audiences:
 
 ### Is my patient data sent anywhere?
 
-**No patient data is ever transmitted.** The tools are pure lookups over public NHI data (codes, procedures, wiki excerpts). When you ask "does 0317A apply to L30.9?", the MCP sends only the code and diagnosis name — never patient names, IDs, or clinical notes. The proxy at opdstar.com does not log query content (only aggregate counters for rate limiting).
+**No patient data is ever transmitted.** The tools are pure lookups over public NHI data (codes, procedures, wiki excerpts). When you ask "what does 0317A mean?", the MCP sends only that code — never patient names, IDs, or clinical notes. We do not store query content separately — only anonymous usage counts. Standard hosting connection logs are described in the [privacy policy](https://www.opdstar.com/legal/mcp-privacy).
 
 ### How often is the data updated?
 

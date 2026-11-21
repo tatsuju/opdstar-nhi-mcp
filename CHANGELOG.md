@@ -5,6 +5,14 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.3] — 2026-11-21
+
+### Fixed
+
+- Documentation examples now show real lookups and the results the service
+  returns. Earlier examples listed procedure codes and a chronic-prescription
+  statement that did not match the service's data.
+
 ## [0.12.2] — 2026-11-21
 
 ### Changed

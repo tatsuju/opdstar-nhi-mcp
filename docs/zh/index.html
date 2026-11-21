@@ -42,7 +42,7 @@
   "description": "台灣第一個公開的 Model Context Protocol server，專為查詢全民健康保險資料而設計。讓 Claude Desktop、Cursor、ChatGPT Desktop 等對話助理直接查詢核刪代碼、ICD-10 對應處置碼、審查指標與條文、藥品目錄與給付規定、支付標準、重大傷病、申復統計訊號，以及可語意搜尋的健保署官方 Wiki。",
   "url": "https://tatsuju.github.io/opdstar-nhi-mcp/zh/",
   "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
-  "softwareVersion": "0.12.2",
+  "softwareVersion": "0.12.3",
   "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.6.0",
   "inLanguage": "zh-TW",
   "author": {
@@ -121,7 +121,7 @@
       "name": "需要 OPDSTAR 帳號或 API key 嗎？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "不用。完全公開免費，MIT 授權。不需要註冊、不需要 API key。proxy 層 (opdstar.com) 的 rate limit 是按 IP 計算，不追蹤身份。"
+        "text": "不用。完全公開免費，MIT 授權。不需要註冊、不需要 API key。為了維持服務穩定會有使用頻率上限，但不追蹤身份。"
       }
     },
     {
@@ -137,7 +137,7 @@
       "name": "我的病患資料會被上傳嗎？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "完全不會。這些 tool 只查公開健保代碼、處置、Wiki，不傳送任何病患名字、病歷號、臨床內容。當你問助理「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。"
+        "text": "完全不會。這些 tool 只查公開健保代碼、處置、Wiki，不傳送任何病患名字、病歷號、臨床內容。當你問助理「0317A 是什麼」時，送出去的只有「0317A」這個字串。我們不另外儲存查詢內容，只統計匿名的使用次數；主機平台的一般連線紀錄見隱私權政策。"
       }
     },
     {
@@ -499,27 +499,26 @@
 <h2>實際情境</h2>
 
 <div class="scenario">
-  <div class="scenario-label">🩺 情境 1 — 開診間核刪預判</div>
-  <blockquote class="q">你在 Claude Desktop 邊打病歷邊問：<br>
-  「我今天給 L30.9 慢性濕疹病人開了 prednisolone 30mg QD 5 天，會不會被核刪？」</blockquote>
-  <blockquote>Claude 自動呼叫 <code>lookup_rejection_code</code> + <code>get_indicator</code>：<br>
-  「依健保審查 008 指標，口服類固醇 + 濕疹類診斷若 PE 描述不足，會觸發核刪代碼 0320A（處方超過審查標準用量）。建議：PE 補充病灶面積 ≥ 30% 全身，或加入更嚴重的 ICD-10 佐證。」</blockquote>
+  <div class="scenario-label">🩺 情境 1 — 查核刪代碼</div>
+  <blockquote class="q">「0320A 是什麼核刪理由？」</blockquote>
+  <blockquote>Claude 呼叫 <code>lookup_rejection_code</code>：<br>
+  「0320A：不宜長期使用之藥物（類別 03 藥品特材）。」</blockquote>
 </div>
 
 <div class="scenario">
   <div class="scenario-label">🔍 情境 2 — 處置碼速查</div>
   <blockquote class="q">「中耳炎 H66.9 耳鼻喉科能申報哪些處置？」</blockquote>
   <blockquote>Claude 呼叫 <code>get_procedures_for_icd</code>：<br>
-  「27002C 耳鏡檢查（25 點）、27018C 耳膜穿刺（120 點）、36005C 鼓室通氣管置入（記錄雙側或單側）…」<br>
-  涵蓋健保處置碼跨多個專科。</blockquote>
+  「22003C 聽音電阻檢查（452 點）、22004C 鼓室圖檢查（300 點）、29005C 鼓膜穿刺（一側）（100 點）、54036C 鼓室穿刺（220 點），另有數項耳鼻喉局部治療。」<br>
+  清單供查詢參考，是否申報由醫師依病情判斷。</blockquote>
 </div>
 
 <div class="scenario">
-  <div class="scenario-label">📚 情境 3 — Wiki 條文查詢</div>
-  <blockquote class="q">「健保『慢性病連續處方箋』的規定原文？」</blockquote>
-  <blockquote>Claude 呼叫 <code>search_nhi_wiki</code>：<br>
-  「慢性病連續處方箋每次調劑之藥品使用期間，最長以 3 個月為限。病情穩定且符合慢性病定義者方可開立…」<br>
-  附上健保署原文 URL。</blockquote>
+  <div class="scenario-label">📚 情境 3 — 慢性病連續處方箋天數</div>
+  <blockquote class="q">「高血壓的慢性病連續處方箋，每次可以領幾天的藥？一張最多開幾天？」</blockquote>
+  <blockquote>Claude 呼叫 <code>lookup_chronic_prescription_rule</code>：<br>
+  「高血壓在慢性病範圍內：每次調劑最多 30 日，一張處方箋總用藥量最多 90 日；第一級、第二級管制藥品不適用。」<br>
+  出處：全民健康保險醫療辦法（113-06-20 修正）。</blockquote>
 </div>
 </section>
 
@@ -669,7 +668,7 @@
 
 <details>
 <summary>需要 OPDSTAR 帳號或 API key 嗎？</summary>
-<p>不用。完全公開免費，MIT 授權。不需要註冊、不需要 API key。proxy 層 (opdstar.com) 的 rate limit 是按 IP 計算，不追蹤身份。</p>
+<p>不用。完全公開免費，MIT 授權。不需要註冊、不需要 API key。為了維持服務穩定會有使用頻率上限，但不追蹤身份。</p>
 </details>
 
 <details>
@@ -679,8 +678,8 @@
 
 <details>
 <summary>我的病患資料會被上傳嗎？</summary>
-<p>完全不會。這些 tool 只查公開健保代碼、處置、Wiki，<strong>不傳送任何病患名字、病歷號、臨床內容</strong>。當你問助理「0317A 是什麼」時，MCP 只送「0317A」這個字串到 proxy。</p>
-<p>proxy 層也不記錄查詢內容（僅統計匿名總量用於 rate limit）。</p>
+<p>完全不會。這些 tool 只查公開健保代碼、處置、Wiki，<strong>不傳送任何病患名字、病歷號、臨床內容</strong>。當你問助理「0317A 是什麼」時，送出去的只有「0317A」這個字串。</p>
+<p>我們不另外儲存查詢內容，只統計匿名的使用次數；主機平台的一般連線紀錄見<a href="https://www.opdstar.com/legal/mcp-privacy">隱私權政策</a>。</p>
 </details>
 
 <details>
@@ -716,15 +715,7 @@
 
 <section>
 <h2>資料來源</h2>
-<p>所有資料整理自台灣公開健保資源：</p>
-<ul>
-  <li><a href="https://www.nhi.gov.tw/" target="_blank" rel="noopener">健保署全球資訊網</a> — 主網站</li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-4142-4a9a4-2636-1.html" target="_blank" rel="noopener">專業審查注意事項 v114.12.01</a></li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-4141-4a9a3-2636-1.html" target="_blank" rel="noopener">不予支付理由代碼 v115.01.05</a></li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-7593-ad2a9-3397-1.html" target="_blank" rel="noopener">藥品給付規定</a></li>
-  <li><a href="https://www.nhi.gov.tw/ch/cp-2636-a1031-2912-1.html" target="_blank" rel="noopener">健保醫療費用申報與審查電腦作業手冊</a></li>
-</ul>
-<p>每月同步，所有規則資料附帶版本溯源欄位（來源文件 + 生效日期），便於追蹤健保署修法變動。</p>
+<p>所有資料整理自<a href="https://www.nhi.gov.tw/" target="_blank" rel="noopener">健保署全球資訊網</a>等政府公開資訊，並隨官方公告更新。內容若與官方最新公告有出入，以官方為準。</p>
 </section>
 
 <section>
