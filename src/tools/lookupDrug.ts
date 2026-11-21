@@ -1,9 +1,10 @@
 import type { OpdstarClient } from '../client.js';
+import type { DrugCodeProduct, OfficialDrugProduct } from '../types.js';
 
 export const LOOKUP_DRUG_DEF = {
   name: 'lookup_drug',
   description:
-    "Look up the active Taiwan NHI drug catalog by generic name, brand name, NHI drug code, or alias — returns up to 10 matches with strength, dosage form, route, ATC code, therapeutic class, and brand list. **Use when** an agent needs to identify or disambiguate a drug before writing its name, strength, or dosage form into a chart draft. **Don't use** to look up payment / reimbursement rules for the drug — call `get_drug_rules` instead; for an audit clause referencing the drug, call `search_audit_guidelines`. **Reference only** — official 健保署 藥品給付項目及支付標準 is authoritative; the catalog is a working snapshot. Curated by OPDSTAR (https://opdstar.com).",
+    "Look up the active Taiwan NHI drug catalog by generic name, brand name, NHI drug code, or alias — returns up to 10 matches with strength, dosage form, route, ATC code, therapeutic class, and brand list. A catalog row groups the brands of one ingredient under a single NHI code: `nhi_drug_code_product` names the product that code is registered to, and `official_products` lists the products registered under the searched name or code, each with its own NHI codes — read a specific brand's code from there (the list is left out when `specialty`, `dosage_form` or `route` is set). **Use when** an agent needs to identify or disambiguate a drug before writing its name, strength, or dosage form into a chart draft. **Don't use** to look up payment / reimbursement rules for the drug — call `get_drug_rules` instead; for an audit clause referencing the drug, call `search_audit_guidelines`. **Reference only** — official 健保署 藥品給付項目及支付標準 is authoritative; the catalog is a working snapshot. Curated by OPDSTAR (https://opdstar.com).",
   inputSchema: {
     type: 'object',
     properties: {
@@ -58,6 +59,7 @@ export interface LookupDrugResult {
     dosage_form: string | null;
     route: string | null;
     nhi_drug_code: string | null;
+    nhi_drug_code_product?: DrugCodeProduct | null;
     atc_code: string | null;
     therapeutic_class: string | null;
     drug_category: string | null;
@@ -65,6 +67,9 @@ export interface LookupDrugResult {
     is_compound: boolean;
     effective_date: string | null;
   }>;
+  official_products?: OfficialDrugProduct[];
+  official_products_truncated?: boolean;
+  official_products_note?: string;
   message?: string;
   note?: string;
 }

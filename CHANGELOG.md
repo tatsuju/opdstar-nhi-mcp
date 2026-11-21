@@ -5,6 +5,24 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.4] — 2026-11-21
+
+### Fixed
+
+- `search_nhi_wiki` — searches without a category return more relevant
+  results; relevant official pages could previously be missed.
+- `search_nhi_wiki` returns official text only, and no longer returns the same
+  page twice.
+- `lookup_drug`, `search_taiwan_drug` — a brand search could show an NHI code
+  that belongs to another brand of the same ingredient. Each result now names
+  the product its code is registered to (`nhi_drug_code_product`), and
+  `official_products` lists the products registered under the searched name
+  or code with their own codes.
+
+### Added
+
+- `search_nhi_wiki` — interpretation letters carry `doc_no` and `issue_date`.
+
 ## [0.12.3] — 2026-11-21
 
 ### Fixed

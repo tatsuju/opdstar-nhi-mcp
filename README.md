@@ -267,15 +267,17 @@ Semantic + full-text search over Taiwan's official NHI wiki (9 categories).
 
 **Example**:
 ```
-> 出國前可以一次領完慢性病連續處方箋的藥嗎？
-→ [tool call: search_nhi_wiki(query="慢性病連續處方箋 出國 一次領藥", limit=3)]
+> 慢性病連續處方箋的天數上限有哪些相關函釋？
+→ [tool call: search_nhi_wiki(query="慢性病連續處方箋天數上限", limit=5)]
 → {
-    "count": 3,
+    "count": 5,
     "results": [
       {
-        "title": "有關建議對於預定出國民眾或出海作業船員，持慢性病連續處方箋領藥時…",
-        "content": "【健保署函釋 — 健保醫字第 1030032943 號（2014-03-27）】...",
+        "title": "有關建議政府不要管制藥品領取數量乙案，復請查照。",
+        "content": "【健保署函釋 — 健保醫字第 1020003643 號（2013-12-19）】...",
         "chunk_type": "interpretation",
+        "doc_no": "健保醫字第 1020003643 號",
+        "issue_date": "2013-12-19",
         "source_url_nhi": "https://…（official source page）",
         "source_url_opdstar": "https://www.opdstar.com/ask"
       },
@@ -399,11 +401,33 @@ Look up the Taiwan NHI drug catalog (active formulary). Search by generic name, 
     "query": "Augmentin",
     "count": 5,
     "results": [
-      { "generic_name": "Amoxicillin-Clavulanate", "brand_names": ["Augmentin", "安滅菌", "Curam", "諾快寧"], "strength": "125mg+31.25mg/5mL", "dosage_form": "powder for suspension", "atc_code": "J01CR02", ... },
+      {
+        "generic_name": "Amoxicillin-Clavulanate",
+        "brand_names": ["Augmentin", "安滅菌", "Curam", "諾快寧"],
+        "strength": "125mg+31.25mg/5mL",
+        "dosage_form": "powder for suspension",
+        "nhi_drug_code": "AC4537911",
+        "nhi_drug_code_product": { "name_en": "ANBICYN POWDER FOR SYRUP 31.25MG/ML", "name_zh": "必百欣口服糖漿用粉劑 31.25 公絲／公撮" },
+        "atc_code": "J01CR02",
+        ...
+      },
       ...
-    ]
+    ],
+    "official_products": [
+      {
+        "nhi_drug_codes": ["B012893100"],
+        "name_en": "AUGMENTIN DISPERSIBLE TABLETS 375MG",
+        "name_zh": "安滅菌易溶錠３７５公絲",
+        "ingredient": "AMOXYCILLIN (TRIHYDRATE) 250 MG+CLAVULANATE (POTASSIUM) 125 MG",
+        "dosage_form": "錠劑"
+      },
+      ...
+    ],
+    "official_products_truncated": true
   }
 ```
+
+> A catalog row groups the brands of one ingredient under a single code, so `nhi_drug_code` may belong to a different brand than the one you searched — `nhi_drug_code_product` says which. For a specific brand's own codes, read `official_products`.
 
 ### 10. `lookup_fee_code` <sub>v0.4</sub>
 
@@ -528,7 +552,7 @@ List recent amendments to 健保署「醫療費用審查注意事項」(近一�
 
 ### 19. `search_taiwan_drug` <sub>v0.7</sub>
 
-Unified Taiwan drug lookup across NHI and TFDA registries. Returns generic name (EN + 中文), brand names, NHI 9碼, ATC code, dosage form, strength, route, specialties, and effective date. Auto-detects input as NHI 9碼 / ATC code / generic name / brand name / alias.
+Unified Taiwan drug lookup across NHI and TFDA registries. Returns generic name (EN + 中文), brand names, NHI 9碼, ATC code, dosage form, strength, route, specialties, and effective date. Auto-detects input as NHI 9碼 / ATC code / generic name / brand name / alias. Like `lookup_drug`, each result names the product its code is registered to (`nhi_drug_code_product`) and the response lists `official_products` for the searched name or code.
 
 **Arguments**: `{ query?: string, atc_prefix?: string, form?: string, limit?: number }`
 

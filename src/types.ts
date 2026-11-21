@@ -50,6 +50,10 @@ export interface WikiHit {
   title: string | null;
   content: string;
   chunk_type: string;
+  /** Letter number of an interpretation letter; null for every other excerpt. */
+  doc_no?: string | null;
+  /** Issue date (YYYY-MM-DD) of an interpretation letter; null for every other excerpt. */
+  issue_date?: string | null;
   /** Category of the 健保署 web page the excerpt came from; null for interpretation letters and the structured corpora. */
   category: string | null;
   specialty: string | null;
@@ -192,6 +196,21 @@ export interface RecentNhiAmendmentsResult {
   results: NhiAmendmentItem[];
 }
 
+/** The product an NHI drug code is registered to. */
+export interface DrugCodeProduct {
+  name_en: string | null;
+  name_zh: string | null;
+}
+
+/** A registered product and the NHI codes of its packs. */
+export interface OfficialDrugProduct {
+  nhi_drug_codes: string[];
+  name_en: string | null;
+  name_zh: string | null;
+  ingredient: string | null;
+  dosage_form: string | null;
+}
+
 export interface TaiwanDrugItem {
   generic_name: string;
   generic_name_zh: string | null;
@@ -201,6 +220,8 @@ export interface TaiwanDrugItem {
   dosage_form: string | null;
   route: string | null;
   nhi_drug_code: string | null;
+  /** The product `nhi_drug_code` is registered to — not necessarily every brand listed. */
+  nhi_drug_code_product?: DrugCodeProduct | null;
   atc_code: string | null;
   drug_category: string | null;
   therapeutic_class: string | null;
@@ -221,6 +242,12 @@ export interface SearchTaiwanDrugResult {
   query_kind: 'nhi_code' | 'atc_code' | 'text' | 'atc_only';
   count: number;
   results: TaiwanDrugItem[];
+  /** Products registered under the searched name or code, with their own NHI codes. */
+  official_products?: OfficialDrugProduct[];
+  official_products_truncated?: boolean;
+  /** Present when a filter was set: the product list is not filtered, so it is left out. */
+  official_products_note?: string;
+  note?: string;
 }
 
 export interface Icd10CmItem {
