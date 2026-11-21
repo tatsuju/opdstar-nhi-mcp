@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@opdstar/nhi-mcp — Taiwan NHI MCP Server · Powered by OPDSTAR</title>
+<title>Taiwan NHI MCP (台灣健保 MCP) — @opdstar/nhi-mcp · Powered by OPDSTAR</title>
 <meta name="description" content="Taiwan's first public Model Context Protocol (MCP) server for National Health Insurance data. Lets Claude Desktop, Cursor, ChatGPT Desktop query NHI rejection codes, procedure mappings, audit indicators and clauses, drug catalog and rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic wiki search. Free, MIT-licensed, by OPDSTAR.">
-<meta name="keywords" content="MCP server, Taiwan NHI, National Health Insurance, 健保, 核刪, healthcare AI, Claude Desktop, Cursor, Model Context Protocol, OPDSTAR, 台灣健保, medical AI, anthropic">
+<meta name="keywords" content="MCP server, Taiwan NHI, National Health Insurance, 健保, 核刪, Claude Desktop, Cursor, Model Context Protocol, OPDSTAR, 台灣健保, 台灣健保 MCP, anthropic">
 
 <!-- hreflang for language alternatives -->
 <link rel="alternate" hreflang="en" href="https://tatsuju.github.io/opdstar-nhi-mcp/">
@@ -16,10 +16,10 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="zh_TW">
-<meta property="og:title" content="@opdstar/nhi-mcp — Taiwan NHI MCP Server">
-<meta property="og:description" content="Taiwan's first public Model Context Protocol server for NHI data. Query rejection codes, procedure codes, audit indicators, and wiki from any MCP-compatible AI assistant.">
+<meta property="og:title" content="Taiwan NHI MCP (台灣健保 MCP) — @opdstar/nhi-mcp">
+<meta property="og:description" content="Taiwan's first public Model Context Protocol server for NHI data. Query rejection codes, procedure codes, audit indicators, and wiki from any MCP-compatible assistant.">
 <meta property="og:url" content="https://tatsuju.github.io/opdstar-nhi-mcp/">
-<meta property="og:site_name" content="OPDSTAR NHI MCP">
+<meta property="og:site_name" content="Taiwan NHI MCP">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
@@ -35,14 +35,14 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "@opdstar/nhi-mcp",
-  "alternateName": "OPDSTAR NHI MCP Server",
+  "alternateName": "Taiwan NHI MCP (台灣健保 MCP)",
   "applicationCategory": "DeveloperApplication",
   "applicationSubCategory": "Healthcare API",
   "operatingSystem": "Cross-platform (Node.js 18+)",
-  "description": "Taiwan's first public Model Context Protocol server for National Health Insurance data. Enables AI assistants like Claude Desktop, Cursor, and ChatGPT Desktop to query NHI rejection codes, procedure mappings, audit indicators, audit clauses, drug catalog, drug payment rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic-searchable wiki content.",
+  "description": "Taiwan's first public Model Context Protocol server for National Health Insurance data. Enables assistants like Claude Desktop, Cursor, and ChatGPT Desktop to query NHI rejection codes, procedure mappings, audit indicators, audit clauses, drug catalog, drug payment rules, fee schedule, major-illness coverage, appeal-resolution signals, and semantic-searchable wiki content.",
   "url": "https://tatsuju.github.io/opdstar-nhi-mcp/",
   "downloadUrl": "https://www.npmjs.com/package/@opdstar/nhi-mcp",
-  "softwareVersion": "0.6.0",
+  "softwareVersion": "0.12.2",
   "releaseNotes": "https://github.com/tatsuju/opdstar-nhi-mcp/releases/tag/v0.6.0",
   "inLanguage": "en",
   "author": {
@@ -81,7 +81,7 @@
     "Special materials, preventive services, chronic prescriptions and pay-for-performance programmes",
     "Point values, sampling-audit indicators, interpretations and recent announcements"
   ],
-  "keywords": "Taiwan NHI, Model Context Protocol, MCP server, healthcare API, Claude Desktop, rejection codes, 健保, 核刪, medical AI"
+  "keywords": "Taiwan NHI, Model Context Protocol, MCP server, healthcare API, Claude Desktop, rejection codes, 健保, 核刪, 台灣健保 MCP"
 }
 </script>
 
@@ -97,7 +97,7 @@
       "name": "What is Model Context Protocol (MCP)?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "MCP is an open standard released by Anthropic in November 2024 that lets AI assistants call external tools through a standardized protocol. Write a server once, and any MCP-compatible client (Claude Desktop, Cursor, ChatGPT Desktop) can use it without custom integration."
+        "text": "MCP is an open standard released by Anthropic in November 2024 that lets assistants call external tools through a standardized protocol. Write a server once, and any MCP-compatible client (Claude Desktop, Cursor, ChatGPT Desktop) can use it without custom integration."
       }
     },
     {
@@ -113,7 +113,7 @@
       "name": "Who should install @opdstar/nhi-mcp?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Taiwanese doctors using AI assistants for chart work, HIS and clinic software vendors integrating AI features, and researchers studying Taiwan's healthcare data."
+        "text": "Taiwanese doctors using assistants for chart work, HIS and clinic software vendors integrating assistant features, and researchers studying Taiwan's healthcare data."
       }
     },
     {
@@ -389,9 +389,9 @@
     <a href="./zh/" hreflang="zh-TW">繁中</a>
   </div>
   <span class="badge">Taiwan's first public NHI MCP</span>
-  <h1>@opdstar/nhi-mcp</h1>
-  <p class="subtitle">Model Context Protocol server for Taiwan's National Health Insurance data</p>
-  <p class="subtitle-zh">台灣第一個公開的健保 MCP Server · MIT 授權 · 永久免費</p>
+  <h1>Taiwan NHI MCP</h1>
+  <p class="subtitle"><code>@opdstar/nhi-mcp</code> — Model Context Protocol server for Taiwan's National Health Insurance data</p>
+  <p class="subtitle-zh">台灣健保 MCP · 台灣第一個公開的健保 MCP Server · MIT 授權 · 永久免費</p>
 
   <pre class="install">npx @opdstar/nhi-mcp</pre>
 
@@ -413,7 +413,7 @@
 <section>
 <h2>What is this?</h2>
 <p>
-  <strong>@opdstar/nhi-mcp</strong> lets any AI assistant compatible with
+  <strong>@opdstar/nhi-mcp</strong> lets any assistant compatible with
   <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol</a>
   — Claude Desktop, Cursor, ChatGPT Desktop, Continue, Zed, and more — directly query
   Taiwan's National Health Insurance (NHI) data curated and maintained by the
@@ -421,7 +421,7 @@
 </p>
 <p>
   This package exposes a comprehensive set of read-only tools that let doctors and developers
-  integrate real NHI reference lookups into their AI workflows with one command —
+  integrate real NHI reference lookups into their workflows with one command —
   no account, no API key, no setup beyond pasting a config snippet.
 </p>
 </section>
@@ -512,12 +512,12 @@
 
 <details>
 <summary>What is Model Context Protocol (MCP)?</summary>
-<p>MCP is an open standard released by Anthropic in November 2024 that lets AI assistants call external tools through a standardized protocol. Think of it as "USB-C for AI agents" — write a server once, and any MCP-compatible client can talk to it.</p>
+<p>MCP is an open standard released by Anthropic in November 2024 that lets assistants call external tools through a standardized protocol. Think of it as "USB-C for assistants" — write a server once, and any MCP-compatible client can talk to it.</p>
 </details>
 
 <details>
 <summary>Who should install this?</summary>
-<p>Taiwanese doctors using AI assistants for chart work, HIS and clinic software vendors integrating AI features, and researchers studying Taiwan's healthcare data.</p>
+<p>Taiwanese doctors using assistants for chart work, HIS and clinic software vendors integrating assistant features, and researchers studying Taiwan's healthcare data.</p>
 </details>
 
 <details>

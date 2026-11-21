@@ -5,6 +5,16 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.2] — 2026-11-21
+
+### Changed
+
+- The server now reports a display name, 台灣健保 MCP (Taiwan NHI MCP), to
+  clients that show one.
+- Documentation uses the same name throughout and lists
+  `https://mcp.opdstar.com/mcp` as the remote address. Existing addresses keep
+  working.
+
 ## [0.12.1] — 2026-11-20
 
 ### Fixed

@@ -1,8 +1,8 @@
 /**
- * @opdstar/nhi-mcp — Taiwan's first public NHI MCP Server
+ * @opdstar/nhi-mcp — 台灣健保 MCP (Taiwan NHI MCP)
  * Powered by OPDSTAR (https://opdstar.com)
  *
- * Read-only MCP tools that let any MCP-compatible AI agent
+ * Read-only MCP tools that let any MCP-compatible client
  * (Claude Desktop, Cursor, etc.) query Taiwan's National Health Insurance
  * curated dataset.
  *
@@ -22,7 +22,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js';
 
 import { OpdstarClient } from './client.js';
-import { VERSION } from './version.js';
+import { SERVER_TITLE, VERSION } from './version.js';
 import { TOOL_DEFS, callToolByName } from './http-handler.js';
 
 const client = new OpdstarClient();
@@ -30,6 +30,7 @@ const client = new OpdstarClient();
 const server = new Server(
   {
     name: '@opdstar/nhi-mcp',
+    title: SERVER_TITLE,
     version: VERSION,
   },
   {

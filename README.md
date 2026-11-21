@@ -1,4 +1,4 @@
-<h1 align="center">台灣健保查詢 MCP Server｜Taiwan NHI MCP</h1>
+<h1 align="center">台灣健保 MCP｜Taiwan NHI MCP</h1>
 
 <p align="center">
   <code>@opdstar/nhi-mcp</code>
@@ -48,7 +48,7 @@
 
 ## Who is this for?
 
-**Taiwan healthcare professionals + AI agent developers** building tools that need authoritative Taiwan National Health Insurance reference data. Plug this MCP into Claude Desktop, Cursor, ChatGPT Desktop, Claude.ai, or any MCP-compatible agent to answer questions like:
+**Taiwan healthcare professionals + developers of MCP-based tools** building tools that need authoritative Taiwan National Health Insurance reference data. Plug this MCP into Claude Desktop, Cursor, ChatGPT Desktop, Claude.ai, or any MCP-compatible agent to answer questions like:
 
 - **Billing accuracy** — Will this code / diagnosis combination get rejected? What's the prior-auth status?
 - **Audit guidelines** — What does the NHI 審查注意事項 say about this specialty / procedure?
@@ -109,7 +109,7 @@ OPDSTAR focuses on Taiwan NHI billing intelligence — that's what it does best.
 
 `@opdstar/nhi-mcp` lets any [Model Context Protocol](https://modelcontextprotocol.io) client — Claude Desktop, Cursor, ChatGPT Desktop, custom agents — **directly query Taiwan's National Health Insurance dataset** curated and maintained by [OPDSTAR](https://opdstar.com).
 
-Ask your AI in natural language:
+Ask your assistant in natural language:
 
 > "慢性濕疹 L30.9 開 prednisolone 30mg 5 天會不會被核刪？"
 
@@ -131,7 +131,7 @@ All served through the `opdstar.com` edge layer — zero configuration, cached g
 
 ## Install
 
-Two ways to use the OPDSTAR MCP server.
+Two ways to use 台灣健保 MCP (Taiwan NHI MCP).
 
 ### Option A — Remote (one-click, no install)
 
@@ -140,7 +140,7 @@ Two ways to use the OPDSTAR MCP server.
 Point any MCP-compatible client at the hosted JSON-RPC 2.0 endpoint:
 
 ```
-POST https://opdstar.com/api/mcp
+POST https://mcp.opdstar.com/mcp
 Content-Type: application/json
 ```
 
@@ -691,7 +691,7 @@ Find Taiwan NHI care and pay-for-performance programmes by diagnosis code, speci
 `@opdstar/nhi-mcp` is a **reference / translation tool**. It:
 
 - ✅ Looks up Taiwan NHI public data and official wiki content
-- ✅ Returns structured JSON for AI reasoning
+- ✅ Returns structured JSON for the calling assistant
 - ❌ Does NOT make diagnostic or prescribing recommendations
 - ❌ Does NOT constitute clinical decision support (SaMD)
 
@@ -705,7 +705,7 @@ Data sourced from [健保署全球資訊網](https://www.nhi.gov.tw/) (public) a
 
 ### What is Model Context Protocol (MCP)?
 
-MCP is an open standard released by Anthropic in November 2024 that lets AI assistants call external tools through a standardized protocol. Think of it as "USB-C for AI agents" — write a server once, and any MCP-compatible client (Claude Desktop, Cursor, ChatGPT Desktop, Continue, Zed, custom agents) can talk to it without custom integration code. Official spec: [modelcontextprotocol.io](https://modelcontextprotocol.io).
+MCP is an open standard released by Anthropic in November 2024 that lets assistants call external tools through a standardized protocol. Think of it as "USB-C for assistants" — write a server once, and any MCP-compatible client (Claude Desktop, Cursor, ChatGPT Desktop, Continue, Zed, custom agents) can talk to it without custom integration code. Official spec: [modelcontextprotocol.io](https://modelcontextprotocol.io).
 
 ### What is Taiwan's National Health Insurance (NHI)?
 
@@ -715,8 +715,8 @@ Taiwan's **全民健康保險 (National Health Insurance)** is a single-payer un
 
 Three audiences:
 
-- **Taiwanese doctors** using AI assistants (Claude Desktop, Cursor) who want real-time NHI code lookup and audit risk insight while writing charts
-- **HIS / clinic software vendors** integrating AI features — zero-cost access to a curated NHI dataset instead of scraping 健保署 manually
+- **Taiwanese doctors** using assistants such as Claude Desktop or Cursor who want real-time NHI code lookup and audit risk insight while writing charts
+- **HIS / clinic software vendors** integrating assistant features — zero-cost access to a curated NHI dataset instead of scraping 健保署 manually
 - **Researchers** studying Taiwan's healthcare system who need structured, queryable access to rejection codes, procedures, and audit indicators
 
 ### Do I need an OPDSTAR account or API key?
@@ -741,7 +741,7 @@ Monthly. The OPDSTAR team syncs structured tables and wiki chunks when 健保署
 
 ### What about languages? Does it work in English?
 
-Tool arguments and responses support both **Traditional Chinese (繁體中文)** and **English**. The underlying NHI data is primarily 繁中 — Chinese keys like `name_zh` are always populated; `name_en` is populated where 健保署 provides English translations. AI assistants handle the language switching seamlessly.
+Tool arguments and responses support both **Traditional Chinese (繁體中文)** and **English**. The underlying NHI data is primarily 繁中 — Chinese keys like `name_zh` are always populated; `name_en` is populated where 健保署 provides English translations. Assistants handle the language switching seamlessly.
 
 ### Can this replace the full OPDSTAR SaaS product?
 

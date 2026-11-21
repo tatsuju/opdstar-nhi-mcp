@@ -13,7 +13,7 @@
  */
 
 import { OpdstarClient } from './client.js';
-import { VERSION } from './version.js';
+import { SERVER_TITLE, VERSION } from './version.js';
 
 import { LOOKUP_REJECTION_CODE_DEF, runLookupRejectionCode } from './tools/lookupRejectionCode.js';
 import { GET_PROCEDURES_FOR_ICD_DEF, runGetProceduresForIcd } from './tools/getProceduresForIcd.js';
@@ -285,7 +285,7 @@ export function negotiateProtocolVersion(requested: unknown): string {
     ? (requested as string)
     : SUPPORTED_PROTOCOL_VERSIONS[0];
 }
-const SERVER_INFO = { name: '@opdstar/nhi-mcp', version: VERSION } as const;
+const SERVER_INFO = { name: '@opdstar/nhi-mcp', title: SERVER_TITLE, version: VERSION } as const;
 
 interface JsonRpcRequest {
   jsonrpc?: string;

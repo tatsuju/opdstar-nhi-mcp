@@ -5,7 +5,7 @@ Thanks for your interest! This project is Taiwan's first public NHI MCP server, 
 ## Ground rules
 
 1. **All tools must be read-only** — no writes, no mutations, no personal data
-2. **All data must come from public NHI sources** — we do not expose OPDSTAR's private audit engine or AI-generated content
+2. **All data must come from public NHI sources** — we do not expose OPDSTAR's private audit engine or machine-generated content
 3. **Every tool response must include `powered_by` and `source_url`** — brand attribution is non-negotiable
 4. **Chinese and English** — docs and comments should be bilingual where practical; code comments may be either
 

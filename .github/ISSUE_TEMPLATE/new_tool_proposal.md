@@ -47,7 +47,7 @@ Response shape:
 
 ## Use case / example question
 
-<!-- A real-world question a doctor would ask where this tool would help AI answer -->
+<!-- A real-world question a doctor would ask where this tool would help the assistant answer -->
 
 > "..."
 
