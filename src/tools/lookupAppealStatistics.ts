@@ -61,7 +61,6 @@ export interface ResolutionStageSignal {
   stage_tier: string; // 'stage_0_dispute_review' | 'stage_1_initial_review' | 'stage_2_first_court' | 'stage_3_appeals_court'
   rough_volume: 'few' | 'several' | 'many'; // intentionally vague
   claimant_win_rate_signal: 'rare' | 'occasional' | 'moderate' | 'common';
-  numeric_win_rate_estimate: number; // 0-1 for downstream agents to reason with
 }
 
 export interface LookupAppealStatisticsResult {
