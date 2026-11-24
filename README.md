@@ -124,7 +124,7 @@ It auto-calls the right tools and pulls real NHI data:
 - **Semantic + full-text search** over the 健保署 official wiki
 - **Aggregate dispute-resolution signals** by category or rejection code (no individual case details)
 
-All served through the `opdstar.com` edge layer — zero configuration, cached globally, under 100ms response.
+All served through the `opdstar.com` edge layer — zero configuration. Measured from Taiwan in November 2026 (median of five calls): a code or drug lookup returns in about 0.3–0.6 s, a full-text search in about 1 s.
 
 ---
 

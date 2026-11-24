@@ -26,9 +26,14 @@ export const LOOKUP_APPEAL_STATISTICS_DEF = {
       },
       stage_tier: {
         type: 'string',
-        enum: ['stage_1_initial_review', 'stage_2_first_court', 'stage_3_appeals_court'],
+        enum: [
+          'stage_0_dispute_review',
+          'stage_1_initial_review',
+          'stage_2_first_court',
+          'stage_3_appeals_court',
+        ],
         description:
-          "Optional resolution-stage filter. stage_1_initial_review = first-tier administrative review; stage_2_first_court = first-instance administrative court; stage_3_appeals_court = highest administrative court. Omit to aggregate across all stages.",
+          "Optional resolution-stage filter. stage_0_dispute_review = NHI dispute review (爭議審議), the step before an administrative appeal; stage_1_initial_review = first-tier administrative review; stage_2_first_court = first-instance administrative court; stage_3_appeals_court = highest administrative court. Omit to aggregate across all stages.",
       },
     },
   },
@@ -45,11 +50,15 @@ export interface LookupAppealStatisticsArgs {
     | 'fee_calculation'
     | 'qualification'
     | 'other';
-  stage_tier?: 'stage_1_initial_review' | 'stage_2_first_court' | 'stage_3_appeals_court';
+  stage_tier?:
+    | 'stage_0_dispute_review'
+    | 'stage_1_initial_review'
+    | 'stage_2_first_court'
+    | 'stage_3_appeals_court';
 }
 
 export interface ResolutionStageSignal {
-  stage_tier: string; // 'stage_1_initial_review' | 'stage_2_first_court' | 'stage_3_appeals_court'
+  stage_tier: string; // 'stage_0_dispute_review' | 'stage_1_initial_review' | 'stage_2_first_court' | 'stage_3_appeals_court'
   rough_volume: 'few' | 'several' | 'many'; // intentionally vague
   claimant_win_rate_signal: 'rare' | 'occasional' | 'moderate' | 'common';
   numeric_win_rate_estimate: number; // 0-1 for downstream agents to reason with

@@ -34,7 +34,7 @@ export interface CountAppealPrecedentsResult {
   has_resolution_history: boolean;
   rough_volume: 'none' | 'few' | 'several' | 'many';
   claimant_win_rate_signal: 'rare' | 'occasional' | 'moderate' | 'common' | 'unknown';
-  stages_with_history: string[]; // e.g. ['stage_1_initial_review', 'stage_2_first_court']
+  stages_with_history: string[]; // e.g. ['stage_0_dispute_review', 'stage_1_initial_review']
   notes: string;
 }
 

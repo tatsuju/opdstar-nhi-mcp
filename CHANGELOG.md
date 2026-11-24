@@ -5,6 +5,15 @@ All notable changes to `@opdstar/nhi-mcp` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.6] — 2026-11-24
+
+### Added
+
+- `lookup_appeal_statistics_by_category` — `stage_tier` accepts
+  `stage_0_dispute_review`, the NHI dispute review stage that comes before an
+  administrative appeal. `count_appeal_precedents_for_rejection_code` can list
+  it in `stages_with_history`.
+
 ## [0.12.5] — 2026-11-22
 
 ### Changed
